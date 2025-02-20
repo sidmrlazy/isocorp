@@ -11,8 +11,11 @@ body{
     height: auto;
     padding: 50px;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
+    background-image: url('./images/login-bg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 .login-form {
     padding: 40px;
@@ -56,6 +59,9 @@ body{
 }
 .navbar-brand {
     color: #fff;
+}
+.navbar-brand img {
+    width: 15%;
 }
 .nav-link {
     color: #fff;

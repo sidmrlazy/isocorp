@@ -27,6 +27,8 @@ session_start();
   <!-- ========== GOOGLE MATERIAL ICONS ========== -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
+  <link rel="shortcut icon" href="assets/logo/isocorp_logo_favicon.png" type="image/x-icon">
+
 </head>
 
 <body>
