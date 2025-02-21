@@ -407,6 +407,19 @@ align-items: center;
     transition: 0.3s all ease-in-out;
 }
 
+/* =============== ACTIVITY DETAILS =============== */
+.text-editor-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+}
+.data-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
 
 @media only screen and (max-width: 768px) {
     .dashboard-welcome-tab {

@@ -101,40 +101,6 @@
                 <h2><?= $policy_number . " " . $policy_heading ?></h2>
                 <p><?= $policy_content ?></p>
             </div>
-
-            <?php
-            // Fetch saved policy details (editable in CKEditor)
-            // $fetch_policy_details = "SELECT policy_details_content FROM policy_details WHERE policy_details_linked = ?";
-            // $stmt = mysqli_prepare($connection, $fetch_policy_details);
-            // if (!$stmt) {
-            //     die("<div class='alert alert-danger mt-3 mb-3'>Prepare Error: " . mysqli_error($connection) . "</div>");
-            // }
-            // mysqli_stmt_bind_param($stmt, "i", $policy_id);
-            // mysqli_stmt_execute($stmt);
-            // $fetch_policy_details_r = mysqli_stmt_get_result($stmt);
-    
-            // $policy_details_content = "";
-            // if ($fetch_policy_details_r && mysqli_num_rows($fetch_policy_details_r) > 0) {
-            //     $row = mysqli_fetch_assoc($fetch_policy_details_r);
-            //     $policy_details_content = $row['policy_details_content'];
-            // }
-            ?>
-
-            <!-- <div class="details-activity-container">
-                <form action="" method="POST">
-                    <input type="hidden" name="sub_policy_control_id" value="<?= $policy_id ?>" />
-                    <div class="mb-3">
-                        <textarea name="sub_policy_details" id="editor1"
-                            class="ck-editor"><?= htmlspecialchars($policy_details_content) ?></textarea>
-                        <button type="submit" name="save" class="btn btn-sm btn-success mt-3">Save</button>
-                    </div>
-                </form>
-            </div>
-
-            <script>
-                CKEDITOR.replace('editor1');
-            </script> -->
-
             <?php
         } else {
             echo "<p>Policy details not found.</p>";
