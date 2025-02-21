@@ -343,6 +343,69 @@ body{
 .form-container-heading {
     font-weight: 600;
 }
+.mrb-section-1 {
+display: flex;
+justify-content: space-around;
+align-items: center;
+}
+.mrb-section-1:hover {
+    background-color: #e7e7e7;
+    transition: 0.3s all ease-in-out;
+}
+.mrb-section-2:hover {
+    background-color: #e7e7e7;
+    transition: 0.3s all ease-in-out;
+}
+.mrb-section-3:hover {
+    background-color: #e7e7e7;
+    transition: 0.3s all ease-in-out;
+}
+.mrb-section-1 p {
+    flex: 1;
+}
+.mrb-section-1 button {
+    background-color: #00000000;
+    border: 0;
+    font-size: 18px;
+}
+.mrb-section-1 button:hover {
+    color: #28961a;
+    transition: 0.3s all ease-in-out;
+}
+.mrb-section-2 {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.mrb-section-2 p {
+    flex: 1;
+}
+.mrb-section-2 button {
+    background-color: #00000000;
+    border: 0;
+    font-size: 18px;
+}
+.mrb-section-2 button:hover {
+    color: #28961a;
+    transition: 0.3s all ease-in-out;
+}
+.mrb-section-3 {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.mrb-section-3 p {
+    flex: 1;
+}
+.mrb-section-3 button {
+    background-color: #00000000;
+    border: 0;
+    font-size: 18px;
+}
+.mrb-section-3 button:hover {
+    color: #28961a;
+    transition: 0.3s all ease-in-out;
+}
 
 
 @media only screen and (max-width: 768px) {
