@@ -130,11 +130,15 @@
             <input type="text" class="form-control" name="inner_linked_control_policy_heading" id="inner_linked_control_policy_heading" >
         </div>
 
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label for="inner_linked_control_policy_det" class="form-label">Policy Details</label>
             <textarea id="inner_linked_control_policy_det" class="form-control" name="inner_linked_control_policy_det" ></textarea>
+        </div> -->
+
+        <div class="WYSIWYG-editor">
+            <textarea id="editorNew" name="editor_content"><?php echo $new_details; ?></textarea>
         </div>
 
-        <button type="submit" name="add" class="btn btn-primary">Add Inner Linked Policy</button>
+        <button type="submit" name="add" class="btn btn-primary mt-3">Add Inner Linked Policy</button>
     </form>
 </div>

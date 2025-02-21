@@ -1,24 +1,17 @@
 <div class="add-control-form-container">
     <?php
     include 'includes/connection.php';
-
-    // Process form data
     if (isset($_POST['add'])) {
-        // Retrieve form data
-        $policy_clause = $_POST['policy_clause'];
-        $policy_name = $_POST['policy_name'];
-        $policy_det = $_POST['policy_det'];
+        $policy_clause = mysqli_real_escape_string($connection, $_POST['policy_clause']);
+        $policy_name = mysqli_real_escape_string($connection, $_POST['policy_name']);
+        $policy_det = mysqli_real_escape_string($connection, $_POST['policy_det']);
         $policy_status = "1";
 
-
-
-        // Use prepared statements to prevent SQL Injection
         $stmt = $connection->prepare("INSERT INTO `policy` 
                 (`policy_clause`, `policy_name`, `policy_det`, `policy_status`) 
                 VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssss", $policy_clause, $policy_name, $policy_det, $policy_status);
 
-        // Execute the query
         if ($stmt->execute()) { ?>
             <div class="alert alert-success mb-3" role="alert">
                 Policy | Control added successfully!
@@ -27,9 +20,8 @@
             <div class="alert alert-danger mb-3" role="alert">
                 Policy | Control addition failed: <?= htmlspecialchars($stmt->error) ?>
             </div>
-        <?php }
+    <?php }
         $stmt->close();
-
     }
     ?>
 
@@ -42,10 +34,10 @@
             <label for="policy_name" class="form-label">Control | Policy Name</label>
             <input type="text" class="form-control" name="policy_name" id="policy_name" required>
         </div>
-        <div class="mb-3">
-            <label for="html-editor" class="form-label">Policy Details</label>
-            <textarea id="html-editor" name="policy_det"></textarea>
+        <div class="WYSIWYG-editor">
+            <label for="editorNew" class="form-label">Policy Details</label>
+            <textarea id="editorNew" name="policy_det"></textarea>
         </div>
-        <button type="submit" name="add" class="btn btn-primary">Add</button>
+        <button type="submit" name="add" class="btn btn-primary mt-3">Add</button>
     </form>
 </div>

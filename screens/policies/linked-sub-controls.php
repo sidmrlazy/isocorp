@@ -9,7 +9,7 @@
         $sub_control_policy_id = $_POST['sub_control_policy_id']; // Ensure it's an integer
         $linked_control_policy_number = $_POST['linked_control_policy_number'];
         $linked_control_policy_heading = $_POST['linked_control_policy_heading'];
-        $linked_control_policy_det = $_POST['linked_control_policy_det'];
+        $linked_control_policy_det = $_POST['linked_control_policy_det']; // Fixed to match form
         $linked_control_policy_status = 1; // Explicitly setting this as an integer
 
         // Use prepared statements to prevent SQL Injection
@@ -43,7 +43,7 @@
             <div class="alert alert-danger mb-3" role="alert">
                 Failed to prepare the statement: <?= htmlspecialchars($connection->error) ?>
             </div>
-        <?php }
+    <?php }
     }
     ?>
 
@@ -92,19 +92,28 @@
 
         <div class="mb-3">
             <label for="linked_control_policy_number" class="form-label">Linked Control | Policy Number</label>
-            <input type="text" class="form-control" name="linked_control_policy_number" id="linked_control_policy_number">
+            <input type="text" class="form-control" name="linked_control_policy_number" id="linked_control_policy_number" required>
         </div>
 
         <div class="mb-3">
             <label for="linked_control_policy_heading" class="form-label">Linked Control | Policy Heading</label>
-            <input type="text" class="form-control" name="linked_control_policy_heading" id="linked_control_policy_heading">
+            <input type="text" class="form-control" name="linked_control_policy_heading" id="linked_control_policy_heading" required>
         </div>
 
-        <div class="mb-3">
-            <label for="html-editor" class="form-label">Policy Details</label>
-            <textarea id="html-editor" class="form-control" name="linked_control_policy_det"></textarea>
+        <div class="WYSIWYG-editor">
+            <label for="editorNew" class="form-label">Policy Details</label>
+            <textarea id="editorNew" name="linked_control_policy_det"></textarea>
         </div>
 
         <button type="submit" name="add" class="btn btn-primary">Add</button>
     </form>
 </div>
+
+<!-- <script>
+    // Ensure the WYSIWYG editor content is included in form submission
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof CKEDITOR !== "undefined") {
+            CKEDITOR.replace("editorNew");
+        }
+    });
+</script> -->
