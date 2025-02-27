@@ -269,12 +269,30 @@ body{
     flex: 1;
     background-color: #fff !important;
     margin-top: 10px;
-    border-radius: 10px;
-    width: 90% !important;
+    border-radius: 10px;    
     padding: 20px;
 }
 .document-container {
     font-weight: 700 !important;
+}
+.document-upload-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 100%;
+}
+.doc-edit-btn {
+    background-color: #00000000;
+    border: 0;
+}
+.doc-edit-btn ion-icon {
+    font-size: 18px;
+}
+.update-document-container {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
 }
 
 /* ========= SIM ========= */
@@ -418,6 +436,13 @@ align-items: center;
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
+}
+
+/* =============== USER SETUP =============== */
+.table-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
 }
 
 

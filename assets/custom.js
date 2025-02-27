@@ -89,3 +89,12 @@ function removeHighlights(element) {
         span.replaceWith(document.createTextNode(span.textContent));
     });
 }
+
+setTimeout(function() {
+    let alertBox = document.getElementById("alertBox");
+    if (alertBox) {
+        alertBox.style.transition = "opacity 0.3s";
+        alertBox.style.opacity = "0";
+        setTimeout(() => alertBox.remove(), 500);
+    }
+}, 3000);

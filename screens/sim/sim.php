@@ -1,4 +1,7 @@
-<?php $user_name = isset($_COOKIE['user_name']) ? $_COOKIE['user_name'] : (isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Guest'); ?>
+<?php
+$user_name = isset($_COOKIE['user_name']) ? $_COOKIE['user_name'] : (isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Guest');
+$user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'Guest');
+?>
 <div class="dashboard-container">
 
     <div class="screen-name-container">
@@ -16,10 +19,10 @@
             $query = "INSERT INTO `sim`(`SIM_TOPIC`) VALUES ('$sim_topic')";
             $query_r = mysqli_query($connection, $query);
             if ($query_r) {
-                echo '<div class="alert alert-success mt-5" role="alert">Incident created!</div>';
+                echo '<div id="alertBox" class="alert alert-success mt-5" role="alert">Incident created!</div>';
             }
         } catch (Exception $e) {
-            echo '<div class="alert alert-danger mt-5" role="alert">Error: ' . $e->getMessage() . '</div>';
+            echo '<div id="alertBox" class="alert alert-danger mt-5" role="alert">Error: ' . $e->getMessage() . '</div>';
         }
     }
 
@@ -35,13 +38,14 @@
             ) {
                 throw new Exception("All fields are required before recording the incident.");
             }
-
+            
             // Escape user inputs
             $updated_sim_id = mysqli_real_escape_string($connection, $_POST['sim_id']);
             $updated_sim_status = mysqli_real_escape_string($connection, $_POST['sim_status']);
             $updated_sim_severity = mysqli_real_escape_string($connection, $_POST['sim_severity']);
             $updated_sim_source = mysqli_real_escape_string($connection, $_POST['sim_source']);
             $updated_sim_type = mysqli_real_escape_string($connection, $_POST['sim_type']);
+            $updated_sim_reported_date = mysqli_real_escape_string($connection, $_POST['sim_reported_date']);
             $updated_sim_reported_by = mysqli_real_escape_string($connection, $_POST['sim_reported_by']);
 
             // Execute update query
@@ -50,16 +54,17 @@
                 `SIM_SEVERITY`= '$updated_sim_severity',
                 `SIM_SOURCE`= '$updated_sim_source',
                 `SIM_TYPE`= '$updated_sim_type',
+                `SIM_REPORTED_DATE`= '$updated_sim_reported_date',
                 `SIM_REPORTED_BY`= '$updated_sim_reported_by'
                 WHERE SIM_ID = $updated_sim_id";
 
             $update_query_r = mysqli_query($connection, $update_query);
 
             if ($update_query_r) {
-                echo '<div class="alert alert-success mt-5" role="alert">Incident updated!</div>';
+                echo '<div id="alertBox" class="alert alert-success mt-5" role="alert">Incident updated!</div>';
             }
         } catch (Exception $e) {
-            echo '<div class="alert alert-danger mt-5" role="alert">Error: ' . $e->getMessage() . '</div>';
+            echo '<div id="alertBox" class="alert alert-danger mt-5" role="alert">Error: ' . $e->getMessage() . '</div>';
         }
     }
 
@@ -92,11 +97,6 @@
     $fetch = "SELECT * FROM `sim` LIMIT $records_per_page OFFSET $offset";
     $fetch_r = mysqli_query($connection, $fetch);
     $fetch_count = mysqli_num_rows($fetch_r);
-
-
-    // $fetch = "SELECT * FROM `sim`";
-    // $fetch_r = mysqli_query($connection, $fetch);
-    // $fetch_count = mysqli_num_rows($fetch_r);
     if ($fetch_count > 0) {
     ?>
         <div class="table-responsive sim-table-container mb-5">
@@ -110,7 +110,9 @@
                         <th scope="col">Source</th>
                         <th scope="col">Type</th>
                         <th class="text-center" scope="col">Reported Date</th>
-                        <th class="text-center" scope="col">Action</th>
+                        <?php if ($user_role === '1') { ?>
+                            <th class="text-center" scope="col">Action</th>
+                        <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -134,42 +136,119 @@
                                         <?php echo htmlspecialchars($sim_topic); ?>
                                     </a>
                                 </td>
-                                <td>
-                                    <select name="sim_status" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
-                                        <option value="" disabled>Select Status</option>
-                                        <option value="1" <?= $sim_status == "1" ? 'selected' : '' ?>>To-do</option>
-                                        <option value="2" <?= $sim_status == "2" ? 'selected' : '' ?>>Resolved</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select name="sim_severity" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
-                                        <option value="" disabled>Select Severity</option>
-                                        <option value="1" <?= $sim_severity == "1" ? 'selected' : '' ?>>Incident</option>
-                                        <option value="2" <?= $sim_severity == "2" ? 'selected' : '' ?>>Event</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select name="sim_source" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
-                                        <option value="" disabled>Select Source</option>
-                                        <option value="1" <?= $sim_source == "1" ? 'selected' : '' ?>>External</option>
-                                        <option value="2" <?= $sim_source == "2" ? 'selected' : '' ?>>Internal</option>
-                                        <option value="3" <?= $sim_source == "3" ? 'selected' : '' ?>>Internal & External</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select name="sim_type" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
-                                        <option value="" disabled>Select Type</option>
-                                        <option value="1" <?= $sim_type == "1" ? 'selected' : '' ?>>Confidentiality</option>
-                                        <option value="2" <?= $sim_type == "2" ? 'selected' : '' ?>>Integrity</option>
-                                        <option value="3" <?= $sim_type == "3" ? 'selected' : '' ?>>Availability</option>
-                                    </select>
-                                </td>
-                                <td class="text-center"><?php echo $sim_reported_date ?></td>
-                                <input type="hidden" value="<?php echo htmlspecialchars($user_name); ?>" name="sim_reported_by">
+
+                                <!-- ================ STATUS ================ -->
+                                <?php if ($user_role == '1') { ?>
+                                    <td>
+                                        <select name="sim_status" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                            <option value="" disabled>Select Status</option>
+                                            <option value="1" <?= $sim_status == "1" ? 'selected' : '' ?>>To-do</option>
+                                            <option value="2" <?= $sim_status == "2" ? 'selected' : '' ?>>Resolved</option>
+                                        </select>
+                                    </td>
+                                <?php } elseif ($user_role == '2') { ?>
+                                    <td>
+                                        <input type="text" value="<?php
+                                                                    if ($sim_status == '1') {
+                                                                        echo "To-Do";
+                                                                    } elseif ($sim_status == '2') {
+                                                                        echo "Resolved";
+                                                                    } else {
+                                                                        echo "Action Pending";
+                                                                    } ?>" disabled>
+                                    </td>
+                                <?php } ?>
+
+                                <!-- ================ SEVERITY ================ -->
+                                <?php if ($user_role == '1') { ?>
+                                    <td>
+                                        <select name="sim_severity" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                            <option value="" disabled>Select Severity</option>
+                                            <option value="1" <?= $sim_severity == "1" ? 'selected' : '' ?>>Incident</option>
+                                            <option value="2" <?= $sim_severity == "2" ? 'selected' : '' ?>>Event</option>
+                                        </select>
+                                    </td>
+                                <?php } elseif ($user_role == '2') { ?>
+                                    <td>
+                                        <input type="text" value="<?php
+                                                                    if ($sim_severity == '1') {
+                                                                        echo "Incident";
+                                                                    } elseif ($sim_severity == '2') {
+                                                                        echo "Event";
+                                                                    } else {
+                                                                        echo "Action Pending";
+                                                                    } ?>" disabled>
+                                    </td>
+                                <?php } ?>
+
+                                <!-- ================ SOURCE ================ -->
+                                <?php if ($user_role == '1') { ?>
+                                    <td>
+                                        <select name="sim_source" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                            <option value="" disabled>Select Source</option>
+                                            <option value="1" <?= $sim_source == "1" ? 'selected' : '' ?>>External</option>
+                                            <option value="2" <?= $sim_source == "2" ? 'selected' : '' ?>>Internal</option>
+                                            <option value="3" <?= $sim_source == "3" ? 'selected' : '' ?>>Internal & External</option>
+                                        </select>
+                                    </td>
+                                <?php } elseif ($user_role == '2') { ?>
+                                    <td>
+                                        <input type="text" value="<?php
+                                                                    if ($sim_source == '1') {
+                                                                        echo "External";
+                                                                    } elseif ($sim_source == '2') {
+                                                                        echo "Internal";
+                                                                    } elseif ($sim_source == '3') {
+                                                                        echo "Internal & External";
+                                                                    } else {
+                                                                        echo "Action Pending";
+                                                                    } ?>" disabled>
+                                    </td>
+                                <?php } ?>
+
+                                <!-- ================ INCIDENT TYPE ================ -->
+                                <?php if ($user_role == '1') { ?>
+                                    <td>
+                                        <select name="sim_type" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                            <option value="" disabled>Select Type</option>
+                                            <option value="1" <?= $sim_type == "1" ? 'selected' : '' ?>>Confidentiality</option>
+                                            <option value="2" <?= $sim_type == "2" ? 'selected' : '' ?>>Integrity</option>
+                                            <option value="3" <?= $sim_type == "3" ? 'selected' : '' ?>>Availability</option>
+                                        </select>
+                                    </td>
+                                <?php } elseif ($user_role == '2') { ?>
+                                    <td>
+                                        <input type="text" value="<?php
+                                                                    if ($sim_type == '1') {
+                                                                        echo "Confidentiality";
+                                                                    } elseif ($sim_type == '2') {
+                                                                        echo "Integrity";
+                                                                    } elseif ($sim_type == '3') {
+                                                                        echo "Availability";
+                                                                    } else {
+                                                                        echo "Action Pending";
+                                                                    } ?>" disabled>
+                                    </td>
+                                <?php } ?>
+
                                 <td class="text-center">
-                                    <button type="submit" name="record" class="btn btn-sm btn-outline-success"
-                                        <?= $sim_status == "2" ? 'disabled' : '' ?>>Record</button>
+                                    <?php
+                                    // Ensure the date is formatted correctly for the input field
+                                    $formatted_date = (!empty($sim_reported_date) && $sim_reported_date !== '0000-00-00')
+                                        ? date('Y-m-d', strtotime($sim_reported_date))
+                                        : date('Y-m-d'); // Default to today's date if empty or invalid
+                                    ?>
+                                    <input type="date" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>">
                                 </td>
+
+
+                                <?php if ($user_role === '1') { ?>
+                                    <input type="hidden" value="<?php echo htmlspecialchars($user_name); ?>" name="sim_reported_by">
+                                    <td class="text-center">
+                                        <button type="submit" name="record" class="btn btn-sm btn-outline-success"
+                                            <?= $sim_status == "2" ? 'disabled' : '' ?>>Record</button>
+                                    </td>
+                                <?php } ?>
                             </form>
                         </tr>
                     <?php } ?>

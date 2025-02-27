@@ -1,3 +1,7 @@
+<?php
+$user_name = isset($_COOKIE['user_name']) ? $_COOKIE['user_name'] : (isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Guest');
+$user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'Guest');
+?>
 <div class="dashboard-container">
     <?php
     include 'includes/connection.php';
@@ -22,11 +26,11 @@
                 $sim_final = htmlspecialchars($row['sim_final']);
                 $sim_reported_date = htmlspecialchars($row['sim_reported_date']);
             } else {
-                echo "<p class='alert alert-warning'>No record found.</p>";
+                echo "<p id='alertBox' class='alert alert-warning'>No record found.</p>";
             }
             mysqli_stmt_close($stmt);
         } else {
-            echo "<p class='alert alert-danger'>Database error: " . mysqli_error($connection) . "</p>";
+            echo "<p id='alertBox' class='alert alert-danger'>Database error: " . mysqli_error($connection) . "</p>";
         }
     }
 
@@ -38,13 +42,13 @@
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "si", $sim_details, $sim_id);
             if (mysqli_stmt_execute($stmt)) {
-                echo "<p class='alert alert-success'>Details updated successfully!</p>";
+                echo "<p id='alertBox' class='alert alert-success'>Details updated successfully!</p>";
             } else {
-                echo "<p class='alert alert-danger'>Error updating details: " . mysqli_error($connection) . "</p>";
+                echo "<p id='alertBox' class='alert alert-danger'>Error updating details: " . mysqli_error($connection) . "</p>";
             }
             mysqli_stmt_close($stmt);
         } else {
-            echo "<p class='alert alert-danger'>Failed to prepare statement.</p>";
+            echo "<p id='alertBox' class='alert alert-danger'>Failed to prepare statement.</p>";
         }
     }
 
@@ -56,17 +60,16 @@
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "si", $sim_details, $sim_id);
             if (mysqli_stmt_execute($stmt)) {
-                echo "<p class='alert alert-success'>SIM finalized and closed successfully!</p>";
+                echo "<p id='alertBox' class='alert alert-success'>SIM finalized and closed successfully!</p>";
             } else {
-                echo "<p class='alert alert-danger'>Error finalizing SIM: " . mysqli_error($connection) . "</p>";
+                echo "<p id='alertBox' class='alert alert-danger'>Error finalizing SIM: " . mysqli_error($connection) . "</p>";
             }
             mysqli_stmt_close($stmt);
         } else {
-            echo "<p class='alert alert-danger'>Failed to prepare statement.</p>";
+            echo "<p id='alertBox' class='alert alert-danger'>Failed to prepare statement.</p>";
         }
     }
     ?>
-
     <div class="WYSIWYG-editor-container">
         <form action="" method="POST">
             <div class="WYSIWYG-editor">
@@ -76,7 +79,7 @@
                     <textarea id="editorNew" name="sim_details"><?php echo $sim_details; ?></textarea>
                 <?php } ?>
             </div>
-
+            
             <?php if ($sim_final == "2") { ?>
                 <button type="submit" style="display: none" name="update-sim-detail" class="btn btn-primary mt-3">Save Details</button>
                 <button type="submit" style="display: none" name="update-sim-final" class="btn btn-success mt-3">Submit Details</button>
