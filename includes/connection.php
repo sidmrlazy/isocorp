@@ -1,16 +1,14 @@
 <?php
-// TEST PRODUCTION
+// PRODUCTION
 $hostname = "localhost";
-$username = "u579024239_isocorp"; 
-$database = "u579024239_isocorp";
-$password = "Darthvader@order66";
-
-// Development Domain : isocorp.42web.io
+$username = "u998582784_isocorp"; 
+$database = "u998582784_isocorp";
+$password = "A$w172h%4S";
 
 // DEVELOPMENT
 // $hostname = "localhost";
 // $username = "root";
-// $database = "isms";
+// $database = "isocorp";
 // $password = "";
 
 // Validate Connection
