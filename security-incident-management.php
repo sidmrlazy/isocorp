@@ -138,7 +138,7 @@ include 'includes/connection.php';
                         $sim_reported_date = $row['sim_reported_date'];
                         $sim_reported_by = $row['sim_reported_by'];
                     ?>
-                        <tr class="">
+                        <tr class="sim-th">
                             <form action="" method="POST">
                                 <th scope="row">
                                     <input type="hidden" name="sim_id" value="<?php echo $sim_id ?>">
@@ -155,7 +155,7 @@ include 'includes/connection.php';
                                 <!-- ================ SEVERITY ================ -->
                                 <?php if ($user_role == '1') { ?>
                                     <td>
-                                        <select name="sim_severity" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                        <select style="font-size: 12px;" name="sim_severity" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
                                             <option value="" disabled>Select Severity</option>
                                             <option value="1" <?= $sim_severity == "1" ? 'selected' : '' ?>>Incident</option>
                                             <option value="2" <?= $sim_severity == "2" ? 'selected' : '' ?>>Event</option>
@@ -172,14 +172,14 @@ include 'includes/connection.php';
                                             $new_sim_severity = "Action Pending";
                                         }
                                         ?>
-                                        <input type="text" value="<?php echo $new_sim_severity ?>" disabled>
+                                        <input type="text" style="font-size: 12px;" value="<?php echo $new_sim_severity ?>" disabled>
                                     </td>
                                 <?php } ?>
 
                                 <!-- ================ SOURCE ================ -->
                                 <?php if ($user_role == '1') { ?>
                                     <td>
-                                        <select name="sim_source" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                        <select style="font-size: 12px;" name="sim_source" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
                                             <option value="" disabled>Select Source</option>
                                             <option value="1" <?= $sim_source == "1" ? 'selected' : '' ?>>External</option>
                                             <option value="2" <?= $sim_source == "2" ? 'selected' : '' ?>>Internal</option>
@@ -199,14 +199,14 @@ include 'includes/connection.php';
                                             $new_sim_source = "Action Pending";
                                         }
                                         ?>
-                                        <input type="text" value="<?php echo $new_sim_source ?>" disabled>
+                                        <input style="font-size: 12px;" type="text" value="<?php echo $new_sim_source ?>" disabled>
                                     </td>
                                 <?php } ?>
 
                                 <!-- ================ INCIDENT TYPE ================ -->
                                 <?php if ($user_role == '1') { ?>
                                     <td>
-                                        <select name="sim_type" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                        <select style="font-size: 12px;" name="sim_type" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
                                             <option value="" disabled>Select Type</option>
                                             <option value="1" <?= $sim_type == "1" ? 'selected' : '' ?>>Confidentiality</option>
                                             <option value="2" <?= $sim_type == "2" ? 'selected' : '' ?>>Integrity</option>
@@ -226,7 +226,7 @@ include 'includes/connection.php';
                                             $new_sim_type = "Action Pending";
                                         }
                                         ?>
-                                        <input type="text" value="<?php echo $new_sim_type ?>" disabled>
+                                        <input style="font-size: 12px;" type="text" value="<?php echo $new_sim_type ?>" disabled>
                                     </td>
                                 <?php } ?>
 
@@ -234,7 +234,7 @@ include 'includes/connection.php';
                                 <?php if ($user_role == '1') { ?>
                                     <!-- Add feature to throw error if user tries to reolve the issue if the sim_final column is not 2 -->
                                     <td>
-                                        <select name="sim_status" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                        <select style="font-size: 12px;" name="sim_status" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
                                             <option value="" disabled>Select Status</option>
                                             <option value="1" <?= $sim_status == "1" ? 'selected' : '' ?>>To-do</option>
                                             <option value="2" <?= $sim_status == "2" ? 'selected' : '' ?>>Resolved</option>
@@ -251,27 +251,28 @@ include 'includes/connection.php';
                                     }
                                     ?>
                                     <td>
-                                        <input type="text" value="<?php echo $new_sim_status ?>" disabled>
+                                        <input style="font-size: 12px;" type="text" value="<?php echo $new_sim_status ?>" disabled>
                                     </td>
                                 <?php } ?>
 
-                                <td><p><?php echo $sim_reported_by ?></p>
+                                <td style="width: 200px;">
+                                    <p><?php echo $sim_reported_by ?></p>
                                 </td>
 
-                                <td class="text-center">
+                                <td class="text-center" style="font-size: 12px;">
                                     <?php
                                     $formatted_date = (!empty($sim_reported_date) && $sim_reported_date !== '0000-00-00')
                                         ? date('m-d-Y', strtotime($sim_reported_date))
                                         : date('m-d-Y');
                                     ?>
-                                    <input type="date" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>">
+                                    <input type="date" style="font-size: 12px;" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>">
                                 </td>
 
 
                                 <?php if ($user_role === '1') { ?>
                                     <input type="hidden" value="<?php echo htmlspecialchars($user_name); ?>" name="sim_reported_by">
-                                    <td class="text-center">
-                                        <button type="submit" name="record" class="btn btn-sm btn-outline-success"
+                                    <td class="text-center" >
+                                        <button type="submit" style="font-size: 12px;" name="record" class="btn btn-sm btn-outline-success"
                                             <?= $sim_status == "2" ? 'disabled' : '' ?>>Record</button>
                                     </td>
                                 <?php } ?>
@@ -279,7 +280,7 @@ include 'includes/connection.php';
                                 <td class="text-center">
                                     <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this incident?');">
                                         <input type="hidden" name="sim_id" value="<?php echo $sim_id ?>">
-                                        <button type="submit" name="delete" class="btn btn-sm btn-outline-danger">
+                                        <button type="submit" style="font-size: 12px;" name="delete" class="btn btn-sm btn-outline-danger">
                                             <ion-icon name="trash-outline"></ion-icon>
                                         </button>
                                     </form>
