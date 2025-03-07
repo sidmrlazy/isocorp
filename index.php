@@ -1,75 +1,75 @@
 <?php
-// ob_start();
-// include('includes/header.php');
-// include('includes/connection.php');
+ob_start();
+include('includes/header.php');
+include('includes/connection.php');
 
-// if (session_status() === PHP_SESSION_NONE) {
-//     session_start();
-// }
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// if (isset($_COOKIE['user_session']) || isset($_SESSION['user_session'])) {
-//     header("Location: dashboard.php");
-//     exit();
-// }
+if (isset($_COOKIE['user_session']) || isset($_SESSION['user_session'])) {
+    header("Location: dashboard.php");
+    exit();
+}
 
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//     // Sanitize user input
-//     $email = isset($_POST['user_email']) ? trim($_POST['user_email']) : '';
-//     $password = isset($_POST['user_password']) ? trim($_POST['user_password']) : '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Sanitize user input
+    $email = isset($_POST['user_email']) ? trim($_POST['user_email']) : '';
+    $password = isset($_POST['user_password']) ? trim($_POST['user_password']) : '';
 
-//     if (empty($email) || empty($password)) {
-//         $error_message = "Please enter both email and password.";
-//     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-//         $error_message = "Invalid email format.";
-//     } else {
-//         if (!isset($connection) || $connection->connect_error) {
-//             die("Database connection error: " . $connection->connect_error);
-//         }
+    if (empty($email) || empty($password)) {
+        $error_message = "Please enter both email and password.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error_message = "Invalid email format.";
+    } else {
+        if (!isset($connection) || $connection->connect_error) {
+            die("Database connection error: " . $connection->connect_error);
+        }
 
-//         // Prepare SQL statement
-//         $stmt = $connection->prepare("SELECT isms_user_id, isms_user_name, isms_user_email, isms_user_password, isms_user_role FROM user WHERE isms_user_email = ?");
+        // Prepare SQL statement
+        $stmt = $connection->prepare("SELECT isms_user_id, isms_user_name, isms_user_email, isms_user_password, isms_user_role FROM user WHERE isms_user_email = ?");
         
-//         if ($stmt) {
-//             $stmt->bind_param("s", $email);
-//             $stmt->execute();
-//             $result = $stmt->get_result();
+        if ($stmt) {
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-//             if ($result->num_rows === 1) {
-//                 $user = $result->fetch_assoc();
+            if ($result->num_rows === 1) {
+                $user = $result->fetch_assoc();
 
-//                 if (password_verify($password, $user['isms_user_password'])) {
-//                     session_regenerate_id(true);
-//                     $user_session = bin2hex(random_bytes(16));
-//                     $_SESSION['user_session'] = $user_session;
+                if (password_verify($password, $user['isms_user_password'])) {
+                    session_regenerate_id(true);
+                    $user_session = bin2hex(random_bytes(16));
+                    $_SESSION['user_session'] = $user_session;
 
-//                     $_SESSION['user_id'] = $user['isms_user_id'];
-//                     $_SESSION['user_name'] = $user['isms_user_name'];
-//                     $_SESSION['user_email'] = $user['isms_user_email'];
-//                     $_SESSION['user_role'] = $user['isms_user_role'];
+                    $_SESSION['user_id'] = $user['isms_user_id'];
+                    $_SESSION['user_name'] = $user['isms_user_name'];
+                    $_SESSION['user_email'] = $user['isms_user_email'];
+                    $_SESSION['user_role'] = $user['isms_user_role'];
 
-//                     // Set secure cookies correctly
-//                     $expiry_time = time() + (86400 * 30); // 30 days
-//                     setcookie('user_session', $user_session, $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
-//                     setcookie('user_id', $user['isms_user_id'], $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
-//                     setcookie('user_name', htmlspecialchars($user['isms_user_name']), $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
-//                     setcookie('user_email', htmlspecialchars($user['isms_user_email']), $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
-//                     setcookie('user_role', htmlspecialchars($user['isms_user_role']), $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
+                    // Set secure cookies correctly
+                    $expiry_time = time() + (86400 * 30); // 30 days
+                    setcookie('user_session', $user_session, $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
+                    setcookie('user_id', $user['isms_user_id'], $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
+                    setcookie('user_name', htmlspecialchars($user['isms_user_name']), $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
+                    setcookie('user_email', htmlspecialchars($user['isms_user_email']), $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
+                    setcookie('user_role', htmlspecialchars($user['isms_user_role']), $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
 
-//                     header("Location: dashboard.php");
-//                     exit();
-//                 } else {
-//                     $error_message = "Incorrect password.";
-//                 }
-//             } else {
-//                 $error_message = "User not found.";
-//             }
-//             $stmt->close();
-//         } else {
-//             $error_message = "Database error. Please try again later.";
-//         }
-//         $connection->close();
-//     }
-// }
+                    header("Location: dashboard.php");
+                    exit();
+                } else {
+                    $error_message = "Incorrect password.";
+                }
+            } else {
+                $error_message = "User not found.";
+            }
+            $stmt->close();
+        } else {
+            $error_message = "Database error. Please try again later.";
+        }
+        $connection->close();
+    }
+}
 ?>
 
 <div class="login-page-container">
@@ -96,5 +96,5 @@
 
 <?php 
 include('includes/footer.php'); 
-// ob_end_flush();
+ob_end_flush();
 ?>
