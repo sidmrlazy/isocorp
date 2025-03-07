@@ -112,7 +112,7 @@ include 'includes/connection.php';
         <div class="table-responsive sim-table-container mb-5">
             <table class="table table-bordered table-striped">
                 <thead>
-                    <tr>
+                    <tr class="sim-th">
                         <th scope="col">ID</th>
                         <th scope="col">Topic</th>
                         <th scope="col">Type</th>
@@ -120,7 +120,7 @@ include 'includes/connection.php';
                         <th scope="col">Source</th>
                         <th scope="col">Status</th>
                         <th scope="col">Reported By</th>
-                        <th class="text-center" scope="col">Reported Date</th>
+                        <th scope="col">Reported Date</th>
                         <?php if ($user_role === '1') { ?>
                             <th class="text-center" scope="col">Action</th>
                         <?php } ?>
@@ -138,7 +138,7 @@ include 'includes/connection.php';
                         $sim_reported_date = $row['sim_reported_date'];
                         $sim_reported_by = $row['sim_reported_by'];
                     ?>
-                        <tr>
+                        <tr class="">
                             <form action="" method="POST">
                                 <th scope="row">
                                     <input type="hidden" name="sim_id" value="<?php echo $sim_id ?>">
@@ -255,7 +255,7 @@ include 'includes/connection.php';
                                     </td>
                                 <?php } ?>
 
-                                <td> <input type="text" value="<?php echo $sim_reported_by ?>" disabled>
+                                <td><p><?php echo $sim_reported_by ?></p>
                                 </td>
 
                                 <td class="text-center">
@@ -264,7 +264,11 @@ include 'includes/connection.php';
                                         ? date('Y-m-d', strtotime($sim_reported_date))
                                         : date('Y-m-d');
                                     ?>
+                                    <?php if($sim_status == '1') { ?>
                                     <input type="date" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>">
+                                    <?php } else if($sim_status == '2') { ?>
+                                        <input type="text" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>" disabled>
+                                        <?php } ?>
                                 </td>
 
 

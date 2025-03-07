@@ -393,6 +393,12 @@ margin-top: 200px;
     margin: 0;
     font-weight: 500;
 }
+.sim-th th {
+    font-size: 14px;
+}
+.sim-th td {
+    font-size: 14px;
+}
 
 /* ========= MRB ========= */
 .mrb-tab-container {
