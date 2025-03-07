@@ -7,6 +7,19 @@ include 'includes/connection.php';
     <a href="add-user.php" class="btn btn-success mb-3 mt-3">Add User</a>
 
     <?php
+    if(isset($_POST['del-user'])) {
+        $isms_user_id = $_POST['isms_user_id'];
+        
+        $del_query = "DELETE FROM `user` WHERE isms_user_id = $isms_user_id";
+        $del_query_r = mysqli_query($connection, $del_query);
+        if($del_query_r) { ?>
+            <div id="alertBox" class="alert alert-success mb-3 mt-3" role="alert">
+                User deleted!
+            </div>
+            <?php
+        }
+    }
+
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_user'])) {
         // Correctly fetching the user ID and role from the POST request
         $isms_user_id_new = mysqli_real_escape_string($connection, $_POST['isms_user_id_new']);
@@ -79,7 +92,7 @@ include 'includes/connection.php';
                             <td class="text-center">
                                 <form action="" method="POST">
                                     <input type="hidden" name="isms_user_id" value="<?php echo $isms_user_id ?>">
-                                    <button class="btn btn-sm btn-outline-danger">
+                                    <button type="submit" name="del-user" class="btn btn-sm btn-outline-danger">
                                         <ion-icon name="trash-outline"></ion-icon>
                                     </button>
                                 </form>

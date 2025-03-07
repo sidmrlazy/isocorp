@@ -255,7 +255,7 @@ include 'includes/connection.php';
                                     </td>
                                 <?php } ?>
 
-                                <td style="width: 200px;">
+                                <td>
                                     <p><?php echo $sim_reported_by ?></p>
                                 </td>
 
