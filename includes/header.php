@@ -10,7 +10,7 @@ session_start();
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- ========== TITLE ========== -->
-  <title>ISMS - in3corp</title>
+  <title>IN3ISOCORP</title>
 
   <!-- ========== BOOTSTRAP 5 ========== -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
