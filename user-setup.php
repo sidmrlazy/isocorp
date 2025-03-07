@@ -4,6 +4,8 @@ include 'includes/navbar.php';
 include 'includes/connection.php';
 ?>
 <div class="dashboard-container">
+    <a href="add-user.php" class="btn btn-success mb-3 mt-3">Add User</a>
+
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_user'])) {
         // Correctly fetching the user ID and role from the POST request
