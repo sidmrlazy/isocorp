@@ -261,8 +261,8 @@ include 'includes/connection.php';
                                 <td class="text-center">
                                     <?php
                                     $formatted_date = (!empty($sim_reported_date) && $sim_reported_date !== '0000-00-00')
-                                        ? date('Y-m-d', strtotime($sim_reported_date))
-                                        : date('Y-m-d');
+                                        ? date('m-d-Y', strtotime($sim_reported_date))
+                                        : date('m-d-Y');
                                     ?>
                                     <?php if($sim_status == '1') { ?>
                                     <input type="date" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>">
