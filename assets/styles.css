@@ -2,6 +2,27 @@ body{
     background-color: #e7e7e7;
 }
 
+/* ========= GENERAL ========= */
+.under-development-container {
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+margin-top: 200px;
+}
+.under-development-container ion-icon {
+    font-size: 80px;
+    color: red;
+}
+.under-development-container h1 {
+    margin: 0;
+    font-weight: 600;
+}
+.under-development-container p {
+    margin: 0;
+    font-size: 22px;
+}
+
 /* ========= LOGIN ========= */
 .login-page-container {
     position: absolute;
