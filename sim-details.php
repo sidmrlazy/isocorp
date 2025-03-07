@@ -113,12 +113,12 @@ include 'includes/connection.php';
     ?>
 
     <div class="section-divider">
-        <div class="comment-section-container m-1">
+        <!-- <div class="comment-section-container m-1">
             <div class="heading-row">
                 <p>Comments | Notes</p>
                 <button type="button" class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">Create</button>
             </div>
-            <!-- =========== COMMENT =========== -->
+            
             <div class="comment-tab-container">
 
                 <div class="comment-tab">
@@ -134,7 +134,7 @@ include 'includes/connection.php';
                     <?php } ?>
                 </div>
             </div>
-            <!-- =========== REPONSE =========== -->
+            
             <div class="response-tab-container">
 
                 <div class="response-tab">
@@ -151,7 +151,7 @@ include 'includes/connection.php';
                 </div>
             </div>
 
-        </div>
+        </div> -->
         <div class="WYSIWYG-editor-container m-1">
             <form action="" method="POST">
                 <div class="WYSIWYG-editor">
