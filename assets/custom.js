@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $('#editorNew').summernote({
-        height: 300, 
+        height: 300,
         minHeight: 150,
         maxHeight: 500,
         focus: true
@@ -72,7 +72,7 @@ function highlightText(element, query) {
     let regex = new RegExp(`(${query})`, "gi");
 
     element.childNodes.forEach(node => {
-        if (node.nodeType === 3) { 
+        if (node.nodeType === 3) {
             let match = node.nodeValue.match(regex);
             if (match) {
                 let span = document.createElement("span");
@@ -90,11 +90,44 @@ function removeHighlights(element) {
     });
 }
 
-setTimeout(function() {
+// ALERT TIMEOUT FUNCTION
+setTimeout(function () {
     let alertBox = document.getElementById("alertBox");
     if (alertBox) {
-        alertBox.style.transition = "opacity 0.3s";
+        alertBox.style.transition = "opacity 0.2s";
         alertBox.style.opacity = "0";
         setTimeout(() => alertBox.remove(), 500);
     }
 }, 3000);
+
+
+// FETCH POLICIES IN DROPDOWN FROM DATABASE;
+document.getElementById("policyDropdown").addEventListener("change", function () {
+    var policyId = this.value;
+    fetchClauses("sub_control_policy", policyId, "subControlDropdown");
+});
+
+document.getElementById("subControlDropdown").addEventListener("change", function () {
+    var subControlId = this.value;
+    fetchClauses("linked_control_policy", subControlId, "linkedControlDropdown");
+});
+
+document.getElementById("linkedControlDropdown").addEventListener("change", function () {
+    var linkedControlId = this.value;
+    fetchClauses("inner_linked_control_policy", linkedControlId, "innerLinkedDropdown");
+});
+
+function fetchClauses(type, parentId, dropdownId) {
+    var dropdown = document.getElementById(dropdownId);
+    dropdown.innerHTML = "<option value=''>Loading...</option>";
+
+    fetch("fetch-clauses.php?type=" + type + "&parent_id=" + parentId)
+        .then(response => response.json())
+        .then(data => {
+            dropdown.innerHTML = "<option value=''>Select Option</option>";
+            data.forEach(clause => {
+                let displayText = clause.number ? `${clause.number} - ${clause.name}` : clause.name;
+                dropdown.innerHTML += `<option value="${clause.id}">${displayText}</option>`;
+            });
+        });
+}

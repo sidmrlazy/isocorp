@@ -4,9 +4,6 @@ include 'includes/navbar.php';
 include 'includes/connection.php';
 ?>
 <div class="dashboard-container">
-    <!-- <div class="d-flex justify-content-end align-items-center mb-3">
-        <a href="add-user.php" class="btn btn-success"><ion-icon name="person-add-outline"></ion-icon> Add User</a>
-    </div> -->
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_user'])) {
         // Correctly fetching the user ID and role from the POST request

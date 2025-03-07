@@ -1,6 +1,6 @@
 <?php
-$user_name = isset($_COOKIE['user_name']) ? $_COOKIE['user_name'] : (isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Guest');
-$user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'Guest');
+include 'includes/config.php';
+include 'includes/connection.php';
 ?>
 <nav class="navbar navbar-expand-lg bg-body-tertiary custom-navbar">
   <div class="container-fluid">
@@ -21,8 +21,6 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
             Work Area
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="policies-controls.php"><ion-icon name="document-lock-outline"></ion-icon>
-                ISO 27001 Policies & Controls</a></li>
             <li><a class="dropdown-item" href="security-incident-management.php"><ion-icon
                   name="lock-closed-outline"></ion-icon> Security Incident Management</a></li>
             <li>
@@ -30,13 +28,11 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                 <ion-icon name="book-outline"></ion-icon> Management Review Board
               </a>
             </li>
-            <!-- <li>
-              <a class="dropdown-item" href="bcp.php">
-                <ion-icon name="business-outline"></ion-icon> Business Continuity Plan
+            <li>
+              <a class="dropdown-item" href="risks-treatments.php">
+              <ion-icon name="flask-outline"></ion-icon> Risks & Treatments
               </a>
-            </li> -->
-            <!-- <li><a class="dropdown-item" href="#"><ion-icon
-                  name="document-attach-outline"></ion-icon> Documents</a></li> -->
+            </li>
           </ul>
         </li>
         <?php if ($user_role == '1') { ?>
@@ -74,10 +70,6 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
             </ul>
           </li>
         <?php } ?>
-        <?php ?>
-        <!-- <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="logout.php">Logout</a>
-        </li> -->
       </ul>
       <form class="d-flex" role="search">
         <a class="nav-link" aria-current="page" href="logout.php"><ion-icon name="log-out-outline"></ion-icon>
