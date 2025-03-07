@@ -152,7 +152,12 @@ include 'includes/connection.php';
             </div>
 
         </div> -->
+        
         <div class="WYSIWYG-editor-container m-1">
+            <div class="sim-topic-container-details">
+                <p>Topic:</p>
+                <h5><?php echo $sim_topic ?></h5>
+            </div>
             <form action="" method="POST">
                 <div class="WYSIWYG-editor">
                     <?php if ($sim_final == '2') { ?>
