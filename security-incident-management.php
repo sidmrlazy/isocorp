@@ -264,11 +264,7 @@ include 'includes/connection.php';
                                         ? date('m-d-Y', strtotime($sim_reported_date))
                                         : date('m-d-Y');
                                     ?>
-                                    <?php if($sim_status == '1') { ?>
                                     <input type="date" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>">
-                                    <?php } else if($sim_status == '2') { ?>
-                                        <input type="text" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>" disabled>
-                                        <?php } ?>
                                 </td>
 
 
