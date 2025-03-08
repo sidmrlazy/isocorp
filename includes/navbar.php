@@ -29,7 +29,7 @@ include 'includes/connection.php';
               </a>
             </li>
             <li>
-              <a class="dropdown-item" href="under-development.php">
+              <a class="dropdown-item" href="risks-treatments.php">
               <ion-icon name="flask-outline"></ion-icon> Risks & Treatments
               </a>
             </li>
