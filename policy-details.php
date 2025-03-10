@@ -46,9 +46,9 @@ include 'includes/config.php'; ?>
                 }
 
                 if (mysqli_stmt_execute($stmt)) {
-                    echo '<div class="alert alert-success mt-3 mb-3">Policy details saved successfully.</div>';
+                    echo '<div id="alertBox" class="alert alert-success mt-3 mb-3">Policy details saved successfully.</div>';
                 } else {
-                    echo '<div class="alert alert-danger mt-3 mb-3">Error saving policy details: ' . mysqli_error($connection) . '</div>';
+                    echo '<div id="alertBox" class="alert alert-danger mt-3 mb-3">Error saving policy details: ' . mysqli_error($connection) . '</div>';
                 }
             }
         }
