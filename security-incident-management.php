@@ -268,21 +268,19 @@ include 'includes/connection.php';
                                     <input type="date" style="font-size: 12px;" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>">
                                 </td> -->
 
-                                <?php if ($sim_status == '1') { ?>
-                                    <td class="text-center small-text">
-                                        <?php
-                                        $formatted_date = (!empty($sim_reported_date) && $sim_reported_date !== '0000-00-00')
-                                            ? date('Y-m-d', strtotime($sim_reported_date)) // Ensuring correct format for <input type="date">
-                                            : date('Y-m-d');
-                                        ?>
-                                        <input type="date" class="small-text" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>">
-                                    </td>
-                                <?php } elseif ($sim_status == '2') { ?>
-                                    <td class="text-center small-text">
+                                <td class="text-center small-text">
+                                    <?php
+                                    $formatted_date = (!empty($sim_reported_date) && $sim_reported_date !== '0000-00-00')
+                                        ? date('Y-m-d', strtotime($sim_reported_date)) // Ensuring correct format for <input type="date">
+                                        : date('Y-m-d');
 
-                                        <input type="text" class="small-text" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>" disabled>
-                                    </td>
-                                <?php } ?>
+                                    // Determine if the field should be disabled
+                                    $disabled = ($sim_status == '1' || $sim_status == NULL) ? '' : 'disabled';
+                                    ?>
+
+                                    <input type="date" class="small-text" name="sim_reported_date" value="<?php echo htmlspecialchars($formatted_date); ?>" <?php echo $disabled; ?>>
+                                </td>
+
 
                                 <?php if ($user_role === '1') { ?>
                                     <input type="hidden" value="<?php echo htmlspecialchars($user_name); ?>" name="sim_reported_by">
