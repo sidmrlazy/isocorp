@@ -113,7 +113,7 @@ include 'includes/config.php'; ?>
 
     $allowed_tables = ['sub_control_policy', 'linked_control_policy', 'inner_linked_control_policy'];
     if (!in_array($policy_table, $allowed_tables)) {
-        die("<div class='alert alert-danger mt-3 mb-3'>Invalid policy table specified.</div>");
+        die("<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Invalid policy table specified.</div>");
     }
 
     if ($policy_id && $policy_table && $policy_column) {
@@ -121,7 +121,7 @@ include 'includes/config.php'; ?>
         $query = "SELECT * FROM $policy_table WHERE $policy_column = ?";
         $stmt = mysqli_prepare($connection, $query);
         if (!$stmt) {
-            die("<div class='alert alert-danger mt-3 mb-3'>Prepare Error: " . mysqli_error($connection) . "</div>");
+            die("<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Prepare Error: " . mysqli_error($connection) . "</div>");
         }
         mysqli_stmt_bind_param($stmt, "i", $policy_id);
         mysqli_stmt_execute($stmt);
@@ -183,7 +183,7 @@ include 'includes/config.php'; ?>
         } else {
         }
     } else {
-        echo "<div class='alert alert-danger mt-3'>Invalid Policy ID or Table.</div>";
+        echo "<div id='alertBox' class='alert alert-danger mt-3'>Invalid Policy ID or Table.</div>";
     }
 
     if (isset($_POST['upload'])) {
@@ -191,11 +191,11 @@ include 'includes/config.php'; ?>
         $policy_table = isset($_POST['policy_table_for_document']) ? $_POST['policy_table_for_document'] : null;
 
         if (is_null($policy_table)) {
-            die("<div class='alert alert-danger mt-3 mb-3'>Policy table for document is missing!</div>");
+            die("<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Policy table for document is missing!</div>");
         }
 
         if (!isset($_FILES['document']) || $_FILES['document']['error'] != UPLOAD_ERR_OK) {
-            die("<div class='alert alert-danger mt-3 mb-3'>File upload error!</div>");
+            die("<div id='alertBox' class='alert alert-danger mt-3 mb-3'>File upload error!</div>");
         }
 
         $file_name = basename($_FILES['document']['name']);
@@ -211,12 +211,12 @@ include 'includes/config.php'; ?>
             mysqli_stmt_bind_param($stmt, "issss", $policy_id, $policy_table, $file_name, $file_path, $document_version);
 
             if (mysqli_stmt_execute($stmt)) {
-                echo "<div class='alert alert-success mt-3 mb-3'>Document uploaded successfully.</div>";
+                echo "<div id='alertBox' class='alert alert-success mt-3 mb-3'>Document uploaded successfully.</div>";
             } else {
-                echo "<div class='alert alert-danger mt-3 mb-3'>Error uploading document: " . mysqli_error($connection) . "</div>";
+                echo "<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Error uploading document: " . mysqli_error($connection) . "</div>";
             }
         } else {
-            echo "<div class='alert alert-danger mt-3 mb-3'>Failed to move uploaded file.</div>";
+            echo "<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Failed to move uploaded file.</div>";
         }
     }
     ?>
