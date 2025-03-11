@@ -15,13 +15,7 @@ include 'includes/connection.php';
         // Prepare SQL statement
         $insert_comment = "INSERT INTO `sim_comment` (`comment_parent_id`, `comment_owner`, `comment_data`) 
                            VALUES ('$comment_parent_id', '$comment_owner', '$comment_data')";
-
-        // Execute the query
-        if (mysqli_query($connection, $insert_comment)) {
-            // echo "Comment added successfully!";
-        } else {
-            echo "Error: " . mysqli_error($connection);
-        }
+        $insert_comment_r = mysqli_query($connection, $insert_comment); 
     }
 
 
