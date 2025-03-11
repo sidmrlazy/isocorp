@@ -14,9 +14,17 @@ include 'includes/connection.php';
 
         // Prepare SQL statement
         $insert_comment = "INSERT INTO `sim_comment` (`comment_parent_id`, `comment_owner`, `comment_data`) 
-                           VALUES ('$comment_parent_id', '$comment_owner', '$comment_data')";
-        $insert_comment_r = mysqli_query($connection, $insert_comment); 
+                       VALUES ('$comment_parent_id', '$comment_owner', '$comment_data')";
+
+        if (mysqli_query($connection, $insert_comment)) {
+            // Redirect to the same page with the correct ID after successful insertion
+            header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $comment_parent_id);
+            exit();
+        } else {
+            echo "<p class='alert alert-danger'>Error: " . mysqli_error($connection) . "</p>";
+        }
     }
+
 
 
     if (isset($_GET['id'])) {
