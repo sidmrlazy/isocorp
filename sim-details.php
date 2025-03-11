@@ -7,13 +7,6 @@ include 'includes/connection.php';
 <div class="dashboard-container">
     <?php
     if (isset($_POST['add-note'])) {
-
-        if($connection) {
-            echo "Database connected";
-        } else {
-            echo "Database Disconnected!";
-        }
-
         // Retrieve and sanitize user input
         $comment_parent_id = mysqli_real_escape_string($connection, $_POST['sim_id']);
         $comment_owner = mysqli_real_escape_string($connection, $_POST['comment_owner']);
@@ -107,7 +100,7 @@ include 'includes/connection.php';
             </div>
             <!-- ======= ADD NOTE MODAL ======= -->
             <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <form action="" method="POST" class="modal-dialog modal-dialog-centered">
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="exampleModalLabel">Create Note</h1>
