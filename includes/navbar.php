@@ -23,11 +23,11 @@ include 'includes/connection.php';
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="security-incident-management.php"><ion-icon
                   name="lock-closed-outline"></ion-icon> Security Incident Management</a></li>
-            <li>
+            <!-- <li>
               <a class="dropdown-item" href="mrb.php">
                 <ion-icon name="book-outline"></ion-icon> Management Review Board
               </a>
-            </li>
+            </li> -->
             <li>
               <a class="dropdown-item" href="risks-treatments.php">
               <ion-icon name="flask-outline"></ion-icon> Risks & Treatments
