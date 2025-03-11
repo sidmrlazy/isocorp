@@ -99,14 +99,18 @@ include 'includes/connection.php';
     $records_per_page = 10;
     $current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
     $offset = ($current_page - 1) * $records_per_page;
+
     $total_query = "SELECT COUNT(*) AS total FROM `sim`";
     $total_result = mysqli_query($connection, $total_query);
     $total_row = mysqli_fetch_assoc($total_result);
     $total_records = $total_row['total'];
     $total_pages = ceil($total_records / $records_per_page);
-    $fetch = "SELECT * FROM `sim` LIMIT $records_per_page OFFSET $offset";
+
+    // Modify the query to order by latest records first
+    $fetch = "SELECT * FROM `sim` ORDER BY id DESC LIMIT $records_per_page OFFSET $offset"; // Assuming 'id' is the primary key
     $fetch_r = mysqli_query($connection, $fetch);
     $fetch_count = mysqli_num_rows($fetch_r);
+
     if ($fetch_count > 0) {
     ?>
         <div class="table-responsive sim-table-container mb-5">
