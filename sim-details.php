@@ -8,6 +8,12 @@ include 'includes/connection.php';
     <?php
     if (isset($_POST['add-note'])) {
 
+        if($connection) {
+            echo "Database connected";
+        } else {
+            echo "Database Disconnected!";
+        }
+
         // Retrieve and sanitize user input
         $comment_parent_id = mysqli_real_escape_string($connection, $_POST['sim_id']);
         $comment_owner = mysqli_real_escape_string($connection, $_POST['comment_owner']);
@@ -92,35 +98,35 @@ include 'includes/connection.php';
     }
     ?>
     <div class="section-divider">
-        <!-- ======= ADD NOTE MODAL ======= -->
-        <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <form action="" method="POST" class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Create Note</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-floating">
-                            <input type="text" name="sim_id" value="<?php echo $sim_id ?>" hidden>
-                            <input type="text" name="comment_owner" value="<?php echo $user_name ?>" hidden>
-                            <textarea class="form-control" name="comment_data" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
-                            <label for="floatingTextarea2">Comments</label>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" name="add-note" class="btn btn-primary">Add Note</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+
         <div class="notes-section mt-1">
             <div class="heading-row">
                 <p>Notes</p>
                 <!-- ========== ADD ========== -->
                 <button type="button" data-bs-toggle="modal" data-bs-target="#commentModal" class="btn btn-sm btn-outline-dark">Add Note</button>
             </div>
-
+            <!-- ======= ADD NOTE MODAL ======= -->
+            <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <form action="" method="POST" class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Create Note</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-floating">
+                                <input type="text" name="sim_id" value="<?php echo $sim_id ?>" hidden>
+                                <input type="text" name="comment_owner" value="<?php echo $user_name ?>" hidden>
+                                <textarea class="form-control" name="comment_data" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Comments</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" name="add-note" class="btn btn-primary">Add Note</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <?php
             if (isset($_POST['delete-note'])) {
                 $fetched_comment_id = $_POST['fetched_comment_id'];
