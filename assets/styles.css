@@ -400,6 +400,51 @@ margin-top: 200px;
 .sim-th td {
     font-size: 12px !important;
 }
+.notes-section {
+    flex: 1;
+    /* background-color: #fff; */
+    border-radius: 10px;
+    padding: 20px;
+}
+.notes-section p {
+    font-size: 22px;    
+    font-weight: 600;
+}
+.heading-row {
+    display: flex;
+    justify-content: space-between;
+}
+.note-container {
+    border-bottom: 1px solid #ababab;
+    padding: 10px;
+    margin-top: 15px !important;
+}
+.note-owner {
+    font-size: 14px !important;
+    margin: 0;
+}
+.main-note {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    margin: 0;
+    margin-top: 5px;
+    font-size: 14px !important;
+}
+.button-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
+}
+.button-row button {
+    background-color: #00000000;
+    border: 0;
+    font-size: 22px;
+}
+.button-row button:hover {
+    color: #28961a;
+    transition: 0.3s all ease-in-out;
+}
 
 /* ========= MRB ========= */
 .mrb-tab-container {
