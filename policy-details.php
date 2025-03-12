@@ -176,7 +176,7 @@ include 'includes/config.php'; ?>
             $policy = mysqli_fetch_assoc($result);
             $policy_content = stripslashes($policy["policy_details"]);
         ?>
-            <div class="clause-container" style="font-size: 16px !important;" >
+            <div class="clause-container" style="font-size: 16px !important; padding: 20px !important;" >
                 <?= htmlspecialchars_decode($policy_content) ?>
             </div>
     <?php
