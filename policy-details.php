@@ -284,12 +284,12 @@ include 'includes/config.php'; ?>
                                 $document_version = htmlspecialchars($doc['document_version']);
                             ?>
                                 <tr>
-                                    <td>
-                                        <a href="<?php echo $document_path; ?>" target="_blank">
+                                    <td style="font-size: 14px;">
+                                        <a  href="<?php echo $document_path; ?>" target="_blank">
                                             <?php echo $document_name; ?>
                                         </a>
                                     </td>
-                                    <td><?php echo $document_version; ?></td>
+                                    <td style="font-size: 14px;"><?php echo $document_version; ?></td>
                                     <?php 
                                     if($user_role === '1') { ?>
                                     <td class="text-center">
