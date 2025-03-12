@@ -321,7 +321,7 @@ include 'includes/config.php'; ?>
             ?>
             <div class="document-upload-container">
                 <?php if ($user_role === '1') { ?>
-                    <p class="mt-5">Upload Supporting Document</p>
+                    <!-- <p class="mt-5">Upload Supporting Document</p> -->
                     <form action="" method="POST" enctype="multipart/form-data" class="mt-3 w-100 ml-3">
                         <input type="hidden" name="policy_id" value="<?php echo $policy_id; ?>">
                         <input type="hidden" name="policy_table" value="<?php echo $policy_table; ?>">
