@@ -22,39 +22,39 @@ while ($row = $risks->fetch_assoc()) {
 
 $color_map = [
     'Very Low' => [
-        'Insignificant' => '#55cf4a',
-        'Minor' => '#55cf4a',
-        'Moderate' => '#f5cb22',
-        'Major' => '#f5cb22',
-        'Severe' => '#f55858'
+        'Insignificant' => '#42AC94',
+        'Minor' => '#42AC94',
+        'Moderate' => '#FEBD02',
+        'Major' => '#FEBD02',
+        'Severe' => '#EA5265'
     ],
     'Low' => [
-        'Insignificant' => '#55cf4a',
-        'Minor' => '#55cf4a',
-        'Moderate' => '#f5cb22',
-        'Major' => '#f55858',
-        'Severe' => '#f55858'
+        'Insignificant' => '#42AC94',
+        'Minor' => '#42AC94',
+        'Moderate' => '#FEBD02',
+        'Major' => '#EA5265',
+        'Severe' => '#EA5265'
     ],
     'Medium' => [
-        'Insignificant' => '#55cf4a',
-        'Minor' => '#f5cb22',
-        'Moderate' => '#f5cb22',
-        'Major' => '#f55858',
-        'Severe' => '#000000'
+        'Insignificant' => '#42AC94',
+        'Minor' => '#FEBD02',
+        'Moderate' => '#FEBD02',
+        'Major' => '#EA5265',
+        'Severe' => '#494854'
     ],
     'High' => [
-        'Insignificant' => '#f5cb22',
-        'Minor' => '#f5cb22',
-        'Moderate' => '#f55858',
-        'Major' => '#000000',
-        'Severe' => '#000000'
+        'Insignificant' => '#FEBD02',
+        'Minor' => '#FEBD02',
+        'Moderate' => '#EA5265',
+        'Major' => '#494854',
+        'Severe' => '#494854'
     ],
     'Very High' => [
-        'Insignificant' => '#f5cb22',
-        'Minor' => '#f55858',
-        'Moderate' => '#f55858',
-        'Major' => '#000000',
-        'Severe' => '#000000'
+        'Insignificant' => '#FEBD02',
+        'Minor' => '#EA5265',
+        'Moderate' => '#EA5265',
+        'Major' => '#494854',
+        'Severe' => '#494854'
     ],
 ];
 
@@ -92,20 +92,26 @@ $color_map = [
                                 $count = $heatmap[$impact][$likelihood];
                                 $color = $color_map[$likelihood][$impact];
                             ?>
-                                <td style="background-color: <?= $color ?>; color: white;">
-                                    <?= $count > 0 ? $count : '' ?>
+                                <td style="background-color: <?= $color ?>; color: black; text-align: center; vertical-align: middle;">
+                                    <?php if ($count > 0) : ?>
+                                        <div style="display: inline-flex; align-items: center; justify-content: center; 
+                    width: 30px; height: 30px; border-radius: 50%; background-color: #fff;">
+                                            <?= $count ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </td>
+
                             <?php endforeach; ?>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
-            </table>            
+            </table>
         </div>
 
         <!-- =========== RISKS DETAILS =========== -->
         <div class="table-responsive table-container" style="margin: 5px; flex: 1;">
-            <?php if($user_role === '1') { ?>
-            <button class="btn btn-sm btn-outline-success mb-3" data-bs-toggle="modal" data-bs-target="#addRiskModal">Add Risk/Threat</button>
+            <?php if ($user_role === '1') { ?>
+                <button class="btn btn-sm btn-outline-success mb-3" data-bs-toggle="modal" data-bs-target="#addRiskModal">Add Risk/Threat</button>
             <?php } ?>
             <table class="table table-bordered table-striped">
                 <thead>
