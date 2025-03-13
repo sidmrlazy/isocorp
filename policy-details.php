@@ -9,30 +9,30 @@ include 'includes/config.php'; ?>
         die("<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Database connection failed: " . mysqli_connect_error() . "</div>");
     }
 
-    if(isset($_POST['delete-doc'])) {
+    if (isset($_POST['delete-doc'])) {
         $document_id = isset($_POST['document_id']) ? intval($_POST['document_id']) : null;
-        
+
         if ($document_id) {
             $query = "SELECT document_path FROM policy_documents WHERE policy_document_id = ?";
             $stmt = mysqli_prepare($connection, $query);
             mysqli_stmt_bind_param($stmt, "i", $document_id);
             mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
-            
+
             if ($result && mysqli_num_rows($result) > 0) {
                 $doc = mysqli_fetch_assoc($result);
                 $document_path = $doc['document_path'];
-                
+
                 // Delete file from server
                 if (file_exists($document_path)) {
                     unlink($document_path);
                 }
-                
+
                 // Delete from database
                 $delete_query = "DELETE FROM policy_documents WHERE policy_document_id = ?";
                 $stmt = mysqli_prepare($connection, $delete_query);
                 mysqli_stmt_bind_param($stmt, "i", $document_id);
-                
+
                 if (mysqli_stmt_execute($stmt)) {
                     echo "<div id='alertBox' class='alert alert-success mt-3 mb-3'>Document deleted successfully.</div>";
                 } else {
@@ -176,8 +176,15 @@ include 'includes/config.php'; ?>
             $policy = mysqli_fetch_assoc($result);
             $policy_content = stripslashes($policy["policy_details"]);
         ?>
-            <div class="clause-container" style="font-size: 16px !important; padding: 20px !important;" >
-                <?= htmlspecialchars_decode($policy_content) ?>
+            <div class="clause-container" style="font-size: 16px !important; width: 100%">
+                <div class="clause-content">
+                    <?= htmlspecialchars_decode($policy_content) ?>
+                </div>
+                <div style="display:flex; justify-content: center; align-items: center;">
+                    <button class="read-more-btn btn btn-outline-dark" style="display: none; margin-top: 10px; cursor: pointer; padding: 5px 10px; font-size: 24px; border: 0; background: none;">
+                        <ion-icon name="caret-down-circle-outline"></ion-icon>
+                    </button>
+                </div>
             </div>
     <?php
         } else {
@@ -260,90 +267,121 @@ include 'includes/config.php'; ?>
         <?php } ?>
 
         <!-- ========== SUPPORTING DOCUMENTS ========== -->
-         <?php if($user_role == '1') { ?>
-        <div class="document-container" style="margin-left: 10px;">
-            <?php } elseif($user_role == '2') { ?>
+        <?php if ($user_role == '1') { ?>
+            <div class="document-container" style="margin-left: 10px;">
+            <?php } elseif ($user_role == '2') { ?>
                 <div class="document-container">
                 <?php } ?>
-            <?php
-            $query = "SELECT policy_document_id, document_name, document_path, document_version FROM policy_documents WHERE policy_id = ? AND policy_table_for_document = ?";
-            $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, "is", $policy_id, $policy_table);
-            mysqli_stmt_execute($stmt);
-            $result = mysqli_stmt_get_result($stmt);
+                <?php
+                $query = "SELECT policy_document_id, document_name, document_path, document_version FROM policy_documents WHERE policy_id = ? AND policy_table_for_document = ?";
+                $stmt = mysqli_prepare($connection, $query);
+                mysqli_stmt_bind_param($stmt, "is", $policy_id, $policy_table);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
 
-            if ($result && mysqli_num_rows($result) > 0) {
-            ?>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <tbody>
-                            <?php while ($doc = mysqli_fetch_assoc($result)) {
-                                $document_id = htmlspecialchars($doc['policy_document_id']);
-                                $document_path = htmlspecialchars($doc['document_path']);
-                                $document_name = htmlspecialchars($doc['document_name']);
-                                $document_version = htmlspecialchars($doc['document_version']);
-                            ?>
-                                <tr>
-                                    <td style="font-size: 12px;">
-                                        <a  href="<?php echo $document_path; ?>" target="_blank">
-                                            <?php echo $document_name; ?>
-                                        </a>
-                                    </td>
-                                    <td style="font-size: 12px;"><?php echo $document_version; ?></td>
-                                    <?php 
-                                    if($user_role === '1') { ?>
-                                    <td class="text-center">
-                                        <form action="update-document.php" method="POST">
-                                            <input type="text" name="policy_document_id" value="<?php echo $document_id; ?>" hidden>
-                                            <button type="submit" name="doc-edit-btn" class="doc-edit-btn">
-                                                <ion-icon name="create-outline"></ion-icon>
-                                            </button>
-                                        </form>
-                                    </td>
-                                    <td class="text-center">
-                                        <form action="" method="POST">
-                                            <input type="hidden" name="policy_document_id" value="<?php echo $document_id; ?>">
-                                            <button type="submit" name="delete-doc" class="doc-edit-btn">
-                                                <ion-icon name="trash-outline"></ion-icon>
-                                            </button>
-                                        </form>
-                                    </td>
-                                    <?php } ?>
-                                </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
+                if ($result && mysqli_num_rows($result) > 0) {
+                ?>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <?php while ($doc = mysqli_fetch_assoc($result)) {
+                                    $document_id = htmlspecialchars($doc['policy_document_id']);
+                                    $document_path = htmlspecialchars($doc['document_path']);
+                                    $document_name = htmlspecialchars($doc['document_name']);
+                                    $document_version = htmlspecialchars($doc['document_version']);
+                                ?>
+                                    <tr>
+                                        <td style="font-size: 12px;">
+                                            <a href="<?php echo $document_path; ?>" target="_blank">
+                                                <?php echo $document_name; ?>
+                                            </a>
+                                        </td>
+                                        <td style="font-size: 12px;"><?php echo $document_version; ?></td>
+                                        <?php
+                                        if ($user_role === '1') { ?>
+                                            <td class="text-center">
+                                                <form action="update-document.php" method="POST">
+                                                    <input type="text" name="policy_document_id" value="<?php echo $document_id; ?>" hidden>
+                                                    <button type="submit" name="doc-edit-btn" class="doc-edit-btn">
+                                                        <ion-icon name="create-outline"></ion-icon>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td class="text-center">
+                                                <form action="" method="POST">
+                                                    <input type="hidden" name="policy_document_id" value="<?php echo $document_id; ?>">
+                                                    <button type="submit" name="delete-doc" class="doc-edit-btn">
+                                                        <ion-icon name="trash-outline"></ion-icon>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        <?php } ?>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php
+                } else {
+                    echo "<p>No documents uploaded for this policy.</p>";
+                }
+                ?>
+                <div class="document-upload-container">
+                    <?php if ($user_role === '1') { ?>
+                        <!-- <p class="mt-5">Upload Supporting Document</p> -->
+                        <form action="" method="POST" enctype="multipart/form-data" class="mt-3 w-100 ml-3">
+                            <input type="hidden" name="policy_id" value="<?php echo $policy_id; ?>">
+                            <input type="hidden" name="policy_table" value="<?php echo $policy_table; ?>">
+                            <input type="hidden" name="policy_table_for_document" value="<?php echo $policy_table; ?>">
+
+                            <div class="mb-4 w-100">
+                                <label for="document" class="form-label">Upload</label>
+                                <input type="file" name="document" class="form-control w-100" id="document" placeholder="name@example.com">
+                            </div>
+
+
+                            <div class="mb-3 w-100">
+                                <label for="documentVersion" class="form-label">Version</label>
+                                <input type="text" name="document_version" class="form-control w-100" id="documentVersion" aria-describedby="emailHelp">
+                            </div>
+
+
+                            <button type="submit" name="upload" class="btn btn-sm btn-primary mt-3">Upload</button>
+                        </form>
+                    <?php }  ?>
                 </div>
-            <?php
-            } else {
-                echo "<p>No documents uploaded for this policy.</p>";
-            }
-            ?>
-            <div class="document-upload-container">
-                <?php if ($user_role === '1') { ?>
-                    <!-- <p class="mt-5">Upload Supporting Document</p> -->
-                    <form action="" method="POST" enctype="multipart/form-data" class="mt-3 w-100 ml-3">
-                        <input type="hidden" name="policy_id" value="<?php echo $policy_id; ?>">
-                        <input type="hidden" name="policy_table" value="<?php echo $policy_table; ?>">
-                        <input type="hidden" name="policy_table_for_document" value="<?php echo $policy_table; ?>">
-
-                        <div class="mb-4 w-100">
-                            <label for="document" class="form-label">Upload</label>
-                            <input type="file" name="document" class="form-control w-100" id="document" placeholder="name@example.com">
-                        </div>
-
-
-                        <div class="mb-3 w-100">
-                            <label for="documentVersion" class="form-label">Version</label>
-                            <input type="text" name="document_version" class="form-control w-100" id="documentVersion" aria-describedby="emailHelp">
-                        </div>
-
-
-                        <button type="submit" name="upload" class="btn btn-sm btn-primary mt-3">Upload</button>
-                    </form>
-                <?php }  ?>
+                </div>
             </div>
-        </div>
     </div>
-</div>
-<?php include('includes/footer.php'); ?>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const container = document.querySelector(".clause-content");
+            const button = document.querySelector(".read-more-btn");
+            const readMoreIcon = "caret-down-circle-outline";
+            const readLessIcon = "caret-up-circle-outline";
+
+            if (container) {
+                let words = container.innerText.trim().split(/\s+/);
+                if (words.length > 200) {
+                    let shortenedText = words.slice(0, 200).join(" ") + "...";
+                    let fullText = container.innerHTML;
+
+                    container.innerHTML = shortenedText;
+                    button.style.display = "block";
+
+                    button.addEventListener("click", function() {
+                        let icon = button.querySelector("ion-icon");
+                        if (container.innerHTML === shortenedText) {
+                            container.innerHTML = fullText;
+                            icon.setAttribute("name", readLessIcon);
+                        } else {
+                            container.innerHTML = shortenedText;
+                            icon.setAttribute("name", readMoreIcon);
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+    <?php include('includes/footer.php'); ?>
