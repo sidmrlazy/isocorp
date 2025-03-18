@@ -1,4 +1,5 @@
 <?php
+ob_start();
 include('includes/header.php');
 include('includes/navbar.php');
 include 'includes/config.php';
@@ -96,9 +97,9 @@ include 'includes/connection.php';
 
         <div class="notes-section mt-1">
             <div class="heading-row">
-                <p>Notes</p>
+                <p style="font-size: 18px !important;">Comments</p>
                 <!-- ========== ADD ========== -->
-                <button type="button" data-bs-toggle="modal" data-bs-target="#commentModal" class="btn btn-sm btn-outline-dark">Add Note</button>
+                <button style="font-size: 12px;" type="button" data-bs-toggle="modal" data-bs-target="#commentModal" class="btn btn-sm btn-outline-dark">Add Comment</button>
             </div>
             <!-- ======= ADD NOTE MODAL ======= -->
             <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -158,7 +159,7 @@ include 'includes/connection.php';
             <?php } ?>
         </div>
 
-        <div class="WYSIWYG-editor-container m-1">
+        <div class="WYSIWYG-editor-container m-1" style="flex: 2">
             <div class="sim-topic-container-details">
                 <p>Topic:</p>
                 <h5><?php echo $sim_topic ?></h5>
@@ -183,4 +184,6 @@ include 'includes/connection.php';
         </div>
     </div>
 </div>
-<?php include('includes/footer.php');
+<?php 
+ob_flush();
+include('includes/footer.php');
