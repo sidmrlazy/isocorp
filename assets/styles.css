@@ -85,7 +85,7 @@ margin-top: 200px;
     color: #fff;
 }
 .navbar-brand img {
-    width: 15%;
+    width: 25%;
 }
 .nav-link {
     color: #fff;
@@ -598,8 +598,8 @@ align-items: center;
     vertical-align: middle !important;
 }
 .heatmap-table td {
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
     text-align: center;
     color: #fff;
 }
@@ -612,6 +612,42 @@ align-items: center;
 }
 .risk-details-content td {
     font-size: 12px;
+}
+
+/* ========== ASSET INVENTORY ========== */
+.asset-table-heading {
+    font-size: 12px;
+    font-weight: 500;
+}
+.asset-data {
+    font-size: 12px;
+}
+.asset-data-icon {
+    font-size: 8px !important;
+}
+.btn-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
+}
+.btn-row button {
+    margin: 3px;
+}
+.asset-details {
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+}
+.asset-details-heading {
+    margin: 0;
+    font-weight: 600;
+    font-size: 12px;
+}
+.asset-details-notes {
+    margin: 0;
+    font-size: 14px;
 }
 
 @media only screen and (max-width: 768px) {

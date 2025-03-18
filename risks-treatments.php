@@ -72,22 +72,22 @@ $color_map = [
         </div>
     <?php endif; ?>
 
-    <div class="risk-treatment-divider">
+    <div class="risk-treatment-divider mb-5">
         <!-- =========== HEATMAP =========== -->
         <div class="table-container" style="flex: 1; margin: 5px;">
             <table class="table table-bordered text-center heatmap-table">
                 <thead>
                     <tr>
-                        <th rowspan="2">Impact ↓ <br> Likelihood →</th>
+                        <th rowspan="2" style="font-size: 12px;">Impact ↓ <br> Likelihood →</th>
                         <?php foreach ($likelihood_levels as $level) : ?>
-                            <th><?= $level ?></th>
+                            <th style="font-size: 12px;"><?= $level ?></th>
                         <?php endforeach; ?>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach (array_reverse($impact_levels) as $impact) : ?>
                         <tr>
-                            <th><?= $impact ?></th>
+                            <th style="font-size: 12px;"><?= $impact ?></th>
                             <?php foreach ($likelihood_levels as $likelihood) :
                                 $count = $heatmap[$impact][$likelihood];
                                 $color = $color_map[$likelihood][$impact];
@@ -109,7 +109,7 @@ $color_map = [
         </div>
 
         <!-- =========== RISKS DETAILS =========== -->
-        <div class="table-responsive table-container" style="margin: 5px; flex: 1;">
+        <div class="table-responsive table-container" style="margin: 5px; flex: 2;">
             <?php if ($user_role === '1') { ?>
                 <button class="btn btn-sm btn-outline-success mb-3" data-bs-toggle="modal" data-bs-target="#addRiskModal">Add Risk/Threat</button>
             <?php } ?>
@@ -169,7 +169,7 @@ $color_map = [
 
 <!-- ====== Add Risk Modal ====== -->
 <div class="modal fade" id="addRiskModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add New Risk</h5>
