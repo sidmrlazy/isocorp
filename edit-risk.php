@@ -1,8 +1,10 @@
 <?php
+ob_start();
 include 'includes/header.php';
 include 'includes/navbar.php';
 include 'includes/connection.php';
 include 'includes/config.php';
+
 
 // Check if risk_id is set
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
@@ -112,5 +114,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_risk'])) {
 
 
 <?php
+ob_end_flush();
 include 'includes/footer.php';
 ?>
