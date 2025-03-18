@@ -128,7 +128,19 @@ $color_map = [
                 </thead>
                 <tbody>
                     <?php
-                    $risks = $connection->query("SELECT * FROM risks ORDER BY risks_created_at DESC");
+
+
+                    $limit = 6; // Number of risks per page
+                    $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+                    $offset = ($page - 1) * $limit;
+
+                    // Get total count of risks
+                    $total_risks_query = $connection->query("SELECT COUNT(*) as total FROM risks");
+                    $total_risks = $total_risks_query->fetch_assoc()['total'];
+                    $total_pages = max(1, ceil($total_risks / $limit)); // Ensure at least 1 page
+
+                    // Fetch risks with pagination
+                    $risks = $connection->query("SELECT * FROM risks ORDER BY risks_created_at DESC LIMIT $limit OFFSET $offset");
                     while ($row = $risks->fetch_assoc()):
                     ?>
                         <tr class="risk-details-content">
@@ -163,6 +175,28 @@ $color_map = [
                     <?php endwhile; ?>
                 </tbody>
             </table>
+            <div class="d-flex justify-content-center align-items-center mt-2">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <!-- Previous Button -->
+                        <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                            <a class="page-link" style="font-size: 12px;" href="?page=<?= max(1, $page - 1) ?>">Previous</a>
+                        </li>
+
+                        <!-- Page Numbers -->
+                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                                <a class="page-link" style="font-size: 12px;" href="?page=<?= $i ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+
+                        <!-- Next Button -->
+                        <li class="page-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
+                            <a class="page-link" style="font-size: 12px;" href="?page=<?= min($total_pages, $page + 1) ?>">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </div>
