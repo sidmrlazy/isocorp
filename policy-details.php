@@ -357,30 +357,37 @@ include 'includes/config.php'; ?>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const container = document.querySelector(".clause-content");
-            const button = document.querySelector(".read-more-btn");
+            const button = document.querySelector(".read-more-btn"); // Ensure this element exists
             const readMoreIcon = "caret-down-circle-outline";
             const readLessIcon = "caret-up-circle-outline";
 
-            if (container) {
-                let words = container.innerText.trim().split(/\s+/);
-                if (words.length > 200) {
-                    let shortenedText = words.slice(0, 200).join(" ") + "...";
-                    let fullText = container.innerHTML;
+            if (!container) {
+                console.error("Error: .clause-content element not found");
+                return;
+            }
+            if (!button) {
+                console.error("Error: .read-more-btn element not found");
+                return;
+            }
 
-                    container.innerHTML = shortenedText;
-                    button.style.display = "block";
+            let words = container.innerText.trim().split(/\s+/);
+            if (words.length > 200) {
+                let shortenedText = words.slice(0, 200).join(" ") + "...";
+                let fullText = container.innerHTML;
 
-                    button.addEventListener("click", function() {
-                        let icon = button.querySelector("ion-icon");
-                        if (container.innerHTML === shortenedText) {
-                            container.innerHTML = fullText;
-                            icon.setAttribute("name", readLessIcon);
-                        } else {
-                            container.innerHTML = shortenedText;
-                            icon.setAttribute("name", readMoreIcon);
-                        }
-                    });
-                }
+                container.innerHTML = shortenedText;
+                button.style.display = "block"; // Show button
+
+                button.addEventListener("click", function() {
+                    let icon = button.querySelector("ion-icon");
+                    if (container.innerHTML === shortenedText) {
+                        container.innerHTML = fullText;
+                        icon.setAttribute("name", readLessIcon);
+                    } else {
+                        container.innerHTML = shortenedText;
+                        icon.setAttribute("name", readMoreIcon);
+                    }
+                });
             }
         });
     </script>
