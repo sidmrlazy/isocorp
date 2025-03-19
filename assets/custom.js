@@ -102,20 +102,31 @@ setTimeout(function () {
 
 
 // FETCH POLICIES IN DROPDOWN FROM DATABASE;
-document.getElementById("policyDropdown").addEventListener("change", function () {
-    var policyId = this.value;
-    fetchClauses("sub_control_policy", policyId, "subControlDropdown");
+document.addEventListener("DOMContentLoaded", function () {
+    var policyDropdown = document.getElementById("policyDropdown");
+    var subControlDropdown = document.getElementById("subControlDropdown");
+    var linkedControlDropdown = document.getElementById("linkedControlDropdown");
+    var innerLinkedDropdown = document.getElementById("innerLinkedDropdown");
+
+    if (policyDropdown) {
+        policyDropdown.addEventListener("change", function () {
+            fetchClauses("sub_control_policy", this.value, "subControlDropdown");
+        });
+    }
+
+    if (subControlDropdown) {
+        subControlDropdown.addEventListener("change", function () {
+            fetchClauses("linked_control_policy", this.value, "linkedControlDropdown");
+        });
+    }
+
+    if (linkedControlDropdown) {
+        linkedControlDropdown.addEventListener("change", function () {
+            fetchClauses("inner_linked_control_policy", this.value, "innerLinkedDropdown");
+        });
+    }
 });
 
-document.getElementById("subControlDropdown").addEventListener("change", function () {
-    var subControlId = this.value;
-    fetchClauses("linked_control_policy", subControlId, "linkedControlDropdown");
-});
-
-document.getElementById("linkedControlDropdown").addEventListener("change", function () {
-    var linkedControlId = this.value;
-    fetchClauses("inner_linked_control_policy", linkedControlId, "innerLinkedDropdown");
-});
 
 function fetchClauses(type, parentId, dropdownId) {
     var dropdown = document.getElementById(dropdownId);
