@@ -109,17 +109,19 @@ $color_map = [
         </div>
 
         <!-- =========== RISKS DETAILS =========== -->
-        <div class="table-responsive table-container" style="margin: 5px; flex: 2;">
+        <div class="table-responsive table-container" style="margin: 5px; flex: 2; display: flex; flex-direction: column; max-height: 485px; overflow: hidden;">
             <?php if ($user_role === '1') { ?>
-                <button class="btn btn-sm btn-outline-success mb-3" data-bs-toggle="modal" data-bs-target="#addRiskModal">Add Risk/Threat</button>
+                <button class="btn btn-sm btn-outline-success mb-3" style="width: fit-content;" data-bs-toggle="modal" data-bs-target="#addRiskModal">Add Risk/Threat</button>
             <?php } ?>
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped" style="flex-grow: 1; overflow-y: auto;">
                 <thead>
                     <tr class="risk-details-headers">
                         <th>Risk/Threat</th>
                         <th>Likelihood</th>
                         <th>Impact</th>
                         <th>Status</th>
+                        <!-- <th>Created Date</th>
+                        <th>Updated On</th> -->
                         <?php if ($user_role === '1') { ?>
                             <th>Edit</th>
                             <th>Delete</th>
@@ -130,7 +132,7 @@ $color_map = [
                     <?php
 
 
-                    $limit = 10; // Number of risks per page
+                    $limit = 6; // Number of risks per page
                     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
                     $offset = ($page - 1) * $limit;
 
@@ -154,6 +156,8 @@ $color_map = [
                             <td><?= $row['risks_likelihood'] ?></td>
                             <td><?= $row['risks_impact'] ?></td>
                             <td><?= $row['risks_status'] ?></td>
+                            <!-- <td><?= $row['risks_created_at'] ?></td>
+                            <td ><?= $row['risks_updated_at'] ?></td> -->
                             <?php
                             if ($user_role === '1') {
                             ?>
