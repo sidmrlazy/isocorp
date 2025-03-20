@@ -51,8 +51,8 @@ include 'includes/connection.php';
               <li><a class="dropdown-item" href="sub-controls.php">Add Sub-Control</a></li>
               <li><a class="dropdown-item" href="linked-sub-controls.php">Add linked Sub-Control</a></li>
               <li><a class="dropdown-item" href="inner-linked-control-policy-form.php">Add Inner linked Sub-Control</a></li>
-              <hr>
-              <li><a class="dropdown-item" href="add-mrb-topic.php">Management Review Board Setup</a></li>
+              <!-- <hr>
+              <li><a class="dropdown-item" href="add-mrb-topic.php">Management Review Board Setup</a></li> -->
               <hr>
               <li><a class="dropdown-item" href="user-setup.php">User Setup</a></li>
             </ul>
