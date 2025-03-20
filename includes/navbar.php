@@ -28,11 +28,11 @@ include 'includes/connection.php';
                 <ion-icon name="book-outline"></ion-icon> Management Review Board
               </a>
             </li>
-            <!-- <li>
+            <li>
               <a class="dropdown-item" href="asset-inventory.php">
                 <ion-icon name="desktop-outline"></ion-icon> Asset Inventory
               </a>
-            </li> -->
+            </li>
             <li>
               <a class="dropdown-item" href="risks-treatments.php">
               <ion-icon name="flask-outline"></ion-icon> Risks & Treatments
