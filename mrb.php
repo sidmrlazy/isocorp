@@ -12,6 +12,14 @@ include('includes/connection.php'); ?>
 
     <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addTopicModal">Add Topic</button>
     <?php
+    if(isset($_POST['edit-training-topic'])) {
+        $fetched_training_id = $_POST['fetched_training_id'];
+        $new_training_topic = $_POST['new_training_topic'];
+
+        $update_comment = "UPDATE training SET training_topic = '$new_training_topic' WHERE training_id = '$fetched_training_id'";
+        $update_comment_r = mysqli_query($connection, $update_comment);
+    }
+
     if(isset($_POST['delete-topic'])) {
         $training_id = $_POST['training_id'];
         $delete_query = "DELETE FROM training WHERE training_id = $training_id";
@@ -54,11 +62,13 @@ include('includes/connection.php'); ?>
                         <tr>
                             <th style="font-size: 12px" scope="row"><?php echo $training_id ?></th>
                             <td style="font-size: 12px">
-                                <a href="mrb-details.php?id=<?php echo $training_id; ?>"><?php echo $training_topic ?></a>
+                                <a href="mrb-details.php?id=<?php echo $training_id; ?>">
+                                    <?php echo $training_topic ?>
+                                </a>
                             </td>
                             <td style="font-size: 12px"><?php echo $training_date ?></td>
                             <td style="font-size: 12px" class="text-center">
-                                <form action="" method="post">
+                                <form action="edit-mrb.php?id=<?php echo $training_id; ?>" method="post">
                                     <input type="text" name="training_id" value="<?php echo $training_id; ?>" hidden>
                                     <button style="font-size: 12px;" class="btn btn-sm btn-warning">
                                         <ion-icon name="create-outline"></ion-icon>
