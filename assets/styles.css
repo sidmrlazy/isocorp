@@ -651,7 +651,8 @@ align-items: center;
 }
 .asset-details-notes {
     margin: 0;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 @media only screen and (max-width: 768px) {
