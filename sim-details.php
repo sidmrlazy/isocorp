@@ -145,7 +145,23 @@ include 'includes/connection.php';
 
                     <div class="note-container">
                         <p class="note-owner"><strong><?php echo $fetched_comment_owner ?></strong> - <?php echo $fetched_comment_date ?></p>
-                        <p class="main-note"><?php echo $fetched_comment_data ?></p>
+
+                        <div>
+                            <p class="main-note"><?php echo $fetched_comment_data ?></p>
+                            <!-- Read More -->
+                            <div class="d-flex justify-content-center align-items-center">
+                                <button class="read-more-btn">
+                                    <ion-icon name="chevron-down-outline"></ion-icon>
+                                </button>
+                            </div>
+
+                            <!-- Read Less -->
+                            <div class="d-flex justify-content-center align-items-center">
+                                <button class="read-less-btn">
+                                    <ion-icon name="chevron-up-outline"></ion-icon>
+                                </button>
+                            </div>
+                        </div>
                         <form action="" method="POST" class="button-row">
                             <input type="text" name="fetched_comment_id" value="<?php echo $fetched_comment_id ?>" hidden>
                             <input type="text" value="<?php echo $sim_id ?>" hidden>
@@ -184,6 +200,36 @@ include 'includes/connection.php';
         </div>
     </div>
 </div>
-<?php 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const note = document.querySelector(".main-note");
+        const readMoreBtn = document.querySelector(".read-more-btn");
+        const readLessBtn = document.querySelector(".read-less-btn");
+
+        if (note) {
+            let words = note.innerText.trim().split(/\s+/);
+            if (words.length > 50) {
+                let shortenedText = words.slice(0, 50).join(" ") + "...";
+                let fullText = note.innerHTML; // Store original content
+
+                note.innerHTML = shortenedText;
+                note.parentElement.classList.add("show-read-more"); // Show Read More button
+
+                readMoreBtn.addEventListener("click", function() {
+                    note.innerHTML = fullText; // Expand text
+                    note.parentElement.classList.remove("show-read-more");
+                    note.parentElement.classList.add("show-read-less"); // Show Read Less button
+                });
+
+                readLessBtn.addEventListener("click", function() {
+                    note.innerHTML = shortenedText; // Collapse text
+                    note.parentElement.classList.remove("show-read-less");
+                    note.parentElement.classList.add("show-read-more"); // Show Read More button
+                });
+            }
+        }
+    });
+</script>
+<?php
 ob_flush();
 include('includes/footer.php');
