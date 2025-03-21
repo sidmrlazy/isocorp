@@ -6,9 +6,9 @@ include 'includes/connection.php';
 ?>
 
 <div class="dashboard-container">
-    <div class="section-divider mb-5">
+    <div style="display: flex; flex-direction: column-reverse;">
         <!-- ======================== SECTION 1 ======================== -->
-        <div class="notes-section mt-1" style="width: 30%;">
+        <div class="notes-section mt-1" style="flex: 1">
             <div class="heading-row">
                 <p style="font-size: 18px;">Comments</p>
                 <!-- ========== ADD ========== -->
@@ -68,34 +68,32 @@ include 'includes/connection.php';
                     $training_comment_data = htmlspecialchars($row['training_comment_data']);
                     $training_comment_datetime = $row['training_comment_datetime'];
             ?>
-                    <div class="note-container">
-                        <p class="note-owner"><strong><?php echo $training_comment_by; ?></strong> - <?php echo $training_comment_datetime; ?></p>
-                        <style>
-                            
-                        </style>
+                    <div class="note-container" style="margin-bottom: 20px;">
+                        <div class="d-flex justify-content-center align-items-center">
+                        <p class="note-owner" style="flex: 1"><strong><?php echo $training_comment_by; ?></strong> - <?php echo $training_comment_datetime; ?></p>
+                        <form action="" method="POST" style="margin-top: 0 !important;">
+                            <input type="hidden" name="delete_comment_id" value="<?php echo $training_comment_id; ?>">
+                            <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
+                                <ion-icon name="close-circle-outline"></ion-icon>
+                            </button>
+                        </form>
+                        </div>
                         <div>
                             <p class="main-note"><?php echo $training_comment_data; ?></p>
                             <!-- Read More -->
-                            <div class="d-flex justify-content-center align-items-center">
+                            <div class="d-flex justify-content-center align-items-center mt-3">
                                 <button class="read-more-btn">
                                     <ion-icon name="chevron-down-outline"></ion-icon>
                                 </button>
                             </div>
 
                             <!-- Read Less -->
-                            <div class="d-flex justify-content-center align-items-center">
+                            <div class="d-flex justify-content-center align-items-center mt-3">
                                 <button class="read-less-btn">
                                     <ion-icon name="chevron-up-outline"></ion-icon>
                                 </button>
-                            </div>  
+                            </div>
                         </div>
-
-                        <form action="" method="POST" class="button-row" style="margin-top: 0 !important;">
-                            <input type="hidden" name="delete_comment_id" value="<?php echo $training_comment_id; ?>">
-                            <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark">
-                                <ion-icon name="close-circle-outline"></ion-icon>
-                            </button>
-                        </form>
                     </div>
 
             <?php
@@ -205,8 +203,8 @@ include 'includes/connection.php';
                 <?php } ?>
             </form>
         </div>
-
     </div>
+
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
