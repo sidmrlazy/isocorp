@@ -150,10 +150,10 @@ include 'includes/config.php'; ?>
             }
     ?>
 
-            <h1>Policy Details</h1>
+            <h1 style="font-size: 24px; font-weight: 500;">Policy Details</h1>
             <div class="details-container">
-                <h2><?= $policy_number . " " . $policy_heading ?></h2>
-                <p><?= $policy_content ?></p>
+                <h2 style="font-size: 20px !important;"><?= $policy_number . " " . $policy_heading ?></h2>
+                <p style="font-size: 20px; margin: 0;"><?= $policy_content ?></p>
             </div>
 
         <?php
@@ -177,7 +177,10 @@ include 'includes/config.php'; ?>
             $policy_content = stripslashes($policy["policy_details"]);
         ?>
             <div class="clause-container" style="font-size: 16px !important; width: 100%">
-                <div class="clause-content">
+                <style>
+
+                </style>
+                <div class="clause-content" style="font-size: 16px !important; font-weight: 400 !important;">
                     <?= htmlspecialchars_decode($policy_content) ?>
                 </div>
                 <div style="display:flex; justify-content: center; align-items: center;">
@@ -361,22 +364,24 @@ include 'includes/config.php'; ?>
             const readMoreIcon = "caret-down-circle-outline";
             const readLessIcon = "caret-up-circle-outline";
 
-            if (container) {
+            if (container && button) {
                 let words = container.innerText.trim().split(/\s+/);
                 if (words.length > 200) {
                     let shortenedText = words.slice(0, 200).join(" ") + "...";
-                    let fullText = container.innerHTML;
+                    let fullText = container.innerHTML; // Store original content to preserve formatting
 
                     container.innerHTML = shortenedText;
                     button.style.display = "block";
 
                     button.addEventListener("click", function() {
                         let icon = button.querySelector("ion-icon");
-                        if (container.innerHTML === shortenedText) {
-                            container.innerHTML = fullText;
+                        if (!icon) return; // Prevent errors if the icon is missing
+
+                        if (container.innerText.trim().endsWith("...")) {
+                            container.innerHTML = fullText; // Restore full text
                             icon.setAttribute("name", readLessIcon);
                         } else {
-                            container.innerHTML = shortenedText;
+                            container.innerHTML = shortenedText; // Collapse text
                             icon.setAttribute("name", readMoreIcon);
                         }
                     });
