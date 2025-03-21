@@ -131,4 +131,3 @@ function fetchClauses(type, parentId, dropdownId) {
             });
         });
 }
-
