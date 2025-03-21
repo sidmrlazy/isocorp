@@ -128,15 +128,40 @@ include 'includes/connection.php';
             </div>
 
             <?php
-            // Fetch training details
-            $fetch = "SELECT * FROM `training` WHERE training_id = '$training_id'";
-            $fetch_r = mysqli_query($connection, $fetch);
-            $fetch_count = mysqli_num_rows($fetch_r);
+            if (isset($_POST['save-training-draft'])) {
+                $training_parent_id = mysqli_real_escape_string($connection, $_POST['training_parent_id']);
+                $training_details = mysqli_real_escape_string($connection, $_POST['training_details']);
+                $training_details_status = "1";
 
+                $update_details_q = "UPDATE `training` 
+                             SET `training_details` = '$training_details', 
+                                 `training_details_status` = '$training_details_status' 
+                             WHERE `training_id` = '$training_parent_id'";
+                mysqli_query($connection, $update_details_q);
+            }
+
+            if (isset($_POST['submit-training-draft'])) {
+                $training_parent_id = mysqli_real_escape_string($connection, $_POST['training_parent_id']);
+                $training_details = mysqli_real_escape_string($connection, $_POST['training_details']);
+                $training_details_status = "2"; // Static value, no need to escape
+
+                $update_details_q = "UPDATE `training` 
+                             SET `training_details` = '$training_details', 
+                                 `training_details_status` = '$training_details_status' 
+                             WHERE `training_id` = '$training_parent_id'";
+                mysqli_query($connection, $update_details_q);
+            }
+
+            // Fetch training details
             $training_data_fetched = "";
             $training_details_status = "";
-            if ($fetch_count > 0) {
-                while ($row = mysqli_fetch_assoc($fetch_r)) {
+
+            if (!empty($training_id)) {
+                $fetch_q = "SELECT * FROM `training` WHERE `training_id` = '$training_id'";
+                $fetch_r = mysqli_query($connection, $fetch_q);
+
+                if ($fetch_r && mysqli_num_rows($fetch_r) > 0) {
+                    $row = mysqli_fetch_assoc($fetch_r);
                     $training_data_fetched = $row['training_details'];
                     $training_details_status = $row['training_details_status'];
                 }
@@ -144,20 +169,27 @@ include 'includes/connection.php';
             ?>
 
             <form action="" method="POST">
-                <input type="hidden" name="training_parent_id" value="<?php echo $training_id; ?>">
+                <input type="hidden" name="training_parent_id" value="<?php echo htmlspecialchars($training_id); ?>">
                 <div class="WYSIWYG-editor">
                     <textarea id="editorNew" name="training_details"><?php echo htmlspecialchars($training_data_fetched); ?></textarea>
                 </div>
-                <?php if ($training_details_status != "2") { ?>
+                <?php if ($training_details_status == "1") { ?>
+                    <button type="submit" name="save-training-draft" class="btn btn-primary mt-3">Save Draft</button>
+                    <button type="submit" name="submit-training-draft" class="btn btn-success mt-3">Submit Details</button>
+                <?php } elseif ($training_details_status == "2") { ?>
+                    <button type="submit" name="save-training-draft" class="btn d-none btn-primary mt-3">Save Draft</button>
+                    <button type="submit" name="submit-training-draft" class="btn d-none btn-success mt-3">Submit Details</button>
+                <?php } else { ?>
                     <button type="submit" name="save-training-draft" class="btn btn-primary mt-3">Save Draft</button>
                     <button type="submit" name="submit-training-draft" class="btn btn-success mt-3">Submit Details</button>
                 <?php } ?>
             </form>
         </div>
+
     </div>
 </div>
 
-<?php 
+<?php
 ob_flush();
-include 'includes/footer.php'; 
+include 'includes/footer.php';
 ?>
