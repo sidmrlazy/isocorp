@@ -70,14 +70,34 @@ include 'includes/connection.php';
             ?>
                     <div class="note-container">
                         <p class="note-owner"><strong><?php echo $training_comment_by; ?></strong> - <?php echo $training_comment_datetime; ?></p>
-                        <p class="main-note"><?php echo $training_comment_data; ?></p>
-                        <form action="" method="POST" class="button-row">
+                        <style>
+                            
+                        </style>
+                        <div>
+                            <p class="main-note"><?php echo $training_comment_data; ?></p>
+                            <!-- Read More -->
+                            <div class="d-flex justify-content-center align-items-center">
+                                <button class="read-more-btn">
+                                    <ion-icon name="chevron-down-outline"></ion-icon>
+                                </button>
+                            </div>
+
+                            <!-- Read Less -->
+                            <div class="d-flex justify-content-center align-items-center">
+                                <button class="read-less-btn">
+                                    <ion-icon name="chevron-up-outline"></ion-icon>
+                                </button>
+                            </div>  
+                        </div>
+
+                        <form action="" method="POST" class="button-row" style="margin-top: 0 !important;">
                             <input type="hidden" name="delete_comment_id" value="<?php echo $training_comment_id; ?>">
                             <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark">
                                 <ion-icon name="close-circle-outline"></ion-icon>
                             </button>
                         </form>
                     </div>
+
             <?php
                 }
             } else {
@@ -188,7 +208,36 @@ include 'includes/connection.php';
 
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const note = document.querySelector(".main-note");
+        const readMoreBtn = document.querySelector(".read-more-btn");
+        const readLessBtn = document.querySelector(".read-less-btn");
 
+        if (note) {
+            let words = note.innerText.trim().split(/\s+/);
+            if (words.length > 50) {
+                let shortenedText = words.slice(0, 50).join(" ") + "...";
+                let fullText = note.innerHTML; // Store original content
+
+                note.innerHTML = shortenedText;
+                note.parentElement.classList.add("show-read-more"); // Show Read More button
+
+                readMoreBtn.addEventListener("click", function() {
+                    note.innerHTML = fullText; // Expand text
+                    note.parentElement.classList.remove("show-read-more");
+                    note.parentElement.classList.add("show-read-less"); // Show Read Less button
+                });
+
+                readLessBtn.addEventListener("click", function() {
+                    note.innerHTML = shortenedText; // Collapse text
+                    note.parentElement.classList.remove("show-read-less");
+                    note.parentElement.classList.add("show-read-more"); // Show Read More button
+                });
+            }
+        }
+    });
+</script>
 <?php
 ob_flush();
 include 'includes/footer.php';
