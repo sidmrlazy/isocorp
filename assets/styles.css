@@ -321,6 +321,42 @@ margin-top: 200px;
     border-radius: 10px;
     padding: 20px;
 }
+.clause-content p {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    margin: 0;
+    margin-bottom: 10px;
+}
+.clause-content li {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    margin: 0;
+    margin-bottom: 10px;
+}
+.clause-content h1 {
+    font-size: 20px !important;
+    font-weight: 400 !important;
+    margin: 0;
+    margin-bottom: 10px;
+}
+.clause-content h2 {
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    margin: 0;
+    margin-bottom: 10px;
+}
+.clause-content h3, h4, h5, h6 {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    margin: 0;
+    margin-bottom: 10px;
+}
+.clause-content td, th {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    margin: 0;
+    margin-bottom: 10px;
+}
 
 /* ========= SIM ========= */
 .sim-topic-container {
