@@ -70,13 +70,13 @@ include 'includes/connection.php';
             ?>
                     <div class="note-container" style="margin-bottom: 20px;">
                         <div class="d-flex justify-content-center align-items-center">
-                        <p class="note-owner" style="flex: 1"><strong><?php echo $training_comment_by; ?></strong> - <?php echo $training_comment_datetime; ?></p>
-                        <form action="" method="POST" style="margin-top: 0 !important;">
-                            <input type="hidden" name="delete_comment_id" value="<?php echo $training_comment_id; ?>">
-                            <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
-                                <ion-icon name="close-circle-outline"></ion-icon>
-                            </button>
-                        </form>
+                            <p class="note-owner" style="flex: 1"><strong><?php echo $training_comment_by; ?></strong> - <?php echo $training_comment_datetime; ?></p>
+                            <form action="" method="POST" style="margin-top: 0 !important;">
+                                <input type="hidden" name="delete_comment_id" value="<?php echo $training_comment_id; ?>">
+                                <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
+                                    <ion-icon name="close-circle-outline"></ion-icon>
+                                </button>
+                            </form>
                         </div>
                         <div>
                             <p class="main-note"><?php echo $training_comment_data; ?></p>

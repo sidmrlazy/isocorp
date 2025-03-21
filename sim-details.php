@@ -93,7 +93,7 @@ include 'includes/connection.php';
         }
     }
     ?>
-    <div class="section-divider">
+    <div style="display: flex; flex-direction: column-reverse;">
 
         <div class="notes-section mt-1">
             <div class="heading-row">
@@ -143,8 +143,20 @@ include 'includes/connection.php';
                     $fetched_comment_data = $row['comment_data'];
             ?>
 
-                    <div class="note-container">
-                        <p class="note-owner"><strong><?php echo $fetched_comment_owner ?></strong> - <?php echo $fetched_comment_date ?></p>
+                    <div class="note-container mb-3">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <p class="note-owner" style="flex: 1">
+                                <strong><?php echo $fetched_comment_owner ?></strong> - <?php echo $fetched_comment_date ?>
+                            </p>
+                            <form action="" method="POST" class="button-row">
+                                <input type="text" name="fetched_comment_id" value="<?php echo $fetched_comment_id ?>" hidden>
+                                <input type="text" value="<?php echo $sim_id ?>" hidden>
+                                <input type="text" value="<?php echo $user_name ?>" hidden>
+                                <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark">
+                                    <ion-icon name="close-circle-outline"></ion-icon>
+                                </button>
+                            </form>
+                        </div>
 
                         <div>
                             <p class="main-note"><?php echo $fetched_comment_data ?></p>
@@ -162,14 +174,7 @@ include 'includes/connection.php';
                                 </button>
                             </div>
                         </div>
-                        <form action="" method="POST" class="button-row">
-                            <input type="text" name="fetched_comment_id" value="<?php echo $fetched_comment_id ?>" hidden>
-                            <input type="text" value="<?php echo $sim_id ?>" hidden>
-                            <input type="text" value="<?php echo $user_name ?>" hidden>
-                            <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark">
-                                <ion-icon name="close-circle-outline"></ion-icon>
-                            </button>
-                        </form>
+
                     </div>
                 <?php } ?>
             <?php } ?>
