@@ -353,7 +353,7 @@ include 'includes/config.php'; ?>
                         </form>
                     <?php }  ?>
                 </div>
-                </div>
+                
             </div>
     </div>
 

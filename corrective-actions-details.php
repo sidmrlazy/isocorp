@@ -77,12 +77,12 @@ include 'includes/config.php';
                     Form updated!
                 </div>
 
-    <?php } else { ?>
-        <div class="alert alert-danger mt-3 mb-3" id="alertBox" role="alert">
+            <?php } else { ?>
+                <div class="alert alert-danger mt-3 mb-3" id="alertBox" role="alert">
                     Error in updateing Form!
                 </div>
-            <?php }
-        } 
+    <?php }
+        }
     }
     ?>
     <div class="section-divider">
@@ -153,17 +153,157 @@ include 'includes/config.php';
         </form>
 
         <!-- ============ DESCRIPTION SECTION ============ -->
-        <form action="" method="POSt" class="form-container" style="flex: 2">
-            <input type="text" name="ca_id" value="<?php echo $tbl_ca_id ?>" hidden>
-            <div class="WYSIWYG-editor">
-                <label for="editorNew" class="form-label">Description</label>
-                <textarea id="editorNew" name="ca_description"><?php echo $tbl_ca_description ?></textarea>
+        <div style="flex: 2">
+            <?php
+            if(isset($_POST['delete-note'])) {
+                $delete_comment_id = $_POST['delete_comment_id'];
+                $delete_query = "DELETE FROM tblca_comment WHERE ca_comment_id = '$delete_comment_id'";
+                $delete_res = mysqli_query($connection, $delete_query);
+            }
+
+            if (isset($_POST['add-comment'])) {
+                $ca_comment_parent_id = $_POST['ca_comment_parent_id'];
+                $ca_comment_data = $_POST['ca_comment_data'];
+                $ca_comment_by = $_POST['ca_comment_by'];
+                $ca_comment_date = date('Y-m-d');
+
+                $add_comment_q = "INSERT INTO `tblca_comment`(
+                `ca_comment_parent_id`, 
+                `ca_comment_data`, 
+                `ca_comment_by`, 
+                `ca_comment_date`) VALUES (
+                '$ca_comment_parent_id',
+                '$ca_comment_data',
+                '$ca_comment_by',
+                '$ca_comment_date')";
+                $add_comment_r = mysqli_query($connection, $add_comment_q);
+            }
+            ?>
+            <form action="" method="POST" class="form-container">
+                <input type="text" name="ca_id" value="<?php echo $tbl_ca_id ?>" hidden>
+                <div class="WYSIWYG-editor">
+                    <label for="editorNew" class="form-label">Description</label>
+                    <textarea id="editorNew" name="ca_description"><?php echo $tbl_ca_description ?></textarea>
+                </div>
+                <div class="btn-row">
+                    <button type="submit" name="save-draft-details" class="btn btn-dark btn-sm">Save Draft</button>
+                    <button type="submit" name="submit-notes-details" class="btn btn-success btn-sm">Submit Notes</button>
+                </div>
+            </form>
+
+            <!-- ============ COMMENT SECTION ============ -->
+            <div class="notes-section mt-1">
+                <div class="heading-row">
+                    <p style="font-size: 18px;">Comments</p>
+                    <button 
+                    style="font-size: 12px;" 
+                    type="button" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#commentModal" 
+                    class="btn btn-sm btn-outline-dark">Add Note</button>
+                </div>
+
+                <!-- ========== SHOW COMMENTS ========== -->
+                 <?php 
+                 $fetch_comment_q = "SELECT * FROM `tblca_comment` WHERE `ca_comment_parent_id` = '$tbl_ca_id'";
+                 $fetch_comment_r = mysqli_query($connection, $fetch_comment_q);
+                 $fetch_comment_count = mysqli_num_rows($fetch_comment_r);
+                 if($fetch_comment_count > 0) {
+                    while($row = mysqli_fetch_assoc($fetch_comment_r)) {
+                        $ca_comment_id = $row['ca_comment_id'];
+                        $ca_comment_data = $row['ca_comment_data'];
+                        $ca_comment_by = $row['ca_comment_by'];
+                        $ca_comment_date = $row['ca_comment_date'];
+                 ?>
+                <div class="note-container" style="margin-bottom: 20px;">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <p class="note-owner" style="flex: 1"><strong><?php echo $ca_comment_by ?></strong> - <?php echo $ca_comment_date ?></p>
+                        <form action="" method="POST" style="margin-top: 0 !important;">
+                            <input type="hidden" name="delete_comment_id" value="<?php echo $ca_comment_id ?>">
+                            <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
+                                <ion-icon name="close-circle-outline"></ion-icon>
+                            </button>
+                        </form>
+                    </div>
+                    <div>
+                        <p class="main-note"><?php echo $ca_comment_data ?></p>
+                        <!-- Read More -->
+                        <div class="d-flex justify-content-center align-items-center mt-3">
+                            <button class="read-more-btn">
+                                <ion-icon name="chevron-down-outline"></ion-icon>
+                            </button>
+                        </div>
+
+                        <!-- Read Less -->
+                        <div class="d-flex justify-content-center align-items-center mt-3">
+                            <button class="read-less-btn">
+                                <ion-icon name="chevron-up-outline"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <?php } ?>
+                <?php } else { ?>
+                    No Comments added.
+                <?php } ?>
             </div>
-            <div class="btn-row">
-                <button type="submit" name="save-draft-details" class="btn btn-dark btn-sm">Save Draft</button>
-                <button type="submit" name="submit-notes-details" class="btn btn-success btn-sm">Submit Notes</button>
+
+
+
+            <!-- ======= ADD NOTE MODAL ======= -->
+            <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div action="" method="POST" class="modal-dialog modal-dialog-centered">
+                    <form action="" method="POST" class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Add Comment</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" name="ca_comment_parent_id" value="<?php echo $tbl_ca_id ?>" hidden>
+                            <input type="text" name="ca_comment_by" value="<?php echo $user_name ?>" hidden>
+
+                            <div class="WYSIWYG-editor form-floating">
+                                <textarea id="editorNew" class="form-control" name="ca_comment_data" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Comments</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" name="add-comment" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const note = document.querySelector(".main-note");
+        const readMoreBtn = document.querySelector(".read-more-btn");
+        const readLessBtn = document.querySelector(".read-less-btn");
+
+        if (note) {
+            let words = note.innerText.trim().split(/\s+/);
+            if (words.length > 50) {
+                let shortenedText = words.slice(0, 50).join(" ") + "...";
+                let fullText = note.innerHTML; // Store original content
+
+                note.innerHTML = shortenedText;
+                note.parentElement.classList.add("show-read-more"); // Show Read More button
+
+                readMoreBtn.addEventListener("click", function() {
+                    note.innerHTML = fullText; // Expand text
+                    note.parentElement.classList.remove("show-read-more");
+                    note.parentElement.classList.add("show-read-less"); // Show Read Less button
+                });
+
+                readLessBtn.addEventListener("click", function() {
+                    note.innerHTML = shortenedText; // Collapse text
+                    note.parentElement.classList.remove("show-read-less");
+                    note.parentElement.classList.add("show-read-more"); // Show Read More button
+                });
+            }
+        }
+    });
+</script>
 <?php include 'includes/footer.php'; ?>

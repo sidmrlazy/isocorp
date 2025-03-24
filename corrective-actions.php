@@ -13,15 +13,25 @@ include 'includes/config.php';
     <?php
     if (isset($_POST['add-topic'])) {
         $ca_topic = mysqli_real_escape_string($connection, $_POST['ca_topic']);
-        $ca_created_date = date('Y-m-d');
-        $create_topic_query = "INSERT INTO `tblca`(`ca_topic`, `ca_created_by`, `ca_created_date`) VALUES ('$ca_topic','$user_name', '$ca_created_date')";
+        $ca_created_date = date('Y-m-d H:i:s');
+        $create_topic_query = "INSERT INTO `tblca`(
+        `ca_topic`, 
+        `ca_created_by`, 
+        `ca_created_date`) VALUES (
+        '$ca_topic',
+        '$user_name', 
+        '$ca_created_date')";
         $create_topic_result = mysqli_query($connection, $create_topic_query);
         if ($create_topic_result) { ?>
             <div class="alert alert-success mt-3 mb-3" id="alertBox" role="alert">
                 Topic added successfully!
             </div>
     <?php
-        }
+        } else { ?>            
+        <div class="alert alert-success mt-3 mb-3" id="alertBox" role="alert">
+                <?php echo die("Query Failed: " . mysqli_error($connection)); ?>
+            </div>
+        <?php }
     }
     ?>
 
