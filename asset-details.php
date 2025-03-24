@@ -34,14 +34,17 @@ include 'includes/config.php';
         $insert_draft_r = mysqli_query($connection, $insert_draft);
     }
     if (isset($_POST['save-asset-draft-form'])) {
-        $asset_status = mysqli_real_escape_string($connection, $_POST['asset_status']);
-        $asset_value = mysqli_real_escape_string($connection, $_POST['asset_value']);
-        $asset_type = mysqli_real_escape_string($connection, $_POST['asset_type']);
-        $asset_classification = mysqli_real_escape_string($connection, $_POST['asset_classification']);
-        $asset_location = mysqli_real_escape_string($connection, $_POST['asset_location']);
-        $asset_owner_legal = mysqli_real_escape_string($connection, $_POST['asset_owner_legal']);
-        $asset_owner = mysqli_real_escape_string($connection, $_POST['asset_owner']);
-        $asset_assigned_to = mysqli_real_escape_string($connection, $_POST['asset_assigned_to']);
+        $asset_status = isset($_POST['asset_status']) ? mysqli_real_escape_string($connection, $_POST['asset_status']) : '';
+        $asset_value = isset($_POST['asset_value']) ? mysqli_real_escape_string($connection, $_POST['asset_value']) : '';
+        $asset_type = isset($_POST['asset_type']) ? mysqli_real_escape_string($connection, implode(',', (array)$_POST['asset_type'])) : '';
+        $asset_classification = isset($_POST['asset_classification']) ? mysqli_real_escape_string($connection, implode(',', (array)$_POST['asset_classification'])) : '';
+        $asset_location = isset($_POST['asset_location']) ? mysqli_real_escape_string($connection, implode(',', (array)$_POST['asset_location'])) : '';
+
+        // FIX: Convert array to string
+        $asset_owner_legal = isset($_POST['asset_owner_legal']) ? mysqli_real_escape_string($connection, implode(',', (array)$_POST['asset_owner_legal'])) : '';
+        $asset_owner = isset($_POST['asset_owner']) ? mysqli_real_escape_string($connection, implode(',', (array)$_POST['asset_owner'])) : '';
+
+        $asset_assigned_to = isset($_POST['asset_assigned_to']) ? mysqli_real_escape_string($connection, $_POST['asset_assigned_to']) : '';
         $asset_form_status = "1";
 
         $update_asset_query = "UPDATE asset SET 
@@ -63,14 +66,17 @@ include 'includes/config.php';
     }
 
     if (isset($_POST['submit-asset-draft-form'])) {
-        $asset_status = mysqli_real_escape_string($connection, $_POST['asset_status']);
-        $asset_value = mysqli_real_escape_string($connection, $_POST['asset_value']);
-        $asset_type = mysqli_real_escape_string($connection, $_POST['asset_type']);
-        $asset_classification = mysqli_real_escape_string($connection, $_POST['asset_classification']);
-        $asset_location = mysqli_real_escape_string($connection, $_POST['asset_location']);
-        $asset_owner_legal = mysqli_real_escape_string($connection, $_POST['asset_owner_legal']);
-        $asset_owner = mysqli_real_escape_string($connection, $_POST['asset_owner']);
-        $asset_assigned_to = mysqli_real_escape_string($connection, $_POST['asset_assigned_to']);
+        $asset_status = isset($_POST['asset_status']) ? mysqli_real_escape_string($connection, $_POST['asset_status']) : '';
+        $asset_value = isset($_POST['asset_value']) ? mysqli_real_escape_string($connection, $_POST['asset_value']) : '';
+        $asset_type = isset($_POST['asset_type']) ? mysqli_real_escape_string($connection, implode(',', (array)$_POST['asset_type'])) : '';
+        $asset_classification = isset($_POST['asset_classification']) ? mysqli_real_escape_string($connection, implode(',', (array)$_POST['asset_classification'])) : '';
+        $asset_location = isset($_POST['asset_location']) ? mysqli_real_escape_string($connection, implode(',', (array)$_POST['asset_location'])) : '';
+
+        // FIX: Convert array to string
+        $asset_owner_legal = isset($_POST['asset_owner_legal']) ? mysqli_real_escape_string($connection, implode(',', (array)$_POST['asset_owner_legal'])) : '';
+        $asset_owner = isset($_POST['asset_owner']) ? mysqli_real_escape_string($connection, implode(',', (array)$_POST['asset_owner'])) : '';
+
+        $asset_assigned_to = isset($_POST['asset_assigned_to']) ? mysqli_real_escape_string($connection, $_POST['asset_assigned_to']) : '';
         $asset_form_status = "2";
 
         $update_asset_query = "UPDATE asset SET 
@@ -90,6 +96,8 @@ include 'includes/config.php';
             echo '<div class="alert alert-success mb-3 mt-3" role="alert">Form Submitted!</div>';
         }
     }
+
+
     ?>
     <div class="asset-details">
         <p class="asset-details-heading">Asset Inventory details</p>
@@ -97,7 +105,7 @@ include 'includes/config.php';
         <?php if ($fetched_asset_name != NULL) { ?>
             <p class="asset-details-notes"><?php echo $fetched_asset_name ?></p>
         <?php } else { ?>
-            <div class="alert alert-danger mt-2" role="alert">
+            <div id="alertBox" class="alert alert-danger mt-2" role="alert">
                 Asset note not found!
             </div>
         <?php } ?>
@@ -155,7 +163,7 @@ include 'includes/config.php';
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Type</label>
-                    <select class="form-select" name="asset_type" aria-label="Default select example">
+                    <select class="form-select" name="asset_type[]" aria-label="Default select example" multiple>
                         <option selected>Open this select menu</option>
                         <option value="Financial">Financial</option>
                         <option value="IPR">IPR</option>
@@ -169,12 +177,13 @@ include 'includes/config.php';
                         <option value="Supply Chain">Supply Chain</option>
                         <option value="Other info assets">Other info assets</option>
                         <option value="Physical Security">Physical Security</option>
+                        <option value="Staff/HR">Staff/HR</option>
                     </select>
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Classification</label>
-                    <select class="form-select" name="asset_classification" aria-label="Default select example">
+                    <select class="form-select" name="asset_classification[]" aria-label="Default select example" multiple>
                         <option selected>Open this select menu</option>
                         <option value="Confidential">Confidential</option>
                         <option value="Sensitive">Sensitive</option>
@@ -184,7 +193,7 @@ include 'includes/config.php';
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Location</label>
-                    <select class="form-select" name="asset_location" aria-label="Default select example">
+                    <select class="form-select" name="asset_location[]" aria-label="Default select example" multiple>
                         <option selected>Open this select menu</option>
                         <option value="Company Office">Company Office</option>
                         <option value="Teleworker (Home)">Teleworker (Home)</option>
@@ -196,7 +205,7 @@ include 'includes/config.php';
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Legal Owner</label>
-                    <select class="form-select" name="asset_owner_legal" aria-label="Default select example">
+                    <select class="form-select" name="asset_owner_legal[]" aria-label="Default select example" multiple>
                         <option selected>Open this select menu</option>
                         <option value="Company">Company</option>
                         <option value="Employee (inc. BYOD)">Employee (inc. BYOD)</option>
@@ -207,7 +216,7 @@ include 'includes/config.php';
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Owner Lead</label>
-                    <select class="form-select" name="asset_owner" aria-label="Default select example">
+                    <select class="form-select" name="asset_owner[]" aria-label="Default select example" multiple>
                         <option selected>Open this select menu</option>
                         <option value="CEO">CEO</option>
                         <option value="DPO">DPO</option>
