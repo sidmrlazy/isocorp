@@ -38,6 +38,11 @@ include 'includes/connection.php';
               <ion-icon name="flask-outline"></ion-icon> Risks & Treatments
               </a>
             </li>
+            <li>
+              <a class="dropdown-item" href="corrective-actions.php">
+              <ion-icon name="construct-outline"></ion-icon> Corrective Actions & Improvements
+              </a>
+            </li>
           </ul>
         </li>
         <?php if ($user_role == '1') { ?>
