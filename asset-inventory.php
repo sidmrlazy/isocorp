@@ -69,19 +69,19 @@ include 'includes/config.php';
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">ID</th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Name</th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Status</th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Financial Value</th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Type</th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Classification</th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Location</th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Legal Owner</th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Owner/Lead</th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Assigned to </th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Created on</th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Created by</th>
-                        <th class="asset-table-heading" style="font-weight: 600;" scope="col">Delete</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">ID</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Name</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Status</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Financial Value</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Type</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Classification</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Location</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Legal Owner</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Owner/Lead</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Assigned to </th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Created on</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Created by</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
