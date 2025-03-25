@@ -81,6 +81,45 @@ include 'includes/config.php';
                 <div class="alert alert-danger mt-3 mb-3" id="alertBox" role="alert">
                     Error in updateing Form!
                 </div>
+            <?php }
+        }
+    }
+
+    if (isset($_POST['submit-form-draft'])) {
+        $ca_id = mysqli_real_escape_string($connection, $_POST['new_ca_id']);
+        $ca_status = mysqli_real_escape_string($connection, $_POST['ca_status']);
+        $ca_financial_value = mysqli_real_escape_string($connection, $_POST['ca_financial_value']);
+        $ca_assigned_to = mysqli_real_escape_string($connection, $_POST['ca_assigned_to']);
+
+        $ca_source = isset($_POST['ca_source']) ? implode(',', $_POST['ca_source']) : '';
+        $ca_severity = isset($_POST['ca_severity']) ? implode(',', $_POST['ca_severity']) : '';
+
+        $ca_updated_date = date('Y-m-d');
+        $ca_updated_by = mysqli_real_escape_string($connection, $user_name);
+        $ca_form_status = "2";
+        if (!empty($ca_id)) {
+            $update_form_query = "UPDATE tblca SET
+            ca_status = '$ca_status',
+            ca_financial_value = '$ca_financial_value',
+            ca_source = '$ca_source',
+            ca_severity = '$ca_severity',
+            ca_assigned_to = '$ca_assigned_to',
+            ca_updated_date = '$ca_updated_date',
+            ca_updated_by = '$ca_updated_by',
+            ca_form_status = '$ca_form_status'
+            WHERE ca_id = '$ca_id'";
+
+            $update_form_result = mysqli_query($connection, $update_form_query);
+
+            if ($update_form_result) { ?>
+                <div class="alert alert-success mt-3 mb-3" id="alertBox" role="alert">
+                    Form updated!
+                </div>
+
+            <?php } else { ?>
+                <div class="alert alert-danger mt-3 mb-3" id="alertBox" role="alert">
+                    Error in updateing Form!
+                </div>
     <?php }
         }
     }
@@ -155,7 +194,7 @@ include 'includes/config.php';
         <!-- ============ DESCRIPTION SECTION ============ -->
         <div style="flex: 2">
             <?php
-            if(isset($_POST['delete-note'])) {
+            if (isset($_POST['delete-note'])) {
                 $delete_comment_id = $_POST['delete_comment_id'];
                 $delete_query = "DELETE FROM tblca_comment WHERE ca_comment_id = '$delete_comment_id'";
                 $delete_res = mysqli_query($connection, $delete_query);
@@ -195,54 +234,54 @@ include 'includes/config.php';
             <div class="notes-section mt-1">
                 <div class="heading-row">
                     <p style="font-size: 18px;">Comments</p>
-                    <button 
-                    style="font-size: 12px;" 
-                    type="button" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#commentModal" 
-                    class="btn btn-sm btn-outline-dark">Add Note</button>
+                    <button
+                        style="font-size: 12px;"
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#commentModal"
+                        class="btn btn-sm btn-outline-dark">Add Note</button>
                 </div>
 
                 <!-- ========== SHOW COMMENTS ========== -->
-                 <?php 
-                 $fetch_comment_q = "SELECT * FROM `tblca_comment` WHERE `ca_comment_parent_id` = '$tbl_ca_id'";
-                 $fetch_comment_r = mysqli_query($connection, $fetch_comment_q);
-                 $fetch_comment_count = mysqli_num_rows($fetch_comment_r);
-                 if($fetch_comment_count > 0) {
-                    while($row = mysqli_fetch_assoc($fetch_comment_r)) {
+                <?php
+                $fetch_comment_q = "SELECT * FROM `tblca_comment` WHERE `ca_comment_parent_id` = '$tbl_ca_id'";
+                $fetch_comment_r = mysqli_query($connection, $fetch_comment_q);
+                $fetch_comment_count = mysqli_num_rows($fetch_comment_r);
+                if ($fetch_comment_count > 0) {
+                    while ($row = mysqli_fetch_assoc($fetch_comment_r)) {
                         $ca_comment_id = $row['ca_comment_id'];
                         $ca_comment_data = $row['ca_comment_data'];
                         $ca_comment_by = $row['ca_comment_by'];
                         $ca_comment_date = $row['ca_comment_date'];
-                 ?>
-                <div class="note-container" style="margin-bottom: 20px;">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <p class="note-owner" style="flex: 1"><strong><?php echo $ca_comment_by ?></strong> - <?php echo $ca_comment_date ?></p>
-                        <form action="" method="POST" style="margin-top: 0 !important;">
-                            <input type="hidden" name="delete_comment_id" value="<?php echo $ca_comment_id ?>">
-                            <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
-                                <ion-icon name="close-circle-outline"></ion-icon>
-                            </button>
-                        </form>
-                    </div>
-                    <div>
-                        <p class="main-note"><?php echo $ca_comment_data ?></p>
-                        <!-- Read More -->
-                        <div class="d-flex justify-content-center align-items-center mt-3">
-                            <button class="read-more-btn">
-                                <ion-icon name="chevron-down-outline"></ion-icon>
-                            </button>
-                        </div>
+                ?>
+                        <div class="note-container" style="margin-bottom: 20px;">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <p class="note-owner" style="flex: 1"><strong><?php echo $ca_comment_by ?></strong> - <?php echo $ca_comment_date ?></p>
+                                <form action="" method="POST" style="margin-top: 0 !important;">
+                                    <input type="hidden" name="delete_comment_id" value="<?php echo $ca_comment_id ?>">
+                                    <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
+                                        <ion-icon name="close-circle-outline"></ion-icon>
+                                    </button>
+                                </form>
+                            </div>
+                            <div>
+                                <p class="main-note"><?php echo $ca_comment_data ?></p>
+                                <!-- Read More -->
+                                <div class="d-flex justify-content-center align-items-center mt-3">
+                                    <button class="read-more-btn">
+                                        <ion-icon name="chevron-down-outline"></ion-icon>
+                                    </button>
+                                </div>
 
-                        <!-- Read Less -->
-                        <div class="d-flex justify-content-center align-items-center mt-3">
-                            <button class="read-less-btn">
-                                <ion-icon name="chevron-up-outline"></ion-icon>
-                            </button>
+                                <!-- Read Less -->
+                                <div class="d-flex justify-content-center align-items-center mt-3">
+                                    <button class="read-less-btn">
+                                        <ion-icon name="chevron-up-outline"></ion-icon>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <?php } ?>
+                    <?php } ?>
                 <?php } else { ?>
                     No Comments added.
                 <?php } ?>
@@ -250,7 +289,7 @@ include 'includes/config.php';
 
 
 
-            <!-- ======= ADD NOTE MODAL ======= -->
+            <!-- ======= ADD COMMENT MODAL ======= -->
             <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div action="" method="POST" class="modal-dialog modal-dialog-centered">
                     <form action="" method="POST" class="modal-content">
@@ -306,4 +345,5 @@ include 'includes/config.php';
         }
     });
 </script>
-<?php include 'includes/footer.php'; ?>
+<?php 
+include 'includes/footer.php'; ?>

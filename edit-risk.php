@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_risk'])) {
         <h1>Edit Risks & Treatments</h1>
         <h2><a href="risks-treatments.php">Risks & Treatments</a> > Edit Risks & Treatments</h2>
     </div>
-    <div class="form-container">
+    <div class="form-container mb-5">
         <form method="post">
             <div class="mb-3">
                 <label>Risk Name</label>

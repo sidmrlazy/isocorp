@@ -101,7 +101,7 @@ include 'includes/config.php';
                         $asset_created_by = $row['asset_created_by'];
                     ?>
                         <tr>
-                            <th class="asset-data" scope="row"><?php echo $asset_id ?></th>
+                            <th style="font-size: 12px !important;" class="asset-data" scope="row"><?php echo $asset_id ?></th>
                             <td class="asset-data">
                                 <a href="asset-details.php?id=<?php echo $asset_id; ?>"><?php echo $asset_name; ?></a>
                             </td>
