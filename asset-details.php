@@ -324,7 +324,6 @@ include 'includes/connection.php';
                         $comment_by = $row['asset_comment_by'];
                         $comment_date = $row['asset_comment_date'];
                         $comment_data = $row['asset_comment_data'];
-                    
                 ?>                
                 <!-- ========== SHOW COMMENTS ========== -->
                 <div class="note-container" style="margin-bottom: 20px;">
