@@ -1,6 +1,46 @@
-<div class="mb-3 mt-5 floating-search-input">
-    <input type="text" id="searchInput" class="form-control" placeholder="Search" onkeyup="searchPolicies()" onblur="delayedReset()">
+<div style="display: flex; justify-content: center; align-items: center; margin-top: 50px;">
+    <div class="floating-search-input">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search" onkeyup="searchPolicies()" onblur="delayedReset()">
+    </div>
+
+    <!-- ============= EXPAND | COLLAPSE BUTTON ============= -->
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <button class="btn btn-sm btn-outline-dark" id="expandAllBtn">Expand All</button>
+        <button class="btn btn-sm btn-outline-dark" id="collapseAllBtn" style="display: none;">Collapse All</button>
+    </div>
+
 </div>
+
+<script>
+    const expandBtn = document.getElementById('expandAllBtn');
+    const collapseBtn = document.getElementById('collapseAllBtn');
+
+    expandBtn.addEventListener('click', function () {
+        // Expand all accordions
+        document.querySelectorAll('.accordion-collapse').forEach(collapse => {
+            collapse.classList.add('show');
+            const button = collapse.previousElementSibling?.querySelector('.accordion-button');
+            if (button) button.classList.remove('collapsed');
+        });
+
+        // Toggle buttons
+        expandBtn.style.display = 'none';
+        collapseBtn.style.display = 'inline-block';
+    });
+
+    collapseBtn.addEventListener('click', function () {
+        // Collapse all accordions
+        document.querySelectorAll('.accordion-collapse').forEach(collapse => {
+            collapse.classList.remove('show');
+            const button = collapse.previousElementSibling?.querySelector('.accordion-button');
+            if (button) button.classList.add('collapsed');
+        });
+
+        // Toggle buttons
+        collapseBtn.style.display = 'none';
+        expandBtn.style.display = 'inline-block';
+    });
+</script>
 
 <div class="main-controls-section">
     <div class="accordion" id="accordionExample">

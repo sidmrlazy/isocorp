@@ -172,7 +172,7 @@ margin-top: 200px;
     transition: 0.3s all ease-in-out;
 }
 .floating-search-input {
-    width: 50%;
+    flex: 1;
     margin-right: 20px;
 }
 .highlight {
