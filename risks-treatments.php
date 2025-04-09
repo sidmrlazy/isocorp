@@ -116,15 +116,18 @@ $color_map = [
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr class="risk-details-headers">
-                        <th>Risk/Threat</th>
-                        <th>Likelihood</th>
-                        <th>Impact</th>
-                        <th>Status</th>
-                        <!-- <th>Created Date</th>
-                        <th>Updated On</th> -->
+                        <th style="font-size: 12px !important; font-weight: 600 !important;">Risk/Threat</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;">Likelihood</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;">Impact</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;">Action</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;">Review Date</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;">Assigned to</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;">Status</th>
+                        <!-- <th style="font-size: 12px !important; font-weight: 600 !important;">Created Date</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;">Updated On</th> -->
                         <?php if ($user_role === '1') { ?>
-                            <th>Edit</th>
-                            <th>Delete</th>
+                            <th style="font-size: 12px !important; font-weight: 600 !important;">Edit</th>
+                            <th style="font-size: 12px !important; font-weight: 600 !important;">Delete</th>
                         <?php } ?>
                     </tr>
                 </thead>
@@ -155,6 +158,9 @@ $color_map = [
                             <!-- <td><?= htmlspecialchars($row['risks_description']) ?></td> -->
                             <td><?= $row['risks_likelihood'] ?></td>
                             <td><?= $row['risks_impact'] ?></td>
+                            <td><?= $row['risks_action'] ?></td>
+                            <td><?= $row['risks_review_date'] ?></td>
+                            <td><?= $row['risks_assigned_to'] ?></td>
                             <td><?= $row['risks_status'] ?></td>
                             <!-- <td><?= $row['risks_created_at'] ?></td>
                             <td ><?= $row['risks_updated_at'] ?></td> -->
@@ -240,11 +246,44 @@ $color_map = [
                         </select>
                     </div>
                     <div class="mb-3">
+                        <label>Action</label>
+                        <select name="action" class="form-control" required>
+                            <option>Terminate</option>
+                            <option>Combination of actions</option>
+                            <option>Tolerate: Residual risk</option>
+                            <option>Transfer</option>
+                            <option>Treat (Other)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Review Date</label>
+                        <input type="date" name="review_date" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Assigned to</label>
+                        <select name="assigned_to" class="form-control" required>
+                            <?php
+                            $get_user = "SELECT * FROM `user`";
+                            $get_user_r = mysqli_query($connection, $get_user);
+                            if ($get_user_r && mysqli_num_rows($get_user_r) > 0) {
+                                while ($row = mysqli_fetch_assoc($get_user_r)) {
+                                    $fetched_user_name = $row['isms_user_name'];
+                                    echo "<option value='" . htmlspecialchars($fetched_user_name) . "'>$fetched_user_name</option>";
+                                }
+                            } else {
+                                echo "<option disabled>No users found</option>";
+                            }
+                            ?>
+                        </select>
+
+                    </div>
+                    <div class="mb-3">
                         <label>Added By</label>
                         <input type="text" name="added_by" class="form-control" value="<?= $user_name; ?>" readonly>
                     </div>
                     <button type="submit" name="add_risk" class="btn btn-primary">Add Risk</button>
                 </form>
+
             </div>
         </div>
     </div>
