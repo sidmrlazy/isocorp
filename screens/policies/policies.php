@@ -79,7 +79,7 @@
                                 if (!$has_sub_policies) { ?>
                                     <form action="policy-details.php" target="_blank" method="GET">
                                         <input type="hidden" name="policy_id" value="<?= $policy_id ?>">
-                                        <button class="btn btn-sm btn-outline-success mt-3 mb-3">View Details</button>
+                                        <button class="btn btn-sm btn-outline-success mt-3 mb-3">View Policy Details & Document</button>
                                     </form>
                                     <?php }
 
@@ -113,7 +113,7 @@
                                                     if (!$has_linked_policies) { ?>
                                                         <form action="policy-details.php" target="_blank" method="GET">
                                                             <input type="hidden" name="policy_id" value="<?= $sub_policy_id ?>">
-                                                            <button class="btn btn-sm btn-outline-success mt-3 mb-3">View Details</button>
+                                                            <button class="btn btn-sm btn-outline-success mt-3 mb-3">View Policy Details & Document</button>
                                                         </form>
                                                     <?php } ?>
 
@@ -153,7 +153,7 @@
                                                                             if (!$has_inner_linked_policies) { ?>
                                                                                 <form action="policy-details.php" target="_blank" method="GET">
                                                                                     <input type="hidden" name="linked_policy_id" value="<?= $linked_policy_id ?>">
-                                                                                    <button class="btn btn-sm btn-outline-success mt-3 mb-3">View Details</button>
+                                                                                    <button class="btn btn-sm btn-outline-success mt-3 mb-3">View Policy Details & Document</button>
                                                                                 </form>
                                                                             <?php } ?>
 
@@ -186,7 +186,7 @@
                                                                                                     <!-- Always show button at Inner Linked Policy Level -->
                                                                                                     <form action="policy-details.php" target="_blank" method="GET">
                                                                                                         <input type="hidden" name="inner_policy_id" value="<?= $inner_policy_id ?>">
-                                                                                                        <button class="btn btn-sm btn-outline-success mt-3 mb-3">View Details</button>
+                                                                                                        <button class="btn btn-sm btn-outline-success mt-3 mb-3">View Policy Details & Document</button>
                                                                                                     </form>
                                                                                                 </div>
                                                                                             </div>
