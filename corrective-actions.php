@@ -11,29 +11,38 @@ include 'includes/config.php';
     </div>
 
     <?php
+    if(isset($_POST['delete'])){
+        $ca_id = mysqli_real_escape_string($connection, $_POST['ca_id']);
+        $delete = "DELETE FROM `tblca` WHERE ca_id = '$ca_id'";
+        $delete_r = mysqli_query($connection, $delete);
+    }
+
     if (isset($_POST['add-topic'])) {
+        date_default_timezone_set('Asia/Kolkata');    
         $ca_topic = mysqli_real_escape_string($connection, $_POST['ca_topic']);
-        $ca_created_date = date('Y-m-d H:i:s');
+        $ca_created_date = date('m-d-Y H:i:s');
         $create_topic_query = "INSERT INTO `tblca`(
-        `ca_topic`, 
-        `ca_created_by`, 
-        `ca_created_date`) VALUES (
-        '$ca_topic',
-        '$user_name', 
-        '$ca_created_date')";
+            `ca_topic`, 
+            `ca_created_by`, 
+            `ca_created_date`) VALUES (
+            '$ca_topic',
+            '$user_name', 
+            '$ca_created_date')";
         $create_topic_result = mysqli_query($connection, $create_topic_query);
+        
         if ($create_topic_result) { ?>
             <div class="alert alert-success mt-3 mb-3" id="alertBox" role="alert">
                 Topic added successfully!
             </div>
         <?php
         } else { ?>
-            <div class="alert alert-success mt-3 mb-3" id="alertBox" role="alert">
+            <div class="alert alert-danger mt-3 mb-3" id="alertBox" role="alert">
                 <?php echo die("Query Failed: " . mysqli_error($connection)); ?>
             </div>
-    <?php }
+        <?php }
     }
     ?>
+    
 
     <!-- ============ MODAL ============ -->
     <div class="modal fade" id="caModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -84,8 +93,8 @@ include 'includes/config.php';
                             <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">ASSIGNED TO</th>
                             <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">CREATED BY</th>
                             <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">CREATED DATE</th>
-                            <!-- <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">EDIT TOPIC</th>
-                            <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">DELETE TOPIC</th> -->
+                            <!-- <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">EDIT TOPIC</th> -->
+                            <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">DELETE TOPIC</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,19 +125,19 @@ include 'includes/config.php';
                                 <!-- <td style="font-size: 12px;" class="text-center">
                                     <form action="" method="POST">
                                         <input type="text" name="ca_id" value="<?php echo $ca_id ?>" hidden>
-                                        <button class="btn btn-sm btn-warning">
+                                        <button type="submit" name="edit-topic" class="btn btn-sm btn-warning">
                                             <ion-icon name="create-outline"></ion-icon>
                                         </button>
                                     </form>
                                 </td> -->
-                                <!-- <td style="font-size: 12px;" class="text-center">
+                                <td style="font-size: 12px;" class="text-center">
                                     <form action="" method="POST">
                                         <input type="text" name="ca_id" value="<?php echo $ca_id ?>" hidden>
-                                        <button class="btn btn-sm btn-danger">
+                                        <button type="submit" name="delete" class="btn btn-sm btn-danger">
                                             <ion-icon name="close-outline"></ion-icon>
                                         </button>
                                     </form>
-                                </td> -->
+                                </td>
                             </tr>
                         <?php } ?>
                     </tbody>
