@@ -124,7 +124,7 @@ include 'includes/config.php';
         }
     }
     ?>
-    <div class="section-divider">
+    <div class="section-divider mb-5">
         <!-- ============ FORM SECTION ============ -->
         <form class="form-container" action="" method="POST">
             <input type="text" name="new_ca_id" value="<?php echo $tbl_ca_id ?>" hidden>
@@ -156,6 +156,9 @@ include 'includes/config.php';
                     <option value="Concern/Complaint">Concern/Complaint</option>
                     <option value="Security Incident/Event/Weakness">Security Incident/Event/Weakness</option>
                     <option value="Measurement Trend">Measurement Trend</option>
+                    <option value="Risk Assessment">Risk Assessment</option>
+                    <option value="Suggestions">Suggestions</option>
+                    <option value="Process Review">Process Review</option>
                     <option value="Other">Other</option>
                 </select>
             </div>
@@ -167,6 +170,7 @@ include 'includes/config.php';
                     <option value="Major Non-Conformity">Major Non-Conformity</option>
                     <option value="Minor Non-Conformity">Minor Non-Conformity</option>
                     <option value="Observation">Observation</option>
+                    <option value="Opportunity for Improvement">Opportunity for Improvement</option>
                 </select>
             </div>
 
