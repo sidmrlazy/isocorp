@@ -19,7 +19,23 @@
             echo '<div id="alertBox" class="alert alert-danger mt-5" role="alert">Error: ' . $e->getMessage() . '</div>';
         }
     }
-    
+
+    if (isset($_POST['create'])) {
+        try {
+            mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+            $sim_topic = mysqli_real_escape_string($connection, $_POST['sim_topic']);
+            $sim_reported_by = $user_name;
+            $query = "INSERT INTO `sim`(`SIM_TOPIC`, `SIM_REPORTED_BY`) VALUES ('$sim_topic', '$sim_reported_by')";
+            $query_r = mysqli_query($connection, $query);
+            if ($query_r) {
+                echo '<div id="alertBox" class="alert alert-success mt-5" role="alert">Incident created!</div>';
+            }
+        } catch (Exception $e) {
+            echo '<div id="alertBox" class="alert alert-danger mt-5" role="alert">Error: ' . $e->getMessage() . '</div>';
+        }
+    }
+
+
     if (isset($_POST['record'])) {
         try {
             mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
