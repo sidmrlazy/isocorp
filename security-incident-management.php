@@ -45,9 +45,9 @@ include 'includes/sim-functions.php';
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Source</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Type</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Assigned to</th>
-                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Reported Date</th>
-                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Due Date</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Reported By</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Due Date</th>
+                        <!-- <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Reported Date</th> -->
 
                         <?php if ($user_role === '1') { ?>
                             <th style="font-size: 12px !important; font-weight: 600 !important;" class="text-center" scope="col">Action</th>
@@ -146,7 +146,7 @@ include 'includes/sim-functions.php';
                                 </td>
 
                                 <!-- ================ REPORTED DATE ================ -->
-                                <td class="text-center small-text">
+                                <!-- <td class="text-center small-text">
                                     <?php
                                     $formatted_date = (!empty($sim_reported_date) && $sim_reported_date !== '0000-00-00')
                                         ? date('Y-m-d', strtotime($sim_reported_date))
@@ -160,7 +160,7 @@ include 'includes/sim-functions.php';
                                         style="font-size: 12px;"
                                         name="sim_reported_date"
                                         value="<?php echo htmlspecialchars($formatted_date); ?>" <?php echo $disabled; ?>>
-                                </td>
+                                </td> -->
 
                                 <!-- ================ DUE DATE ================ -->
                                 <td>
