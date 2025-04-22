@@ -52,7 +52,7 @@
             $updated_sim_severity = mysqli_real_escape_string($connection, $_POST['sim_severity']);
             $updated_sim_source = mysqli_real_escape_string($connection, $_POST['sim_source']);
             $updated_sim_type = mysqli_real_escape_string($connection, $_POST['sim_type']);
-            $updated_sim_reported_date = mysqli_real_escape_string($connection, $_POST['sim_reported_date']);
+            // $updated_sim_reported_date = mysqli_real_escape_string($connection, $_POST['sim_reported_date']);
             $updated_sim_reported_by = mysqli_real_escape_string($connection, $_POST['sim_reported_by']);
             $updated_sim_assigned_to = mysqli_real_escape_string($connection, $_POST['sim_assigned_to'] ?? '');
             $updated_sim_due_date = mysqli_real_escape_string($connection, $_POST['sim_due_date'] ?? '');
@@ -84,7 +84,6 @@
                 `sim_severity` = '$updated_sim_severity',
                 `sim_source` = '$updated_sim_source',
                 `sim_type` = '$updated_sim_type',
-                `sim_reported_date` = '$updated_sim_reported_date',
                 `sim_reported_by` = '$updated_sim_reported_by',
                 `sim_assigned_to` = '$updated_sim_assigned_to',
                 `sim_due_date` = '$updated_sim_due_date',
