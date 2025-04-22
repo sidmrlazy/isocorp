@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 include 'includes/connection.php'; // Use the same connection file from the main project
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
