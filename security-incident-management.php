@@ -39,15 +39,16 @@ include 'includes/sim-functions.php';
                 <thead>
                     <tr class="sim-th">
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">ID</th>
-                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Topic</th>
-                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Type</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Name</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Status</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Severity</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Source</th>
-                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Status</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Type</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Assigned to</th>
-                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Reported By</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Reported Date</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Due Date</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Reported By</th>
+
                         <?php if ($user_role === '1') { ?>
                             <th style="font-size: 12px !important; font-weight: 600 !important;" class="text-center" scope="col">Action</th>
                         <?php } ?>
@@ -82,18 +83,28 @@ include 'includes/sim-functions.php';
                                     </a>
                                 </td>
 
-                                <!-- ================ TYPE ================ -->
+                                <!-- ================ STATUS ================ -->
                                 <td>
-                                    <select style="font-size: 12px;" name="sim_type" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
-                                        <option value="" disabled>Select Incident Type</option>
-                                        <option value="1" <?= $sim_severity == "1" ? 'selected' : '' ?>>Incident</option>
-                                        <option value="2" <?= $sim_severity == "2" ? 'selected' : '' ?>>Event</option>
+                                    <select style="font-size: 12px;" name="sim_status" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                        <option value="" disabled>Select Status</option>
+                                        <option value="1" <?= $sim_status == "1" ? 'selected' : '' ?>>To-do</option>
+                                        <option value="2" <?= $sim_status == "2" ? 'selected' : '' ?>>Resolved</option>
                                     </select>
                                 </td>
 
                                 <!-- ================ SEVERITY ================ -->
                                 <td>
                                     <select style="font-size: 12px;" name="sim_severity" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                        <option value="" disabled>Select Status</option>
+                                        <option value="1" <?= $sim_severity == "1" ? 'selected' : '' ?>>Incident</option>
+                                        <option value="2" <?= $sim_severity == "2" ? 'selected' : '' ?>>Event</option>
+                                        <option value="2" <?= $sim_severity == "3" ? 'selected' : '' ?>>Weakness</option>
+                                    </select>
+                                </td>
+
+                                <!-- ================ SOURCE ================ -->
+                                <td>
+                                    <select style="font-size: 12px;" name="sim_source" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
                                         <option value="" disabled>Select Severity</option>
                                         <option value="1" <?= $sim_source == "1" ? 'selected' : '' ?>>External</option>
                                         <option value="2" <?= $sim_source == "2" ? 'selected' : '' ?>>Internal</option>
@@ -101,22 +112,13 @@ include 'includes/sim-functions.php';
                                     </select>
                                 </td>
 
-                                <!-- ================ SOURCE ================ -->
+                                <!-- ================ TYPE ================ -->
                                 <td>
-                                    <select style="font-size: 12px;" name="sim_source" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                    <select style="font-size: 12px;" name="sim_type" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
                                         <option value="" disabled>Select Source</option>
                                         <option value="1" <?= $sim_type == "1" ? 'selected' : '' ?>>Confidentiality</option>
                                         <option value="2" <?= $sim_type == "2" ? 'selected' : '' ?>>Integrity</option>
                                         <option value="3" <?= $sim_type == "3" ? 'selected' : '' ?>>Availability</option>
-                                    </select>
-                                </td>
-
-                                <!-- ================ STATUS ================ -->
-                                <td>
-                                    <select style="font-size: 12px;" name="sim_status" class="form-select" required <?= $sim_status == "2" ? 'disabled' : '' ?>>
-                                        <option value="" disabled>Select Status</option>
-                                        <option value="1" <?= $sim_status == "1" ? 'selected' : '' ?>>To-do</option>
-                                        <option value="2" <?= $sim_status == "2" ? 'selected' : '' ?>>Resolved</option>
                                     </select>
                                 </td>
 
@@ -152,12 +154,12 @@ include 'includes/sim-functions.php';
                                     $disabled = ($sim_status == '1' || $sim_status == NULL) ? '' : 'disabled';
                                     ?>
 
-                                    <input 
-                                    type="date" 
-                                    class="form-control"
-                                    style="font-size: 12px;" 
-                                    name="sim_reported_date" 
-                                    value="<?php echo htmlspecialchars($formatted_date); ?>" <?php echo $disabled; ?>>
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        style="font-size: 12px;"
+                                        name="sim_reported_date"
+                                        value="<?php echo htmlspecialchars($formatted_date); ?>" <?php echo $disabled; ?>>
                                 </td>
 
                                 <!-- ================ DUE DATE ================ -->
