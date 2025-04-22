@@ -65,31 +65,31 @@ include 'includes/connection.php';
                         </div>
                         <div class="mb-3">
                             <label for="ru_serv_prov" class="form-label" style="font-size: 12px;">Service Provider</label>
-                            <input name="ru_serv_prov" type="text" class="form-control" required>
+                            <input name="ru_serv_prov" type="text" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="ru_modem" class="form-label" style="font-size: 12px;">Modem</label>
-                            <input name="ru_modem" type="text" class="form-control" required>
+                            <input name="ru_modem" type="text" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="ru_ipd" class="form-label" style="font-size: 12px;">Internet Plan Details</label>
-                            <input name="ru_ipd" type="text" class="form-control" required>
+                            <input name="ru_ipd" type="text" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="ru_dsp" class="form-label" style="font-size: 12px;">Download Speed</label>
-                            <input name="ru_dsp" type="text" class="form-control" required>
+                            <input name="ru_dsp" type="text" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="ru_usp" class="form-label" style="font-size: 12px;">Upload Speed</label>
-                            <input name="ru_usp" type="text" class="form-control" required>
+                            <input name="ru_usp" type="text" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="ru_image" class="form-label" style="font-size: 12px;">Device Image</label>
-                            <input name="ru_image" type="file" class="form-control" style="font-size: 12px;" required>
+                            <input name="ru_image" type="file" class="form-control" style="font-size: 12px;">
                         </div>
                         <div class="mb-3">
                             <label for="ru_sec_type" class="form-label" style="font-size: 12px;">Security Type</label>
-                            <select name="ru_sec_type" class="form-select" required>
+                            <select name="ru_sec_type" class="form-select">
                                 <option selected disabled>Open this select menu</option>
                                 <option value="WEP">WEP</option>
                                 <option value="WPA">WPA</option>
@@ -100,7 +100,7 @@ include 'includes/connection.php';
                         </div>
                         <div class="mb-3">
                             <label for="ru_band" class="form-label" style="font-size: 12px;">WiFi Band</label>
-                            <select name="ru_band" class="form-select" required>
+                            <select name="ru_band" class="form-select">
                                 <option selected disabled>Open this select menu</option>
                                 <option value="Dual Band (2.4Ghz/5Ghz)">Dual Band (2.4Ghz/5Ghz)</option>
                                 <option value="2.4Ghz">2.4Ghz</option>
@@ -110,9 +110,9 @@ include 'includes/connection.php';
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
-                <div class="modal-footer">
+                <!-- <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
