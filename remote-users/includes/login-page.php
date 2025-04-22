@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['user_role'] = $row['isms_user_role'];
 
             // Update last login time
-            $update = "UPDATE users SET isms_user_last_login = NOW() WHERE isms_user_id = {$row['isms_user_id']}";
+            $update = "UPDATE user SET isms_user_last_login = NOW() WHERE isms_user_id = {$row['isms_user_id']}";
             mysqli_query($connection, $update);
 
             // Redirect to remote-user-details.php on success
