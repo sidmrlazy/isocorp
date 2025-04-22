@@ -19,6 +19,8 @@ include 'includes/connection.php';
                 </div>
                 <div class="modal-body">
                     <?php
+                    if (isset($_POST['delete'])) {
+                    }
                     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $ru_name = $_POST['ru_name'];
                         $ru_serv_prov = $_POST['ru_serv_prov'];
@@ -37,7 +39,7 @@ include 'includes/connection.php';
                         if (move_uploaded_file($_FILES["ru_image"]["tmp_name"], $target_file)) {
                             $ru_image_path = $target_file;
                         } else {
-                            echo "<script>alert('Error uploading image.');</script>";
+                            echo "<script>console.log('Error uploading image.');</script>";
                             $ru_image_path = "";
                         }
 
@@ -51,9 +53,9 @@ include 'includes/connection.php';
                         )";
 
                         if (mysqli_query($connection, $sql)) {
-                            echo "<script>alert('Remote user added successfully');</script>";
+                            echo "<div class='alert alert-success mb-3' role='alert'>User details added</div>";
                         } else {
-                            echo "<script>alert('Error: " . mysqli_error($connection) . "');</script>";
+                            echo "<script>console.log('Error: " . mysqli_error($connection) . "');</script>";
                         }
                     }
                     ?>
@@ -156,11 +158,10 @@ include 'includes/connection.php';
                             <td><?php echo htmlspecialchars($row['ru_sec_type']); ?></td>
                             <td><?php echo htmlspecialchars($row['ru_band']); ?></td>
                             <td>
-                                <a href="delete_remote_user.php?id=<?php echo $row['ru_id']; ?>"
-                                    class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure you want to delete this entry?');">
-                                    Delete
-                                </a>
+                                <form action="" method="POST">
+                                    <input type="text" name="fetched_ru_id" value="<?php echo htmlspecialchars($row['ru_id']); ?>" hidden>
+                                    <button type="submit" name="delete" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
                             </td>
                         </tr>
                     <?php
