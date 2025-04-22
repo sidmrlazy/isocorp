@@ -123,36 +123,47 @@ include 'includes/connection.php';
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th style="font-size: 12PX;">S.NO</th>
-                        <th style="font-size: 12PX;">NAME</th>
-                        <th style="font-size: 12PX;">SERVICE PROVIDER</th>
-                        <th style="font-size: 12PX;">MODEM</th>
-                        <th style="font-size: 12PX;">INTERNET PLAN</th>
-                        <th style="font-size: 12PX;">DOWNLOAD SPEED</th>
-                        <th style="font-size: 12PX;">UPLOAD SPEED</th>
-                        <th style="font-size: 12PX;">DEVICE IMAGE</th>
-                        <th style="font-size: 12PX;">SECURITY TYPE</th>
-                        <th style="font-size: 12PX;">WI-FI BAND</th>
+                        <th style="font-size: 12px;">S.NO</th>
+                        <th style="font-size: 12px;">NAME</th>
+                        <th style="font-size: 12px;">SERVICE PROVIDER</th>
+                        <th style="font-size: 12px;">MODEM</th>
+                        <th style="font-size: 12px;">INTERNET PLAN</th>
+                        <th style="font-size: 12px;">DOWNLOAD SPEED</th>
+                        <th style="font-size: 12px;">UPLOAD SPEED</th>
+                        <th style="font-size: 12px;">DEVICE IMAGE</th>
+                        <th style="font-size: 12px;">SECURITY TYPE</th>
+                        <th style="font-size: 12px;">WI-FI BAND</th>
+                        <th style="font-size: 12px;">DELETE</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php 
+                    <?php
                     $fetch = "SELECT * FROM remote_user";
                     $fetch_r = mysqli_query($connection, $fetch);
                     $count = 1;
-                    while($row = mysqli_fetch_assoc($fetch_r)) {
-                        echo "<tr>
-                            <td>{$count}</td>
-                            <td>{$row['ru_name']}</td>
-                            <td>{$row['ru_serv_prov']}</td>
-                            <td>{$row['ru_modem']}</td>
-                            <td>{$row['ru_ipd']}</td>
-                            <td>{$row['ru_dsp']}</td>
-                            <td>{$row['ru_usp']}</td>
-                            <td><img src='{$row['ru_image']}' width='60' alt='Device Image'></td>
-                            <td>{$row['ru_sec_type']}</td>
-                            <td>{$row['ru_band']}</td>
-                        </tr>";
+                    while ($row = mysqli_fetch_assoc($fetch_r)) { ?>
+                        <tr>
+                            <td><?php echo $count; ?></td>
+                            <td><?php echo htmlspecialchars($row['ru_name']); ?></td>
+                            <td><?php echo htmlspecialchars($row['ru_serv_prov']); ?></td>
+                            <td><?php echo htmlspecialchars($row['ru_modem']); ?></td>
+                            <td><?php echo htmlspecialchars($row['ru_ipd']); ?></td>
+                            <td><?php echo htmlspecialchars($row['ru_dsp']); ?></td>
+                            <td><?php echo htmlspecialchars($row['ru_usp']); ?></td>
+                            <td>
+                                <img src="<?php echo htmlspecialchars($row['ru_image']); ?>" width="60" alt="Device Image">
+                            </td>
+                            <td><?php echo htmlspecialchars($row['ru_sec_type']); ?></td>
+                            <td><?php echo htmlspecialchars($row['ru_band']); ?></td>
+                            <td>
+                                <a href="delete_remote_user.php?id=<?php echo $row['ru_id']; ?>"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure you want to delete this entry?');">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                    <?php
                         $count++;
                     }
                     ?>
