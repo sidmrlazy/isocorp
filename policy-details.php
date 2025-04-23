@@ -2,102 +2,15 @@
 include('includes/header.php');
 include('includes/navbar.php');
 include 'includes/connection.php';
-include 'includes/config.php'; ?>
+include 'includes/config.php';
+include 'functions/policy-details/delete-doc-function.php';
+include 'functions/policy-details/save-function.php';
+include 'functions/policy-details/upload-function.php';
+?>
 <div class="container mt-3 mb-3 policy-det-heading-section">
     <?php
     if (!$connection) {
         die("<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Database connection failed: " . mysqli_connect_error() . "</div>");
-    }
-
-    if (isset($_POST['delete-doc'])) {
-        $document_id = isset($_POST['document_id']) ? intval($_POST['document_id']) : null;
-        if ($document_id) {
-            $query = "SELECT document_path FROM policy_documents WHERE policy_document_id = ?";
-            $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, "i", $document_id);
-            mysqli_stmt_execute($stmt);
-            $result = mysqli_stmt_get_result($stmt);
-            if ($result && mysqli_num_rows($result) > 0) {
-                $doc = mysqli_fetch_assoc($result);
-                $document_path = $doc['document_path'];
-                // Delete file from server
-                if (file_exists($document_path)) {
-                    unlink($document_path);
-                }
-                // Delete from database
-                $delete_query = "DELETE FROM policy_documents WHERE policy_document_id = ?";
-                $stmt = mysqli_prepare($connection, $delete_query);
-                mysqli_stmt_bind_param($stmt, "i", $document_id);
-
-                if (mysqli_stmt_execute($stmt)) {
-                    echo "<div id='alertBox' class='alert alert-success mt-3 mb-3'>Document deleted successfully.</div>";
-                } else {
-                    echo "<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Error deleting document: " . mysqli_error($connection) . "</div>";
-                }
-            } else {
-                echo "<div id='alertBox' class='alert alert-warning mt-3 mb-3'>Document not found.</div>";
-            }
-        } else {
-            echo "<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Invalid document ID.</div>";
-        }
-    }
-
-    if (isset($_POST['save'])) {
-        $policy_id = isset($_POST['policy_id']) ? $_POST['policy_id'] : null;
-        $linked_policy_id = isset($_POST['linked_policy_id']) ? $_POST['linked_policy_id'] : null;
-        $inner_policy_id = isset($_POST['inner_policy_id']) ? $_POST['inner_policy_id'] : null;
-        $policy_table = isset($_POST['policy_table']) ? $_POST['policy_table'] : null;
-        $editorContent = isset($_POST['editorContent']) ? $_POST['editorContent'] : null;
-        $editorBlob = !empty($editorContent) ? addslashes($editorContent) : NULL;
-
-        if (!empty($policy_table)) {
-            if (!empty($policy_id) || !empty($linked_policy_id) || !empty($inner_policy_id)) {
-                $current_policy_id = !empty($policy_id) ? $policy_id : (!empty($linked_policy_id) ? $linked_policy_id : $inner_policy_id);
-
-                $query = "SELECT 1 FROM policy_details WHERE policy_id = ? AND policy_table = ?";
-                $stmt = mysqli_prepare($connection, $query);
-                mysqli_stmt_bind_param($stmt, "is", $current_policy_id, $policy_table);
-                mysqli_stmt_execute($stmt);
-                mysqli_stmt_store_result($stmt);
-                $rowCount = mysqli_stmt_num_rows($stmt);
-
-                if ($rowCount > 0) {
-                    $update_query = "UPDATE policy_details SET policy_details = ? WHERE policy_id = ? AND policy_table = ?";
-                    $stmt = mysqli_prepare($connection, $update_query);
-                    mysqli_stmt_bind_param($stmt, "sis", $editorBlob, $current_policy_id, $policy_table);
-                } else {
-                    $insert_query = "INSERT INTO policy_details (policy_id, policy_table, policy_details, policy_document) VALUES (?, ?, ?, NULL)";
-                    $stmt = mysqli_prepare($connection, $insert_query);
-                    mysqli_stmt_bind_param($stmt, "iss", $current_policy_id, $policy_table, $editorBlob);
-                }
-
-                if (mysqli_stmt_execute($stmt)) {
-                    echo '<div id="alertBox" class="alert alert-success mt-3 mb-3">Policy details saved successfully.</div>';
-
-                    // ✅ Insert into activity table with activity_done_on_id
-                    date_default_timezone_set('Asia/Kolkata');
-                    $activity_done_on = $policy_table;
-                    $activity_done_on_id = $current_policy_id;
-                    $activity_name = "Added details to policy";
-                    $activity_by = $user_name; // Assume $user_name is set from session or elsewhere
-                    $activity_date = date('m-d-Y H:i:s');
-
-                    $activity_sql = "INSERT INTO activity (
-                        activity_done_on, 
-                        activity_done_on_id, 
-                        activity_name, 
-                        activity_by, 
-                        activity_date
-                    ) VALUES (?, ?, ?, ?, ?)";
-
-                    $activity_stmt = mysqli_prepare($connection, $activity_sql);
-                    mysqli_stmt_bind_param($activity_stmt, "sisss", $activity_done_on, $activity_done_on_id, $activity_name, $activity_by, $activity_date);
-                    mysqli_stmt_execute($activity_stmt);
-                } else {
-                    echo '<div id="alertBox" class="alert alert-danger mt-3 mb-3">Error saving policy details: ' . mysqli_error($connection) . '</div>';
-                }
-            }
-        }
     }
 
     $policy_id = null;
@@ -202,205 +115,11 @@ include 'includes/config.php'; ?>
     } else {
         echo "<div id='alertBox' class='alert alert-danger mt-3'>Invalid Policy ID or Table.</div>";
     }
-
-
-    if (isset($_POST['upload'])) {
-        $policy_id = intval($_POST['policy_id']);
-        $policy_table = isset($_POST['policy_table_for_document']) ? $_POST['policy_table_for_document'] : null;
-
-        if (is_null($policy_table)) {
-            die("<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Policy table for document is missing!</div>");
-        }
-
-        if (!isset($_FILES['document']) || $_FILES['document']['error'] != UPLOAD_ERR_OK) {
-            die("<div id='alertBox' class='alert alert-danger mt-3 mb-3'>File upload error!</div>");
-        }
-
-        $file_name = basename($_FILES['document']['name']);
-        $file_tmp = $_FILES['document']['tmp_name'];
-        $upload_dir = "uploads/";
-        $file_path = $upload_dir . time() . "_" . $file_name;
-
-        $document_version = isset($_POST['document_version']) ? $_POST['document_version'] : null;
-
-        if (move_uploaded_file($file_tmp, $file_path)) {
-            // Insert document details into policy_documents table
-            $query = "INSERT INTO policy_documents (policy_id, policy_table_for_document, document_name, document_path, document_version) VALUES (?, ?, ?, ?, ?)";
-            $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, "issss", $policy_id, $policy_table, $file_name, $file_path, $document_version);
-
-            if (mysqli_stmt_execute($stmt)) {
-                echo "<div id='alertBox' class='alert alert-success mt-3 mb-3'>Document uploaded successfully.</div>";
-
-                // ✅ Insert into activity table
-                date_default_timezone_set('Asia/Kolkata');
-                $activity_name = "Document added";
-                $activity_done_on_id = $policy_id;
-                $activity_done_on = $policy_table;
-                $activity_done_by = $user_name; // Assuming user_name is set in session
-                $activity_date = date('m-d-Y H:i:s');
-
-                $activity_sql = "INSERT INTO activity (
-                activity_done_on, 
-                activity_done_on_id,
-                activity_name, 
-                activity_by, 
-                activity_date
-            ) VALUES (
-                '$activity_done_on',
-                '$activity_done_on_id',
-                '$activity_name',
-                '$activity_done_by',
-                '$activity_date'
-            )";
-
-                mysqli_query($connection, $activity_sql);
-            } else {
-                echo "<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Error uploading document: " . mysqli_error($connection) . "</div>";
-            }
-        } else {
-            echo "<div id='alertBox' class='alert alert-danger mt-3 mb-3'>Failed to move uploaded file.</div>";
-        }
-    }
     ?>
-
-
     <div class="section-divider mb-5" style="margin-bottom: 0 !important;">
-        <?php if ($user_role == '1') { ?>
-            <!-- ========== UPLOAD CONTENT ========== -->
-            <div style="flex: 2">
-                <form action="" method="POST" class="WYSIWYG-editor-container">
-                    <input type="hidden" name="policy_id"
-                        value="<?php echo isset($_GET['policy_id']) ? $_GET['policy_id'] : ''; ?>">
-                    <input type="hidden" name="linked_policy_id"
-                        value="<?php echo isset($_GET['linked_policy_id']) ? $_GET['linked_policy_id'] : ''; ?>">
-                    <input type="hidden" name="inner_policy_id"
-                        value="<?php echo isset($_GET['inner_policy_id']) ? $_GET['inner_policy_id'] : ''; ?>">
-                    <input type="hidden" name="policy_table" value="<?php echo isset($policy_table) ? $policy_table : ''; ?>">
-
-                    <div class="WYSIWYG-editor">
-                        <textarea id="editorNew"></textarea>
-                    </div>
-                    <input type="hidden" name="editorContent" id="editorContent">
-
-                    <button type="submit" name="save" class="btn btn-sm btn-success mt-3">Update</button>
-                </form>
-
-
-                <!-- ========== VERSION CONTROL ========== -->
-                <?php
-                $fetch_vc = "SELECT * FROM `version_control` WHERE `vc_data_id` = '$policy_id'";
-                $fetch_vc_r = mysqli_query($connection, $fetch_vc);
-                $fetched_vc_assigned_to = "";
-                $fetched_vc_status = "";
-                $fetched_vc_updated_on = "";
-                $fetched_vc_updated_by = "";
-                while ($row = mysqli_fetch_assoc($fetch_vc_r)) {
-                    $fetched_vc_assigned_to = $row['vc_assigned_to'];
-                    $fetched_vc_status = $row['vc_status'];
-                    $fetched_vc_updated_on = $row['vc_updated_on'];
-                    $fetched_vc_updated_by = $row['vc_updated_by'];
-                }
-                ?>
-                <div style="border-bottom: 1px solid #000; margin-top: 10px; padding: 10px; margin-bottom: 20px; width: 50%;">
-                    <h5 style="font-weight: 600 !important; font-size: 18px !important;">Details</h5>
-                    <p style="margin: 0; font-size: 12px;">Status: <strong><?php echo $fetched_vc_status ?></strong></p>
-                    <p style="margin: 0; font-size: 12px;">Assigned to: <?php echo $fetched_vc_assigned_to ?></p>
-                    <p style="margin: 0; font-size: 12px;">Update on: <?php echo $fetched_vc_updated_on ?></p>
-                    <p style="margin: 0; font-size: 12px;">Updated by: <?php echo $fetched_vc_updated_by ?></p>
-                </div>
-
-                <?php
-                // $get_activity = "SELECT * FROM activity WHERE activity_done_on_id = '$policy_id'";
-                // $get_activity_r = mysqli_query($connection, $get_activity);
-                // $activity_name_fetched = "";
-                // $activity_by_fetched = "";
-                // $activity_date_fetched = "";
-                // while ($row = mysqli_fetch_assoc($get_activity_r)) {
-                //     $activity_name_fetched = $row['activity_name'];
-                //     $activity_by_fetched = $row['activity_by'];
-                //     $activity_date_fetched = $row['activity_date'];
-                // }
-
-                // // Ensure you have the policy_id to fetch the activity logs
-                // $policy_id = isset($_GET['policy_id']) ? $_GET['policy_id'] : null;
-
-                if ($policy_id) {
-                    // Fetch the most recent activity for display in the form
-                    $get_activity = "SELECT * FROM activity WHERE activity_done_on_id = '$policy_id' ORDER BY activity_date DESC LIMIT 1";
-                    $get_activity_r = mysqli_query($connection, $get_activity);
-                    $activity_name_fetched = "";
-                    $activity_by_fetched = "";
-                    $activity_date_fetched = "";
-
-                    if (mysqli_num_rows($get_activity_r) > 0) {
-                        $row = mysqli_fetch_assoc($get_activity_r);
-                        $activity_name_fetched = $row['activity_name'];
-                        $activity_by_fetched = $row['activity_by'];
-                        $activity_date_fetched = $row['activity_date'];
-                    }
-                }
-                ?>
-                <form action="" method="POST" style="border-bottom: 1px solid #000; margin-top: 10px; padding: 10px; margin-bottom: 50px; width: 50%;">
-                    <h5 style="font-weight: 600 !important; font-size: 18px !important;">Activity Log</h5>
-                    <p style="margin: 0; font-size: 12px;">Recent Activity: <strong><?php echo $activity_name_fetched; ?></strong></p>
-                    <p style="margin: 0; font-size: 12px;">By: <?php echo $activity_by_fetched; ?></p>
-                    <p style="margin: 0; font-size: 12px;">Date: <?php echo $activity_date_fetched; ?></p>
-                    <button type="button" class="btn btn-sm btn-outline-primary mt-3" style="margin: 0; font-size: 12px;" data-bs-toggle="modal" data-bs-target="#activityLogModal">
-                        View full activity log
-                    </button>
-                </form>
-
-                <!-- ============ ACTIVITY LOG MODAL ============ -->
-                <div class="modal fade" id="activityLogModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Activity Log</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <?php
-                                if ($policy_id) {
-                                    // Fetch all activity logs for the given policy_id
-                                    $get_all_activities = "SELECT * FROM activity WHERE activity_done_on_id = '$policy_id' ORDER BY activity_date DESC";
-                                    $get_all_activities_r = mysqli_query($connection, $get_all_activities);
-
-                                    if (mysqli_num_rows($get_all_activities_r) > 0) :
-                                ?>
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th style="font-weight: 600 !important; font-size: 12px !important;">Activity Name</th>
-                                                    <th style="font-weight: 600 !important; font-size: 12px !important;">Activity By</th>
-                                                    <th style="font-weight: 600 !important; font-size: 12px !important;">Activity Date</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php while ($row = mysqli_fetch_assoc($get_all_activities_r)) : ?>
-                                                    <tr>
-                                                        <td style="font-size: 12px !important;"><?php echo htmlspecialchars($row['activity_name']); ?></td>
-                                                        <td style="font-size: 12px !important;"><?php echo htmlspecialchars($row['activity_by']); ?></td>
-                                                        <td style="font-size: 12px !important;"><?php echo $row['activity_date']; ?></td>
-                                                    </tr>
-                                                <?php endwhile; ?>
-                                            </tbody>
-                                        </table>
-                                    <?php else : ?>
-                                        <p>No activity found for this policy.</p>
-                                    <?php endif; ?>
-                                <?php } ?>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        <?php } elseif ($user_role == '2') { ?>
-            <form action="" method="POST" class="WYSIWYG-editor-container d-none">
+        <!-- ========== UPLOAD CONTENT ========== -->
+        <div style="flex: 2">
+            <form action="" method="POST" class="WYSIWYG-editor-container">
                 <input type="hidden" name="policy_id"
                     value="<?php echo isset($_GET['policy_id']) ? $_GET['policy_id'] : ''; ?>">
                 <input type="hidden" name="linked_policy_id"
@@ -416,7 +135,106 @@ include 'includes/config.php'; ?>
 
                 <button type="submit" name="save" class="btn btn-sm btn-success mt-3">Update</button>
             </form>
-        <?php } ?>
+
+
+            <!-- ========== VERSION CONTROL ========== -->
+            <?php
+            $fetch_vc = "SELECT * FROM `version_control` WHERE `vc_data_id` = '$policy_id'";
+            $fetch_vc_r = mysqli_query($connection, $fetch_vc);
+            $fetched_vc_assigned_to = "";
+            $fetched_vc_status = "";
+            $fetched_vc_updated_on = "";
+            $fetched_vc_updated_by = "";
+            while ($row = mysqli_fetch_assoc($fetch_vc_r)) {
+                $fetched_vc_assigned_to = $row['vc_assigned_to'];
+                $fetched_vc_status = $row['vc_status'];
+                $fetched_vc_updated_on = $row['vc_updated_on'];
+                $fetched_vc_updated_by = $row['vc_updated_by'];
+            }
+            ?>
+            <div style="border-bottom: 1px solid #000; margin-top: 10px; padding: 10px; margin-bottom: 20px; width: 50%;">
+                <h5 style="font-weight: 600 !important; font-size: 18px !important;">Details</h5>
+                <p style="margin: 0; font-size: 12px;">Status: <strong><?php echo $fetched_vc_status ?></strong></p>
+                <p style="margin: 0; font-size: 12px;">Assigned to: <?php echo $fetched_vc_assigned_to ?></p>
+                <p style="margin: 0; font-size: 12px;">Update on: <?php echo $fetched_vc_updated_on ?></p>
+                <p style="margin: 0; font-size: 12px;">Updated by: <?php echo $fetched_vc_updated_by ?></p>
+            </div>
+
+            <?php
+
+            if ($policy_id) {
+                // Fetch the most recent activity for display in the form
+                $get_activity = "SELECT * FROM activity WHERE activity_done_on_id = '$policy_id' ORDER BY activity_date DESC LIMIT 1";
+                $get_activity_r = mysqli_query($connection, $get_activity);
+                $activity_name_fetched = "";
+                $activity_by_fetched = "";
+                $activity_date_fetched = "";
+
+                if (mysqli_num_rows($get_activity_r) > 0) {
+                    $row = mysqli_fetch_assoc($get_activity_r);
+                    $activity_name_fetched = $row['activity_name'];
+                    $activity_by_fetched = $row['activity_by'];
+                    $activity_date_fetched = $row['activity_date'];
+                }
+            }
+            ?>
+            <form action="" method="POST" style="border-bottom: 1px solid #000; margin-top: 10px; padding: 10px; margin-bottom: 50px; width: 50%;">
+                <h5 style="font-weight: 600 !important; font-size: 18px !important;">Activity Log</h5>
+                <p style="margin: 0; font-size: 12px;">Recent Activity: <strong><?php echo $activity_name_fetched; ?></strong></p>
+                <p style="margin: 0; font-size: 12px;">By: <?php echo $activity_by_fetched; ?></p>
+                <p style="margin: 0; font-size: 12px;">Date: <?php echo $activity_date_fetched; ?></p>
+                <button type="button" class="btn btn-sm btn-outline-primary mt-3" style="margin: 0; font-size: 12px;" data-bs-toggle="modal" data-bs-target="#activityLogModal">
+                    View full activity log
+                </button>
+            </form>
+
+            <!-- ============ ACTIVITY LOG MODAL ============ -->
+            <div class="modal fade" id="activityLogModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Activity Log</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <?php
+                            $history_query = "SELECT * FROM policy_details_history WHERE policy_id = '$policy_id' ORDER BY policy_update_on DESC";
+                            $history_result = mysqli_query($connection, $history_query);
+                            if (!$history_result) {
+                                echo '<div class="alert alert-danger">MySQL Error: ' . mysqli_error($connection) . '</div>';
+                            }
+                            if (mysqli_num_rows($history_result) > 0) :
+                            ?>
+                                <table class="table table-bordered mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-weight: 600 !important; font-size: 12px !important;">Previous Content</th>
+                                            <th style="font-weight: 600 !important; font-size: 12px !important;">Updated By</th>
+                                            <th style="font-weight: 600 !important; font-size: 12px !important;">Updated At</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php while ($history = mysqli_fetch_assoc($history_result)) : ?>
+                                            <tr>
+                                                <td style="font-size: 12px !important; max-width: 400px; word-wrap: break-word;"><?php echo $history['policy_details'] ?></td>
+                                                <td style="font-size: 12px !important;"><?php echo $history['policy_updated_by'] ?></td>
+                                                <td style="font-size: 12px !important;"><?php echo $history['policy_update_on']; ?></td>
+                                            </tr>
+                                        <?php endwhile; ?>
+                                    </tbody>
+                                </table>
+                            <?php else : ?>
+                                <p style="font-size: 12px;">No previous policy details found.</p>
+                            <?php endif; ?>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- ========== SUPPORTING DOCUMENTS AND VERSION CONTROL ========== -->
         <div style="flex: 1">
