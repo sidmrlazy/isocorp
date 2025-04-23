@@ -9,7 +9,7 @@ if (isset($_POST['delete'])) {
         $sim_id = mysqli_real_escape_string($connection, $_POST['sim_id']);
 
         // Ensure the ID is valid before deletion
-        $delete_query = "DELETE FROM `sim` WHERE `SIM_ID` = $sim_id";
+        $delete_query = "DELETE FROM `sim` WHERE `SIM_ID` = '$sim_id'";
         $delete_query_r = mysqli_query($connection, $delete_query);
 
         if ($delete_query_r) {
@@ -54,7 +54,6 @@ if (isset($_POST['record'])) {
         $updated_sim_severity = mysqli_real_escape_string($connection, $_POST['sim_severity']);
         $updated_sim_source = mysqli_real_escape_string($connection, $_POST['sim_source']);
         $updated_sim_type = mysqli_real_escape_string($connection, $_POST['sim_type']);
-        // $updated_sim_reported_date = mysqli_real_escape_string($connection, $_POST['sim_reported_date']);
         $updated_sim_reported_by = mysqli_real_escape_string($connection, $_POST['sim_reported_by']);
         $updated_sim_assigned_to = mysqli_real_escape_string($connection, $_POST['sim_assigned_to'] ?? '');
         $updated_sim_due_date = mysqli_real_escape_string($connection, $_POST['sim_due_date'] ?? '');
@@ -90,7 +89,7 @@ if (isset($_POST['record'])) {
             `sim_assigned_to` = '$updated_sim_assigned_to',
             `sim_due_date` = '$updated_sim_due_date',
             `sim_details` = '$updated_sim_details'
-            WHERE `sim_id` = $updated_sim_id";
+            WHERE `sim_id` = '$updated_sim_id'";  // Escape $updated_sim_id
 
         $update_query_r = mysqli_query($connection, $update_query);
 
