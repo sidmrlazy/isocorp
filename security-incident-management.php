@@ -216,6 +216,7 @@ if (isset($_POST['record'])) {
                                         <option value="1" <?= $sim_type == "1" ? 'selected' : '' ?>>Confidentiality</option>
                                         <option value="2" <?= $sim_type == "2" ? 'selected' : '' ?>>Integrity</option>
                                         <option value="3" <?= $sim_type == "3" ? 'selected' : '' ?>>Availability</option>
+                                        <option value="4" <?= $sim_type == "4" ? 'selected' : '' ?>> </option>
                                     </select>
                                 </td>
 
