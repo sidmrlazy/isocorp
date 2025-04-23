@@ -342,10 +342,11 @@ include 'functions/policy-details/upload-function.php';
                                 ?>
                                     <tr>
                                         <td style="font-size: 12px;">
-                                            <a href="<?php echo $document_path; ?>" target="_blank">
+                                            <a href="download.php?path=<?php echo urlencode($document_path); ?>">
                                                 <?php echo $document_name; ?>
                                             </a>
                                         </td>
+
                                         <td style="font-size: 12px;"><?php echo $document_version; ?></td>
                                         <?php
                                         if ($user_role === '1') { ?>
