@@ -715,6 +715,14 @@ align-items: center;
     font-weight: 600;
 }
 
+/* ========== AUDIT PROGRAMME ========== */
+.audit-program-table-container {
+    border: 1px solid #fff;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fff;
+}
+
 @media only screen and (max-width: 768px) {
     .dashboard-welcome-tab {
         display: none;
