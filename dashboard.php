@@ -21,7 +21,7 @@ include('includes/navbar.php'); ?>
 </div>
 
 <div class="dashboard-container">
-     <!-- ============ SCREEN NAME ============ -->
+    <!-- ============ SCREEN NAME ============ -->
     <div class="screen-name-container">
         <h1>ISO 27001:2022 POLICIES & CONTROLS</h1>
         <h2><a href="dashboard.php">Dashboard</a> > ISO 27001:2022 POLICIES & CONTROLS</h2>

@@ -48,9 +48,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_risk'])) {
         risks_status = ? 
         WHERE risks_id = ?");
 
-    $stmt->bind_param("ssssssssi", 
-        $risk_name, $description, $likelihood, $impact, 
-        $action, $review_date, $assigned_to, $status, $risk_id);
+    $stmt->bind_param(
+        "ssssssssi",
+        $risk_name,
+        $description,
+        $likelihood,
+        $impact,
+        $action,
+        $review_date,
+        $assigned_to,
+        $status,
+        $risk_id
+    );
 
     if ($stmt->execute()) {
         header("Location: risks-treatments.php?edit=success");

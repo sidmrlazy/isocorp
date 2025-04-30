@@ -33,12 +33,13 @@ include 'includes/connection.php';
         }
 
         if ($upload_success) {
+            $new_document_name = basename($file_name);
             // Update document and version if version changed
             if ($new_document_version !== $current_version) {
-                $update_query = "UPDATE policy_documents SET document_path = '$upload_directory', document_version = '$new_document_version' WHERE policy_document_id = '$policy_document_id'";
+                $update_query = "UPDATE policy_documents SET document_name = '$new_document_name', document_path = '$upload_directory', document_version = '$new_document_version' WHERE policy_document_id = '$policy_document_id'";
             } else {
                 // Only update the document path
-                $update_query = "UPDATE policy_documents SET document_path = '$upload_directory' WHERE policy_document_id = '$policy_document_id'";
+                $update_query = "UPDATE policy_documents SET document_name = '$new_document_name', document_path = '$upload_directory' WHERE policy_document_id = '$policy_document_id'";
             }
         } elseif ($new_document_version !== $current_version) {
             // Only update the version if document is not changed

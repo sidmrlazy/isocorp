@@ -17,9 +17,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_risk'])) {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $connection->prepare($sql);
-    $stmt->bind_param("ssssssss", 
-        $risk_name, $likelihood, $impact, $status, 
-        $added_by, $action, $review_date, $assigned_to
+    $stmt->bind_param(
+        "ssssssss",
+        $risk_name,
+        $likelihood,
+        $impact,
+        $status,
+        $added_by,
+        $action,
+        $review_date,
+        $assigned_to
     );
 
     if ($stmt->execute()) {
@@ -29,4 +36,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_risk'])) {
     }
     $stmt->close();
 }
-?>

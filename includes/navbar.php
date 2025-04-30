@@ -48,6 +48,11 @@ include 'includes/connection.php';
                 <ion-icon name="clipboard-outline"></ion-icon> Audit Programme
               </a>
             </li>
+            <li>
+              <a class="dropdown-item" href="staff-communications.php">
+                <ion-icon name="megaphone-outline"></ion-icon> Staff Communications
+              </a>
+            </li>
           </ul>
         </li>
         <?php if ($user_role == '1') { ?>
@@ -56,15 +61,16 @@ include 'includes/connection.php';
               Settings
             </a>
             <ul class="dropdown-menu">
-
-              <li><a class="dropdown-item" href="main-controls.php">Add Control</a></li>
+              <!-- <li><a class="dropdown-item" href="main-controls.php">Add Control</a></li>
               <li><a class="dropdown-item" href="sub-controls.php">Add Sub-Control</a></li>
               <li><a class="dropdown-item" href="linked-sub-controls.php">Add linked Sub-Control</a></li>
               <li><a class="dropdown-item" href="inner-linked-control-policy-form.php">Add Inner linked Sub-Control</a></li>
-              <hr>
+              <hr> -->
               <li><a class="dropdown-item" href="audit-program-setup.php">Audit Programme Setup</a></li>
               <hr>
               <li><a class="dropdown-item" href="user-setup.php">User Setup</a></li>
+              <hr>
+              <li><a class="dropdown-item" href="policy-setup.php">Policy Section Setup</a></li>
             </ul>
           </li>
         <?php } elseif ($user_role == '2') { ?>

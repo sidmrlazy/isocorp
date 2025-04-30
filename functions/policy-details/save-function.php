@@ -42,7 +42,9 @@ if (isset($_POST['save'])) {
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                     $history_stmt = mysqli_prepare($connection, $history_query);
-                    mysqli_stmt_bind_param($history_stmt, "issssssss",
+                    mysqli_stmt_bind_param(
+                        $history_stmt,
+                        "issssssss",
                         $existingData['policy_details_id'],
                         $existingData['policy_id'],
                         $existingData['policy_table'],
@@ -100,4 +102,3 @@ if (isset($_POST['save'])) {
         }
     }
 }
-?>
