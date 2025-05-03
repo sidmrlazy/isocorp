@@ -232,7 +232,7 @@ include 'functions/policy-details/save-function.php';
                         <?php
                         $history_query = "SELECT * FROM policy_details_history WHERE policy_id = '$policy_id' ORDER BY policy_update_on DESC";
                         $history_result = mysqli_query($connection, $history_query);
-                        if (mysqli_num_rows($history_result) > 0) :
+                        if (mysqli_num_rows($history_result) > 0) {
                         ?>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped">
@@ -244,7 +244,7 @@ include 'functions/policy-details/save-function.php';
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php while ($history = mysqli_fetch_assoc($history_result)) : ?>
+                                        <?php while ($history = mysqli_fetch_assoc($history_result)) { ?>
                                             <tr>
                                                 <td style="font-size: 12px !important;">Details added</td>
                                                 <td style="font-size: 12px !important;"><?php echo $history['version_saved_on']; ?></td>
@@ -261,7 +261,7 @@ include 'functions/policy-details/save-function.php';
                                                 </td>
 
                                             </tr>
-                                        <?php endwhile; ?>
+                                        <?php } ?>
                                     </tbody>
                                 </table>
                                 <!-- ========== HISTORY MODAL ========== -->
@@ -291,9 +291,9 @@ include 'functions/policy-details/save-function.php';
                                     });
                                 </script>
 
-                            <?php else : ?>
+                            <?php } else { ?>
                                 <p style="font-size: 12px;">No previous policy details found.</p>
-                            <?php endif; ?>
+                            <?php } ?>
                             </div>
                     </div>
                 </div>

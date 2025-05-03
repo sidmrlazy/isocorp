@@ -6,12 +6,26 @@
                 <th style="font-size: 12px !important;">Sub Policy</th>
                 <th style="font-size: 12px !important;">Linked Policy</th>
                 <th style="font-size: 12px !important;">Inner Linked Policy</th>
+                <th style="font-size: 12px !important;">Assigned to</th>
+                <th style="font-size: 12px !important;">Status</th>
                 <th style="font-size: 12px !important;">Details</th>
             </tr>
         </thead>
         <tbody>
             <?php
             include 'includes/connection.php';
+
+            function getVersionControlInfo($connection, $data_id)
+            {
+                $query = "SELECT vc_assigned_to, vc_status FROM version_control 
+                          WHERE vc_data_id = $data_id AND vc_screen_name = 'Policy Details' 
+                          ORDER BY vc_updated_on DESC LIMIT 1";
+                $result = mysqli_query($connection, $query);
+                if ($result && mysqli_num_rows($result) > 0) {
+                    return mysqli_fetch_assoc($result);
+                }
+                return ['vc_assigned_to' => 'N/A', 'vc_status' => 'N/A'];
+            }
 
             $policy_query = "SELECT * FROM `policy`";
             $policy_result = mysqli_query($connection, $policy_query);
@@ -42,64 +56,82 @@
 
                                     if (mysqli_num_rows($inner_linked_policy_result) > 0) {
                                         while ($inner = mysqli_fetch_assoc($inner_linked_policy_result)) {
+                                            $inner_id = $inner['inner_linked_control_policy_id'];
                                             $inner_text = htmlspecialchars($inner['inner_linked_control_policy_number'] . " - " . $inner['inner_linked_control_policy_heading']);
-                                            echo "<tr>
-                                                <td style='font-size: 12px !important;'>$main_policy</td>
-                                                <td style='font-size: 12px !important;'>$sub_policy_text</td>
-                                                <td style='font-size: 12px !important;'>$linked_policy_text</td>
-                                                <td style='font-size: 12px !important;'>$inner_text</td>
+
+                                            $vc = getVersionControlInfo($connection, $inner_id); ?>
+
+                                            <tr>
+                                                <td style='font-size: 12px !important;'><?= $main_policy ?></td>
+                                                <td style='font-size: 12px !important;'><?= $sub_policy_text ?></td>
+                                                <td style='font-size: 12px !important;'><?= $linked_policy_text ?></td>
+                                                <td style='font-size: 12px !important;'><?= $inner_text ?></td>
+                                                <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_assigned_to']) ?></td>
+                                                <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_status']) ?></td>
                                                 <td style='font-size: 12px !important;'>
                                                     <form action='policy-details.php' target='_blank' method='GET'>
-                                                        <input type='hidden' name='inner_policy_id' value='{$inner['inner_linked_control_policy_id']}'>
+                                                        <input type='hidden' name='inner_policy_id' value='<?= $inner_id ?>'>
                                                         <button style='font-size: 12px !important' class='btn btn-sm btn-outline-success'>View</button>
                                                     </form>
                                                 </td>
-                                            </tr>";
-                                        }
+                                            </tr>
+                                        <?php }
                                     } else {
-                                        echo "<tr>
-                                            <td style='font-size: 12px !important;'>$main_policy</td>
-                                            <td style='font-size: 12px !important;'>$sub_policy_text</td>
-                                            <td style='font-size: 12px !important;'>$linked_policy_text</td>
+                                        $vc = getVersionControlInfo($connection, $linked_policy_id); ?>
+
+                                        <tr>
+                                            <td style='font-size: 12px !important;'><?= $main_policy ?></td>
+                                            <td style='font-size: 12px !important;'><?= $sub_policy_text ?></td>
+                                            <td style='font-size: 12px !important;'><?= $linked_policy_text ?></td>
                                             <td style='font-size: 12px !important;'></td>
+                                            <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_assigned_to']) ?></td>
+                                            <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_status']) ?></td>
                                             <td style='font-size: 12px !important;'>
                                                 <form action='policy-details.php' target='_blank' method='GET'>
-                                                    <input type='hidden' name='linked_policy_id' value='$linked_policy_id'>
+                                                    <input type='hidden' name='linked_policy_id' value='<?= $linked_policy_id ?>'>
                                                     <button style='font-size: 12px !important' class='btn btn-sm btn-outline-success'>View</button>
                                                 </form>
                                             </td>
-                                        </tr>";
-                                    }
+                                        </tr>
+                                <?php }
                                 }
                             } else {
-                                echo "<tr>
-                                    <td style='font-size: 12px !important;'>$main_policy</td>
-                                    <td style='font-size: 12px !important;'>$sub_policy_text</td>
+                                $vc = getVersionControlInfo($connection, $sub_policy_id); ?>
+
+                                <tr>
+                                    <td style='font-size: 12px !important;'><?= $main_policy ?></td>
+                                    <td style='font-size: 12px !important;'><?= $sub_policy_text ?></td>
                                     <td style='font-size: 12px !important;'></td>
                                     <td style='font-size: 12px !important;'></td>
+                                    <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_assigned_to']) ?></td>
+                                    <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_status']) ?></td>
                                     <td style='font-size: 12px !important;'>
                                         <form action='policy-details.php' target='_blank' method='GET'>
-                                            <input type='hidden' name='policy_id' value='$sub_policy_id'>
+                                            <input type='hidden' name='policy_id' value='<?= $sub_policy_id ?>'>
                                             <button style='font-size: 12px !important' class='btn btn-sm btn-outline-success'>View</button>
                                         </form>
                                     </td>
-                                </tr>";
-                            }
+                                </tr>
+                        <?php }
                         }
                     } else {
-                        echo "<tr>
-                            <td style='font-size: 12px !important;'>$main_policy</td>
+                        $vc = getVersionControlInfo($connection, $policy_id); ?>
+
+                        <tr>
+                            <td style='font-size: 12px !important;'><?= $main_policy ?></td>
                             <td style='font-size: 12px !important;'></td>
                             <td style='font-size: 12px !important;'></td>
                             <td style='font-size: 12px !important;'></td>
+                            <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_assigned_to']) ?></td>
+                            <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_status']) ?></td>
                             <td style='font-size: 12px !important;'>
                                 <form action='policy-details.php' target='_blank' method='GET'>
-                                    <input type='hidden' name='policy_id' value='$policy_id'>
+                                    <input type='hidden' name='policy_id' value='<?= $policy_id ?>'>
                                     <button style='font-size: 12px !important' class='btn btn-sm btn-outline-success'>View</button>
                                 </form>
                             </td>
-                        </tr>";
-                    }
+                        </tr>
+            <?php }
                 }
             }
             ?>

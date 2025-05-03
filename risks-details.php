@@ -141,67 +141,7 @@ $risk = $result->fetch_assoc();
                 echo "<p style='font-size: 12px !important;' class='text-muted'>No controls/policies linked to this risk yet.</p>";
             }
             ?>
-            <form action="" method="POST">
-                <input type="text" name="risks_id" value="<?php echo $risk['risks_id']; ?>" hidden>
-                <div class="mb-3">
-                    <label style="font-size: 12px !important;" class="form-label">Applicable Control/Policy</label>
-                    <select multiple name="applicable_control[]" style="font-size: 12px !important; height: 200px !important;" class="form-select">
-                        <option disabled selected>Select applicable policies</option>
-                        <?php
 
-
-                        $policy_query = "SELECT * FROM `policy`";
-                        $policy_result = mysqli_query($connection, $policy_query);
-
-                        if ($policy_result && mysqli_num_rows($policy_result) > 0) {
-                            while ($policy = mysqli_fetch_assoc($policy_result)) {
-                                $policy_id = $policy['policy_id'];
-                                $main_policy = $policy['policy_clause'] . " " . $policy['policy_name'];
-
-                                $sub_query = "SELECT * FROM `sub_control_policy` WHERE `main_control_policy_id` = $policy_id";
-                                $sub_result = mysqli_query($connection, $sub_query);
-
-                                if (mysqli_num_rows($sub_result) > 0) {
-                                    while ($sub = mysqli_fetch_assoc($sub_result)) {
-                                        $sub_id = $sub['sub_control_policy_id'];
-                                        $sub_policy = $sub['sub_control_policy_number'] . " " . $sub['sub_control_policy_heading'];
-
-                                        $linked_query = "SELECT * FROM `linked_control_policy` WHERE `sub_control_policy_id` = $sub_id";
-                                        $linked_result = mysqli_query($connection, $linked_query);
-
-                                        if (mysqli_num_rows($linked_result) > 0) {
-                                            while ($linked = mysqli_fetch_assoc($linked_result)) {
-                                                $linked_id = $linked['linked_control_policy_id'];
-                                                $linked_policy = $linked['linked_control_policy_number'] . " - " . $linked['linked_control_policy_heading'];
-
-                                                $inner_query = "SELECT * FROM `inner_linked_control_policy` WHERE `linked_control_policy_id` = $linked_id";
-                                                $inner_result = mysqli_query($connection, $inner_query);
-
-                                                if (mysqli_num_rows($inner_result) > 0) {
-                                                    while ($inner = mysqli_fetch_assoc($inner_result)) {
-                                                        $inner_id = $inner['inner_linked_control_policy_id'];
-                                                        $inner_policy = $inner['inner_linked_control_policy_number'] . " - " . $inner['inner_linked_control_policy_heading'];
-
-                                                        echo "<option value='inner|$inner_id'>" . htmlspecialchars("$main_policy > $sub_policy > $linked_policy > $inner_policy") . "</option>";
-                                                    }
-                                                } else {
-                                                    echo "<option value='linked|$linked_id'>" . htmlspecialchars("$main_policy > $sub_policy > $linked_policy") . "</option>";
-                                                }
-                                            }
-                                        } else {
-                                            echo "<option value='sub|$sub_id'>" . htmlspecialchars("$main_policy > $sub_policy") . "</option>";
-                                        }
-                                    }
-                                } else {
-                                    echo "<option value='policy|$policy_id'>" . htmlspecialchars($main_policy) . "</option>";
-                                }
-                            }
-                        }
-                        ?>
-                    </select>
-                </div>
-                <button type="submit" name="add_control" class="btn btn-sm btn-success">Submit</button>
-            </form>
         </div>
     </div>
 </div>
