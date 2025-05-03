@@ -116,48 +116,63 @@ include 'functions/policy-details/save-function.php';
                 <!-- ========== ASSIGNMENT SECTION ========== -->
                 <div style="background-color: #fff; margin-top: 10px; padding: 20px; border-radius: 10px;">
                     <?php
+                    // Dynamically determine the screen name based on the available ID
+                    $vc_data_id = null;
+                    $vc_screen_name = '';
+
+                    if (isset($_GET['inner_policy_id'])) {
+                        $vc_data_id = $_GET['inner_policy_id'];
+                        $vc_screen_name = "Inner Policy";  // Adjust the screen name as needed
+                    } elseif (isset($_GET['linked_policy_id'])) {
+                        $vc_data_id = $_GET['linked_policy_id'];
+                        $vc_screen_name = "Linked Policy"; // Adjust the screen name as needed
+                    } elseif (isset($_GET['policy_id'])) {
+                        $vc_data_id = $_GET['policy_id'];
+                        $vc_screen_name = "Policy";  // Adjust the screen name as needed
+                    }
+
+                    // Handle form submission for updating or inserting details
                     if (isset($_POST['update-details'])) {
                         $vc_data_id = $_POST['vc_data_id'];
-                        $vc_screen_name = "Policy Details";
                         date_default_timezone_set('Asia/Kolkata');
                         $vc_updated_on = date('Y-m-d H:i:s');
                         $vc_assigned_to = $_POST['vc_assigned_to'];
                         $vc_status = $_POST['vc_status'];
                         $vc_updated_by = $_POST['vc_updated_by'];
 
-                        // Check if a record already exists for this policy
-                        $check_query = "SELECT * FROM version_control WHERE vc_data_id = '$vc_data_id'";
+                        $check_query = "SELECT * FROM version_control WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name'";
                         $check_result = mysqli_query($connection, $check_query);
 
                         if (mysqli_num_rows($check_result) > 0) {
-                            // Record exists — perform UPDATE
+                            // Update the record if exists
                             $update_query = "UPDATE version_control 
                 SET vc_assigned_to = '$vc_assigned_to',
                     vc_status = '$vc_status',
                     vc_updated_on = '$vc_updated_on',
                     vc_updated_by = '$vc_updated_by'
-                WHERE vc_data_id = '$vc_data_id'";
+                WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name'";
                             $query_result = mysqli_query($connection, $update_query);
                         } else {
-
+                            // Insert a new record if not found
                             $insert_query = "INSERT INTO version_control (
-                            vc_data_id, 
-                            vc_screen_name, 
-                            vc_assigned_to, 
-                            vc_status, 
-                            vc_updated_on, 
-                            vc_updated_by
-                        ) VALUES (
-                            '$vc_data_id',
-                            '$vc_screen_name',
-                            '$vc_assigned_to',
-                            '$vc_status',
-                            '$vc_updated_on',
-                            '$vc_updated_by'
-                        )";
+                vc_data_id, 
+                vc_screen_name, 
+                vc_assigned_to, 
+                vc_status, 
+                vc_updated_on, 
+                vc_updated_by
+            ) VALUES (
+                '$vc_data_id',
+                '$vc_screen_name',
+                '$vc_assigned_to',
+                '$vc_status',
+                '$vc_updated_on',
+                '$vc_updated_by'
+            )";
                             $query_result = mysqli_query($connection, $insert_query);
                         }
 
+                        // Show success or error message
                         if ($query_result) {
                             echo "<div id='alertBox' class='alert alert-success'>Details saved successfully.</div>";
                         } else {
@@ -169,23 +184,26 @@ include 'functions/policy-details/save-function.php';
                     $vc_assigned_to_value = '';
                     $vc_status_value = '';
 
-                    $get_vc_data_query = "SELECT vc_assigned_to, vc_status FROM version_control WHERE vc_data_id = '$policy_id' LIMIT 1";
-                    $get_vc_data_result = mysqli_query($connection, $get_vc_data_query);
+                    if ($vc_data_id) {
+                        $get_vc_data_query = "SELECT vc_assigned_to, vc_status FROM version_control 
+                                  WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name' LIMIT 1";
+                        $get_vc_data_result = mysqli_query($connection, $get_vc_data_query);
 
-                    if (mysqli_num_rows($get_vc_data_result) > 0) {
-                        $vc_data = mysqli_fetch_assoc($get_vc_data_result);
-                        $vc_assigned_to_value = $vc_data['vc_assigned_to'];
-                        $vc_status_value = $vc_data['vc_status'];
+                        if (mysqli_num_rows($get_vc_data_result) > 0) {
+                            $vc_data = mysqli_fetch_assoc($get_vc_data_result);
+                            $vc_assigned_to_value = $vc_data['vc_assigned_to'];
+                            $vc_status_value = $vc_data['vc_status'];
+                        }
                     }
                     ?>
 
                     <form action="" method="POST">
-                        <input type="text" name="vc_data_id" value="<?php echo $policy_id ?>" hidden>
-                        <input type="text" name="vc_updated_by" value="<?php echo $user_name ?>" hidden>
+                        <input type="hidden" name="vc_data_id" value="<?php echo $vc_data_id ?>">
+                        <input type="hidden" name="vc_updated_by" value="<?php echo $user_name ?>">
 
                         <div class="mb-3">
                             <label style="font-size: 12px !important;" class="form-label">Assigned to</label>
-                            <select style="font-size: 12px !important;" class="form-select" name="vc_assigned_to" aria-label="Assigned user">
+                            <select style="font-size: 12px !important;" class="form-select" name="vc_assigned_to">
                                 <option disabled selected>Select a user</option>
                                 <?php
                                 $get_assigned_user = "SELECT * FROM user";
@@ -201,7 +219,7 @@ include 'functions/policy-details/save-function.php';
 
                         <div class="mb-3">
                             <label style="font-size: 12px !important;" class="form-label">Status</label>
-                            <select style="font-size: 12px !important;" class="form-select" name="vc_status" aria-label="Status select">
+                            <select style="font-size: 12px !important;" class="form-select" name="vc_status">
                                 <option disabled selected>Select status</option>
                                 <?php
                                 $statuses = ['Open', 'Closed', 'In Progress'];

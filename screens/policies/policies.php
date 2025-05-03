@@ -6,8 +6,6 @@
                 <th style="font-size: 12px !important;">Sub Policy</th>
                 <th style="font-size: 12px !important;">Linked Policy</th>
                 <th style="font-size: 12px !important;">Inner Linked Policy</th>
-                <th style="font-size: 12px !important;">Assigned to</th>
-                <th style="font-size: 12px !important;">Status</th>
                 <th style="font-size: 12px !important;">Details</th>
             </tr>
         </thead>
@@ -66,8 +64,7 @@
                                                 <td style='font-size: 12px !important;'><?= $sub_policy_text ?></td>
                                                 <td style='font-size: 12px !important;'><?= $linked_policy_text ?></td>
                                                 <td style='font-size: 12px !important;'><?= $inner_text ?></td>
-                                                <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_assigned_to']) ?></td>
-                                                <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_status']) ?></td>
+
                                                 <td style='font-size: 12px !important;'>
                                                     <form action='policy-details.php' target='_blank' method='GET'>
                                                         <input type='hidden' name='inner_policy_id' value='<?= $inner_id ?>'>
@@ -84,8 +81,7 @@
                                             <td style='font-size: 12px !important;'><?= $sub_policy_text ?></td>
                                             <td style='font-size: 12px !important;'><?= $linked_policy_text ?></td>
                                             <td style='font-size: 12px !important;'></td>
-                                            <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_assigned_to']) ?></td>
-                                            <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_status']) ?></td>
+
                                             <td style='font-size: 12px !important;'>
                                                 <form action='policy-details.php' target='_blank' method='GET'>
                                                     <input type='hidden' name='linked_policy_id' value='<?= $linked_policy_id ?>'>
@@ -103,8 +99,7 @@
                                     <td style='font-size: 12px !important;'><?= $sub_policy_text ?></td>
                                     <td style='font-size: 12px !important;'></td>
                                     <td style='font-size: 12px !important;'></td>
-                                    <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_assigned_to']) ?></td>
-                                    <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_status']) ?></td>
+
                                     <td style='font-size: 12px !important;'>
                                         <form action='policy-details.php' target='_blank' method='GET'>
                                             <input type='hidden' name='policy_id' value='<?= $sub_policy_id ?>'>
@@ -122,8 +117,7 @@
                             <td style='font-size: 12px !important;'></td>
                             <td style='font-size: 12px !important;'></td>
                             <td style='font-size: 12px !important;'></td>
-                            <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_assigned_to']) ?></td>
-                            <td style='font-size: 12px !important;'><?= htmlspecialchars($vc['vc_status']) ?></td>
+
                             <td style='font-size: 12px !important;'>
                                 <form action='policy-details.php' target='_blank' method='GET'>
                                     <input type='hidden' name='policy_id' value='<?= $policy_id ?>'>
