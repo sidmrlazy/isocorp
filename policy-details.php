@@ -292,21 +292,33 @@ include 'functions/policy-details/save-function.php';
                                             </div>
                                             <div class="modal-body">
                                                 <p><strong>Updated On:</strong> <span id="history-updated-on"></span></p>
-                                                <div class="border rounded p-3 bg-light" id="history-content" style="white-space: pre-wrap;"></div>
+                                                <div class="WYSIWYG-editor">
+                                                    <textarea id="history-content" style="width: 100%; height: 150px; white-space: pre-wrap;"></textarea>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
                                 <script>
                                     document.querySelectorAll('.view-history-btn').forEach(btn => {
                                         btn.addEventListener('click', function() {
                                             const versionDetails = this.getAttribute('data-version');
                                             const updatedOn = this.getAttribute('data-updatedon');
 
+                                            // Set the updated date
                                             document.getElementById('history-updated-on').innerHTML = updatedOn;
-                                            document.getElementById('history-content').innerHTML = versionDetails;
+
+                                            // Remove HTML tags and set the text in the textarea
+                                            document.getElementById('history-content').value = stripHtml(versionDetails);
                                         });
                                     });
+
+                                    // Function to strip HTML tags from a string
+                                    function stripHtml(str) {
+                                        var doc = new DOMParser().parseFromString(str, 'text/html');
+                                        return doc.body.textContent || "";
+                                    }
                                 </script>
 
                             <?php } else { ?>
