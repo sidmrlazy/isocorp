@@ -56,6 +56,8 @@ if (isset($_POST['record'])) {
         $updated_sim_type = mysqli_real_escape_string($connection, $_POST['sim_type']);
         $updated_sim_reported_by = mysqli_real_escape_string($connection, $_POST['sim_reported_by']);
         $updated_sim_assigned_to = mysqli_real_escape_string($connection, $_POST['sim_assigned_to'] ?? '');
+        $updated_sim_start_date = mysqli_real_escape_string($connection, $_POST['sim_start_date'] ?? '');
+        $updated_sim_end_date = mysqli_real_escape_string($connection, $_POST['sim_end_date'] ?? '');
         $updated_sim_due_date = mysqli_real_escape_string($connection, $_POST['sim_due_date'] ?? '');
 
         // Fetch sim_final and sim_details from the database
@@ -87,6 +89,8 @@ if (isset($_POST['record'])) {
             `sim_type` = '$updated_sim_type',
             `sim_reported_by` = '$updated_sim_reported_by',
             `sim_assigned_to` = '$updated_sim_assigned_to',
+            `sim_start_date` = '$updated_sim_start_date',
+            `sim_end_date` = '$updated_sim_end_date',
             `sim_due_date` = '$updated_sim_due_date',
             `sim_details` = '$updated_sim_details'
             WHERE `sim_id` = '$updated_sim_id'";  // Escape $updated_sim_id
@@ -143,6 +147,8 @@ if (isset($_POST['record'])) {
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Type</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Assigned to</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Reported By</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Start Date</th>
+                        <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">End Date</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Due Date</th>
                         <!-- <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Reported Date</th> -->
 
@@ -162,6 +168,8 @@ if (isset($_POST['record'])) {
                         $sim_type = $row['sim_type'];
                         $sim_reported_date = $row['sim_reported_date'];
                         $sim_reported_by = $row['sim_reported_by'];
+                        $sim_start_date = $row['sim_start_date'];
+                        $sim_end_date = $row['sim_end_date'];
                         $sim_due_date = $row['sim_due_date'];
                         $sim_assigned_to = $row['sim_assigned_to'];
                     ?>
@@ -260,6 +268,32 @@ if (isset($_POST['record'])) {
                                         value="<?php echo htmlspecialchars($formatted_date); ?>" <?php echo $disabled; ?>>
                                 </td> -->
 
+                                <!-- ================ START DATE ================ -->
+                                <td>
+                                    <div class="mb-3">
+                                        <input
+                                            type="date"
+                                            name="sim_start_date"
+                                            style="font-size: 12px;"
+                                            class="form-control"
+                                            value="<?= htmlspecialchars($sim_start_date) ?>"
+                                            <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                    </div>
+                                </td>
+
+                                <!-- ================ END DATE ================ -->
+                                <td>
+                                    <div class="mb-3">
+                                        <input
+                                            type="date"
+                                            name="sim_end_date"
+                                            style="font-size: 12px;"
+                                            class="form-control"
+                                            value="<?= htmlspecialchars($sim_end_date) ?>"
+                                            <?= $sim_status == "2" ? 'disabled' : '' ?>>
+                                    </div>
+                                </td>
+
                                 <!-- ================ DUE DATE ================ -->
                                 <td>
                                     <div class="mb-3">
@@ -272,7 +306,6 @@ if (isset($_POST['record'])) {
                                             <?= $sim_status == "2" ? 'disabled' : '' ?>>
                                     </div>
                                 </td>
-
 
                                 <?php if ($user_role === '1') { ?>
                                     <input type="hidden" value="<?php echo htmlspecialchars($user_name); ?>" name="sim_reported_by">
