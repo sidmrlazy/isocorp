@@ -556,7 +556,7 @@ include 'functions/policy-details/save-function.php';
                         <div class="modal-dialog modal-dialog-centered">
                             <form action="" method="POST" class="modal-content">
                                 <input type="hidden" name="clause_id" value="<?php echo $policy_id ?>">
-                                <input type="hidden" name="clause_type" value="policy"> <!-- You can change this dynamically -->
+                                <input type="hidden" name="clause_type" value="policy">
 
                                 <div class="modal-header">
                                     <h1 class="modal-title fs-5" id="exampleModalLabel">Add Risk to Policy</h1>
