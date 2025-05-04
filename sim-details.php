@@ -129,7 +129,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                             <div class="modal-body">
                                 <div class="mb-3">
                                     <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Risks</label>
-                                    <select name="risk_ids[]" style="font-size: 12px !important;" multiple class="form-select">
+                                    <select name="risk_ids[]" style="font-size: 12px !important; height: 300px !important" multiple class="form-select">
                                         <option disabled selected>Choose Risks</option>
                                         <?php
                                         $get_risks = "SELECT * FROM risks";
