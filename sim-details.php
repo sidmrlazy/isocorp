@@ -1,45 +1,24 @@
 <?php
-ob_start();
 include('includes/header.php');
 include('includes/navbar.php');
 include 'includes/config.php';
 include 'includes/connection.php';
+
+// Dummy placeholders for required variables
+// $user_name = "Admin"; // Replace this with actual session user value
+$policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 ?>
 <div class="dashboard-container">
     <?php
-    if (isset($_POST['add-note'])) {
-        // Retrieve and sanitize user input
-        $comment_parent_id = mysqli_real_escape_string($connection, $_POST['sim_id']);
-        $comment_owner = mysqli_real_escape_string($connection, $_POST['comment_owner']);
-        $comment_data = mysqli_real_escape_string($connection, $_POST['comment_data']);
-
-        // Prepare SQL statement
-        $insert_comment = "INSERT INTO `sim_comment` (`comment_parent_id`, `comment_owner`, `comment_data`) 
-                       VALUES ('$comment_parent_id', '$comment_owner', '$comment_data')";
-
-        if (mysqli_query($connection, $insert_comment)) {
-            // Redirect to the same page with the correct ID after successful insertion
-            header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $comment_parent_id);
-            exit();
-        } else {
-            echo "<p class='alert alert-danger'>Error: " . mysqli_error($connection) . "</p>";
-        }
-    }
-
-
-
     if (isset($_GET['id'])) {
         $sim_id = intval($_GET['id']);
         $query = "SELECT * FROM sim WHERE sim_id = ?";
         $stmt = mysqli_prepare($connection, $query);
-
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "i", $sim_id);
             mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
-
             if ($row = mysqli_fetch_assoc($result)) {
-                $sim_id = htmlspecialchars($row['sim_id']);
                 $sim_topic = htmlspecialchars($row['sim_topic']);
                 $sim_details = htmlspecialchars($row['sim_details']);
                 $sim_status = htmlspecialchars($row['sim_status']);
@@ -49,192 +28,265 @@ include 'includes/connection.php';
                 $sim_final = htmlspecialchars($row['sim_final']);
                 $sim_reported_date = htmlspecialchars($row['sim_reported_date']);
             } else {
-                echo "<p id='alertBox' class='alert alert-warning'>No record found.</p>";
+                echo "<p style='font-size: 12px !important;' id='alertBox' class='alert alert-warning'>No SIM record found.</p>";
             }
             mysqli_stmt_close($stmt);
-        } else {
-            echo "<p id='alertBox' class='alert alert-danger'>Database error: " . mysqli_error($connection) . "</p>";
         }
     }
 
     if (isset($_POST['update-sim-detail']) && isset($sim_id)) {
         $sim_details = trim($_POST['sim_details']);
-        $update_query = "UPDATE sim SET sim_details = ? WHERE sim_id = ?";
-        $stmt = mysqli_prepare($connection, $update_query);
-
+        $stmt = mysqli_prepare($connection, "UPDATE sim SET sim_details = ? WHERE sim_id = ?");
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "si", $sim_details, $sim_id);
-            if (mysqli_stmt_execute($stmt)) {
-                echo "<p id='alertBox' class='alert alert-success'>Details updated successfully!</p>";
-            } else {
-                echo "<p id='alertBox' class='alert alert-danger'>Error updating details: " . mysqli_error($connection) . "</p>";
-            }
+            mysqli_stmt_execute($stmt);
+            echo "<p style='font-size: 12px !important;' id='alertBox' class='alert alert-success'>Details updated successfully!</p>";
             mysqli_stmt_close($stmt);
-        } else {
-            echo "<p id='alertBox' class='alert alert-danger'>Failed to prepare statement.</p>";
         }
     }
 
     if (isset($_POST['update-sim-final']) && isset($sim_id)) {
         $sim_details = trim($_POST['sim_details']);
-        $close_sim_query = "UPDATE sim SET sim_details = ?, sim_final = '2' WHERE sim_id = ?";
-        $stmt = mysqli_prepare($connection, $close_sim_query);
-
+        $stmt = mysqli_prepare($connection, "UPDATE sim SET sim_details = ?, sim_final = '2' WHERE sim_id = ?");
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "si", $sim_details, $sim_id);
-            if (mysqli_stmt_execute($stmt)) {
-                echo "<p id='alertBox' class='alert alert-success'>SIM finalized and closed successfully!</p>";
-            } else {
-                echo "<p id='alertBox' class='alert alert-danger'>Error finalizing SIM: " . mysqli_error($connection) . "</p>";
-            }
+            mysqli_stmt_execute($stmt);
+            echo "<p style='font-size: 12px !important;' id='alertBox' class='alert alert-success'>SIM finalized and closed successfully!</p>";
             mysqli_stmt_close($stmt);
-        } else {
-            echo "<p id='alertBox' class='alert alert-danger'>Failed to prepare statement.</p>";
+
+            // Insert Old SIM Details into sim_details_history
         }
     }
     ?>
-    <div style="display: flex; flex-direction: column-reverse;">
-
-        <div class="notes-section mt-1">
-            <div class="heading-row">
-                <p style="font-size: 18px !important;">Comments</p>
-                <!-- ========== ADD ========== -->
-                <button style="font-size: 12px;" type="button" data-bs-toggle="modal" data-bs-target="#commentModal" class="btn btn-sm btn-outline-dark">Add Comment</button>
-            </div>
-            <!-- ======= ADD NOTE MODAL ======= -->
-            <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Create Note</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-floating">
-                                <input type="text" name="sim_id" value="<?php echo $sim_id ?>" hidden>
-                                <input type="text" name="comment_owner" value="<?php echo $user_name ?>" hidden>
-                                <textarea class="form-control" name="comment_data" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
-                                <label for="floatingTextarea2">Comments</label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" name="add-note" class="btn btn-primary">Add Note</button>
-                        </div>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <!-- ========== MAIN LEFT SECTION ========== -->
+        <!-- ========== SIM DETAILS SECTION ========== -->
+        <div style="width: 50%; margin: 5px; box-shadow: 0 2px 4px rgba(255,255,255,0.1);">
+            <div class="WYSIWYG-editor-container">
+                <div class="sim-topic-container-details">
+                    <p>Topic:</p>
+                    <h5><?php echo $sim_topic ?? "N/A"; ?></h5>
+                </div>
+                <form action="" method="POST">
+                    <div class="WYSIWYG-editor">
+                        <?php if ($sim_final == '2') { ?>
+                            <p><?php echo !empty($sim_details) ? htmlspecialchars_decode($sim_details) : 'No details available.'; ?></p>
+                        <?php } else { ?>
+                            <textarea id="editorNewSim" name="sim_details"><?php echo $sim_details ?? ""; ?></textarea>
+                        <?php } ?>
                     </div>
+                    <?php if ($sim_final != '2') { ?>
+                        <button type="submit" name="update-sim-detail" class="btn btn-primary mt-3">Save Draft</button>
+                        <button type="submit" name="update-sim-final" class="btn btn-success mt-3">Submit Details</button>
+                    <?php } ?>
                 </form>
             </div>
-            <?php
-            if (isset($_POST['delete-note'])) {
-                $fetched_comment_id = $_POST['fetched_comment_id'];
-                $delete_q = "DELETE FROM `sim_comment` WHERE comment_id = $fetched_comment_id";
-                $delete_r = mysqli_query($connection, $delete_q);
-            }
-
-            $fetch_comment = "SELECT * FROM sim_comment WHERE comment_parent_id = $sim_id";
-            $fetch_comment_r = mysqli_query($connection, $fetch_comment);
-            $fetch_comment_count = mysqli_num_rows($fetch_comment_r);
-
-            if ($fetch_comment_count > 0) {
-                $fetched_comment_id = "";
-                while ($row = mysqli_fetch_assoc($fetch_comment_r)) {
-                    $fetched_comment_id = $row['comment_id'];
-                    $fetched_comment_owner = $row['comment_owner'];
-                    $fetched_comment_date = $row['comment_date'];
-                    $fetched_comment_data = $row['comment_data'];
-            ?>
-
-                    <div class="note-container mb-3">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <p class="note-owner" style="flex: 1">
-                                <strong><?php echo $fetched_comment_owner ?></strong> - <?php echo $fetched_comment_date ?>
-                            </p>
-                            <form action="" method="POST" class="button-row">
-                                <input type="text" name="fetched_comment_id" value="<?php echo $fetched_comment_id ?>" hidden>
-                                <input type="text" value="<?php echo $sim_id ?>" hidden>
-                                <input type="text" value="<?php echo $user_name ?>" hidden>
-                                <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark">
-                                    <ion-icon name="close-circle-outline"></ion-icon>
-                                </button>
-                            </form>
-                        </div>
-
-                        <div>
-                            <p class="main-note"><?php echo $fetched_comment_data ?></p>
-                            <!-- Read More -->
-                            <div class="d-flex justify-content-center align-items-center">
-                                <button class="read-more-btn">
-                                    <ion-icon name="chevron-down-outline"></ion-icon>
-                                </button>
-                            </div>
-
-                            <!-- Read Less -->
-                            <div class="d-flex justify-content-center align-items-center">
-                                <button class="read-less-btn">
-                                    <ion-icon name="chevron-up-outline"></ion-icon>
-                                </button>
-                            </div>
-                        </div>
-
-                    </div>
-                <?php } ?>
-            <?php } ?>
         </div>
 
-        <div class="WYSIWYG-editor-container m-1" style="flex: 2">
-            <div class="sim-topic-container-details">
-                <p>Topic:</p>
-                <h5><?php echo $sim_topic ?></h5>
-            </div>
-            <form action="" method="POST">
-                <div class="WYSIWYG-editor">
-                    <?php if ($sim_final == '2') { ?>
-                        <p><?php echo !empty($sim_details) ? htmlspecialchars_decode($sim_details)  : 'No details available.'; ?></p>
-                    <?php } else { ?>
-                        <textarea id="editorNew" name="sim_details"><?php echo $sim_details; ?></textarea>
-                    <?php } ?>
+        <!-- ========== MAIN RIGHT SECTION ========== -->
+        <div style="width: 50% !important;">
+            <!-- ========== SIM RISKS SECTION ========== -->
+            <div style="margin-top: 15px; padding: 20px; border-radius: 10px; background-color: #fff !important;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h6>Linked Risks & Treatments</h6>
+                    <button class="btn btn-sm btn-outline-success" style="font-size: 12px !important; margin: 0 !important;" data-bs-toggle="modal" data-bs-target="#riskModal">+</button>
                 </div>
 
-                <?php if ($sim_final == "2") { ?>
-                    <button type="submit" style="display: none" name="update-sim-detail" class="btn btn-primary mt-3">Save Details</button>
-                    <button type="submit" style="display: none" name="update-sim-final" class="btn btn-success mt-3">Submit Details</button>
-                <?php } else { ?>
-                    <button type="submit" name="update-sim-detail" class="btn btn-primary mt-3">Save Draft</button>
-                    <button type="submit" name="update-sim-final" class="btn btn-success mt-3">Submit Details</button>
+                <!-- ========== SIM RISKS MODAL ========== -->
+                <div class="modal fade" id="riskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <?php
+                        if (isset($_POST['add-sim-risk'])) {
+
+                            $risk_ids = $_POST['risk_ids'];
+                            $clause_id = intval($_POST['clause_id']);
+                            $clause_type = mysqli_real_escape_string($connection, $_POST['clause_type']);
+
+                            foreach ($risk_ids as $risk_id) {
+                                $risk_id = intval($risk_id);
+
+                                // Check if the relation already exists
+                                $check_exist = "SELECT * FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $clause_id AND clause_type = '$clause_type'";
+                                $result = mysqli_query($connection, $check_exist);
+
+                                if (mysqli_num_rows($result) == 0) {
+                                    // Insert new relationship
+                                    $insert = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $clause_id, '$clause_type')";
+                                    mysqli_query($connection, $insert);
+                                }
+                            }
+
+                            echo "<div style='font-size: 12px !important;' id='alertBox' class='alert alert-success mt-2'>Risks successfully linked to the policy/control.</div>";
+                        }
+                        ?>
+                        <form action="" method="POST" class="modal-content">
+                            <input type="text" name="clause_id" value="<?php echo $policy_id ?>" hidden>
+                            <input type="text" name="clause_type" value="sim" hidden>
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Risk & Treatments to Security Incident Management</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Risks</label>
+                                    <select name="risk_ids[]" style="font-size: 12px !important;" multiple class="form-select">
+                                        <option disabled selected>Choose Risks</option>
+                                        <?php
+                                        $get_risks = "SELECT * FROM risks";
+                                        $get_risks_r = mysqli_query($connection, $get_risks);
+                                        while ($row = mysqli_fetch_assoc($get_risks_r)) {
+                                            $risks_id = $row['risks_id'];
+                                            $risks_name = $row['risks_name'];
+                                            echo "<option value=\"$risks_id\">$risks_name</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="add-sim-risk" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- ======= ASSOCIATED RISKS TABLE ======= -->
+                <?php
+                $fetch_risks_query = " SELECT r.risks_id, r.risks_name FROM 
+                risk_policies rp
+                JOIN risks r ON rp.risks_id = r.risks_id
+                WHERE rp.clause_id = $policy_id AND rp.clause_type = 'sim'
+                    ";
+                $fetch_risks_r = mysqli_query($connection, $fetch_risks_query);
+                ?>
+
+                <div class="table-responsive mt-3">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th style="font-size: 12px !important;">Risk Name</th>
+                                <th style="font-size: 12px !important;">View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($risk = mysqli_fetch_assoc($fetch_risks_r)) { ?>
+                                <tr>
+                                    <td style="font-size: 12px !important;"><?php echo htmlspecialchars($risk['risks_name']); ?></td>
+                                    <td>
+                                        <a href="risks-details.php?id=<?php echo $risk['risks_id']; ?>" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">
+                                            View Risk Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ========== COMMENT SECTION ========== -->
+            <div style="margin-top: 15px; padding: 20px; border-radius: 10px; background-color: #fff !important;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h6>Comments</h6>
+                    <button class="btn btn-sm btn-outline-success" style="font-size: 12px !important; margin: 0 !important;" data-bs-toggle="modal" data-bs-target="#addComment">+</button>
+                </div>
+
+                <!-- ========== COMMENT MODAL ========== -->
+                <div class="modal fade" id="addComment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+
+                        <?php
+                        // Check if the form is submitted
+                        if (isset($_POST['add-sim-comment']) && isset($sim_id)) {
+                            // Sanitize and fetch input data
+                            $comment_data = mysqli_real_escape_string($connection, $_POST['comment_data']);
+                            $comment_owner = $user_name;
+                            $comment_parent_id = $sim_id;
+
+                            // Insert the comment into the database
+                            $insert_comment_query = "INSERT INTO sim_comment (comment_parent_id, comment_owner, comment_data) VALUES (?, ?, ?)";
+                            $stmt = mysqli_prepare($connection, $insert_comment_query);
+                            if ($stmt) {
+                                mysqli_stmt_bind_param($stmt, "iss", $comment_parent_id, $comment_owner, $comment_data);
+                                mysqli_stmt_execute($stmt);
+                                mysqli_stmt_close($stmt);
+
+                                echo "<p style='font-size: 12px !important;' id='alertBox' class='alert alert-success'>Comment added successfully!</p>";
+                            } else {
+                                echo "<p style='font-size: 12px !important;' id='alertBox' class='alert alert-danger'>Error adding comment.</p>";
+                            }
+                        }
+                        ?>
+                        <form action="" method="POST" class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Comment</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-floating">
+                                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" name="comment_data"></textarea>
+                                    <label for="floatingTextarea2">Comments</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="add-sim-comment" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ======= COMMENT TAB ======= -->
+                <?php
+                if (isset($_POST['delete_comment'])) {
+                    $comment_id = intval($_POST['comment_id']);
+                    $delete_query = "DELETE FROM sim_comment WHERE comment_id = $comment_id";
+                    if (mysqli_query($connection, $delete_query)) {
+                        echo "<p style='font-size: 12px !important;' id='alertBox' class='alert alert-success'>Comment deleted successfully.</p>";
+                    } else {
+                        echo "<p style='font-size: 12px !important;' id='alertBox' class='alert alert-danger'>Error deleting comment.</p>";
+                    }
+                }
+                // Fetch comments from the database
+                $fetch_comments_query = "SELECT * FROM sim_comment WHERE comment_parent_id = '$sim_id'";
+                $fetch_comments_r = mysqli_query($connection, $fetch_comments_query);
+                if (mysqli_num_rows($fetch_comments_r) > 0) {
+                    while ($comment = mysqli_fetch_assoc($fetch_comments_r)) {
+                        $comment_owner = htmlspecialchars($comment['comment_owner']);
+                        $comment_data = nl2br(htmlspecialchars($comment['comment_data'])); // Display comment data
+                        $comment_date = date('F j, Y, g:i a', strtotime($comment['comment_date'])); // Format date
+                ?>
+                        <div style="margin-top: 20px; border-bottom: 1px solid #e7e7e7">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h6 style="font-size: 10px !important; margin: 0;"><strong>Comment by:</strong> <?php echo $comment_owner; ?> - <?php echo $comment_date; ?></h6>
+                                <form action="" method="POST">
+                                    <input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>">
+                                    <button type="submit" name="delete_comment" class="btn btn-sm btn-outline-danger" style="font-size: 10px; margin:0">
+                                        <ion-icon name="close-outline"></ion-icon>
+                                    </button>
+                                </form>
+                            </div>
+                            <p style="font-size: 14px;"><?php echo $comment_data; ?></p>
+                        </div>
+                    <?php
+                    }
+                } else { ?>
+                    <p style="font-size: 12px; margin: 0">No comments added.</p>
                 <?php } ?>
-            </form>
+            </div>
         </div>
     </div>
-</div>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const note = document.querySelector(".main-note");
-        const readMoreBtn = document.querySelector(".read-more-btn");
-        const readLessBtn = document.querySelector(".read-less-btn");
+    <script>
+        $(document).ready(function() {
+            $('#editorNewSim').summernote({
+                height: 300,
+                minHeight: 150,
+                maxHeight: 500,
+                focus: true
+            });
 
-        if (note) {
-            let words = note.innerText.trim().split(/\s+/);
-            if (words.length > 50) {
-                let shortenedText = words.slice(0, 50).join(" ") + "...";
-                let fullText = note.innerHTML; // Store original content
+            $('form').on('submit', function() {
+                $('#editorNewSim').val($('#editorNewSim').summernote('code'));
+            });
+        });
+    </script>
 
-                note.innerHTML = shortenedText;
-                note.parentElement.classList.add("show-read-more"); // Show Read More button
-
-                readMoreBtn.addEventListener("click", function() {
-                    note.innerHTML = fullText; // Expand text
-                    note.parentElement.classList.remove("show-read-more");
-                    note.parentElement.classList.add("show-read-less"); // Show Read Less button
-                });
-
-                readLessBtn.addEventListener("click", function() {
-                    note.innerHTML = shortenedText; // Collapse text
-                    note.parentElement.classList.remove("show-read-less");
-                    note.parentElement.classList.add("show-read-more"); // Show Read More button
-                });
-            }
-        }
-    });
-</script>
-<?php
-ob_flush();
-include('includes/footer.php');
+    <?php include 'includes/footer.php'; ?>
