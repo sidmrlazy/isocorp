@@ -586,37 +586,39 @@ include 'functions/policy-details/save-function.php';
                     </div>
                     <!-- ======= ASSOCIATED RISKS TABLE ======= -->
                     <?php
-                    $fetch_risks_query = "
-                        SELECT r.risks_id, r.risks_name
-                        FROM risk_policies rp
-                        JOIN risks r ON rp.risks_id = r.risks_id
-                        WHERE rp.clause_id = $policy_id AND rp.clause_type = 'policy'
-                    ";
+                    $fetch_risks_query = "SELECT r.risks_id, r.risks_name FROM risk_policies rp
+                    JOIN risks r ON rp.risks_id = r.risks_id
+                    WHERE rp.clause_id = $policy_id AND rp.clause_type = 'policy'";
                     $fetch_risks_r = mysqli_query($connection, $fetch_risks_query);
                     ?>
 
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th style="font-size: 12px !important;">Risk Name</th>
-                                    <th style="font-size: 12px !important;">View</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php while ($risk = mysqli_fetch_assoc($fetch_risks_r)) { ?>
+                    <?php if (mysqli_num_rows($fetch_risks_r) > 0) { ?>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
                                     <tr>
-                                        <td style="font-size: 12px !important;"><?php echo htmlspecialchars($risk['risks_name']); ?></td>
-                                        <td>
-                                            <a href="risks-details.php?id=<?php echo $risk['risks_id']; ?>" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">
-                                                View Risk Details
-                                            </a>
-                                        </td>
+                                        <th style="font-size: 12px !important;">Risk Name</th>
+                                        <th style="font-size: 12px !important;">View</th>
                                     </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    <?php while ($risk = mysqli_fetch_assoc($fetch_risks_r)) { ?>
+                                        <tr>
+                                            <td style="font-size: 12px !important;"><?php echo htmlspecialchars($risk['risks_name']); ?></td>
+                                            <td>
+                                                <a href="risks-details.php?id=<?php echo $risk['risks_id']; ?>" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">
+                                                    View Risk Details
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php } else { ?>
+                        <p style='font-size: 12px;'>No risks & treatments assigned to this policy.</p>
+                    <?php } ?>
+
                 </div>
 
 
