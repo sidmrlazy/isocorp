@@ -114,7 +114,7 @@ include 'includes/connection.php'; ?>
             $result = mysqli_query($connection, $get_comm) or die(mysqli_error($connection));
             $count = mysqli_num_rows($result);
             if ($count == 0) {
-                echo "<p style='font-size: 12px' id='alertBox' class='alert alert-danger' role='alert'>No staff communications found!</p>";
+                echo "<p style='font-size: 12px; font-weight: 600'>No staff communications found!</p>";
             } else {
             ?>
                 <thead>
