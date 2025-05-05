@@ -222,31 +222,11 @@ include 'includes/connection.php';
                         <?php } ?>
                     </select>
                 </div>
-                <!-- ========== BUTTON START ========== -->
-                <?php
-                $get_status_q = "SELECT * FROM ASSET where asset_id = '$asset_id'";
-                $get_status_r = mysqli_query($connection, $get_status_q);
-                $asset_form_status = "";
-                while ($row = mysqli_fetch_assoc($get_status_r)) {
-                    $asset_form_status = $row['asset_form_status'];
-                }
-                ?>
-                <?php if ($asset_form_status == '1') { ?>
                     <div class="btn-row">
                         <button type="submit" name="save-asset-draft-form" class="btn btn-sm btn-dark">Save Draft</button>
                         <button type="submit" name="submit-asset-draft-form" class="btn btn-sm btn-success">Submit Details</button>
                     </div>
-                <?php } elseif ($asset_form_status == '2') { ?>
-                    <div class="btn-row d-none">
-                        <button type="submit" name="save-asset-draft-form" class="btn btn-sm btn-dark">Save Draft</button>
-                        <button type="submit" name="submit-asset-draft-form" class="btn btn-sm btn-success">Submit Details</button>
-                    </div>
-                <?php } else { ?>
-                    <div class="btn-row">
-                        <button type="submit" name="save-asset-draft-form" class="btn btn-sm btn-dark">Save Draft</button>
-                        <button type="submit" name="submit-asset-draft-form" class="btn btn-sm btn-success">Submit Details</button>
-                    </div>
-                <?php } ?>
+                
                 <!-- ========== BUTTON END ========== -->
             </form>
         </div>
