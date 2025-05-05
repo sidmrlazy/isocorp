@@ -312,3 +312,4 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
     </div>
 
 </div>
+<?php // include 'includes/footer.php' ?>
