@@ -224,7 +224,7 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
 
                 if (isset($_POST['add-comment'])) {
                     $asset_comment_parent_id = $_POST['asset_comment_parent_id'];
-                    $asset_comment_data = $_POST['asset_comment_data'];
+                    $asset_comment_data = mysqli_real_escape_string($connection, $_POST['asset_comment_data']);
                     $asset_comment_date = date('Y-m-d');
 
                     $insert_note = "INSERT
