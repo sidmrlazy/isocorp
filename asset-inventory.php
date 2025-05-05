@@ -81,6 +81,7 @@ include 'includes/config.php';
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Assigned to </th>
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Created on</th>
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Created by</th>
+                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Review Date</th>
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Delete</th>
                     </tr>
                 </thead>
@@ -98,6 +99,7 @@ include 'includes/config.php';
                         $asset_owner = $row['asset_owner'];
                         $asset_assigned_to = $row['asset_assigned_to'];
                         $asset_created_date = $row['asset_created_date'];
+                        $asset_review_date = $row['asset_review_date'];
                         $asset_created_by = $row['asset_created_by'];
                     ?>
                         <tr>
@@ -115,6 +117,7 @@ include 'includes/config.php';
                             <td class="asset-data"><?php echo $asset_assigned_to ?></td>
                             <td class="asset-data"><?php echo $asset_created_date ?></td>
                             <td class="asset-data"><?php echo $asset_created_by ?></td>
+                            <td class="asset-data"><?php echo $asset_review_date ?></td>
                             <td class="text-center">
                                 <form action="" method="POST">
                                     <input type="text" name="asset_id" value="<?php echo $asset_id ?>" hidden>

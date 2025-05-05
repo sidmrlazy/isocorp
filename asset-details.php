@@ -44,6 +44,7 @@ include 'includes/connection.php';
         $asset_owner = isset($_POST['asset_owner']) ? mysqli_real_escape_string($connection, implode(',', (array)$_POST['asset_owner'])) : '';
 
         $asset_assigned_to = isset($_POST['asset_assigned_to']) ? mysqli_real_escape_string($connection, $_POST['asset_assigned_to']) : '';
+        $asset_review_date = isset($_POST['asset_review_date']) ? mysqli_real_escape_string($connection, $_POST['asset_review_date']) : '';
         $asset_form_status = "1";
 
         $update_asset_query = "UPDATE asset SET 
@@ -56,6 +57,7 @@ include 'includes/connection.php';
             asset_owner='$asset_owner',
             asset_form_status='$asset_form_status',
             asset_assigned_to='$asset_assigned_to',
+            asset_review_date='$asset_review_date',
             asset_created_by='$user_name' 
         WHERE asset_id='$fetched_asset_id'";
 
@@ -168,6 +170,8 @@ include 'includes/connection.php';
                         <option value="Teleworker (Home)">Teleworker (Home)</option>
                         <option value="Everywhere">Everywhere</option>
                         <option value="Third Party Datacentre">Third Party Datacentre</option>
+                        <option value="On person">On person</option>
+                        <option value="On premise Datacentre">On premise Datacentre</option>
                         <option value="Other Location">Other Location</option>
                     </select>
                 </div>
@@ -194,8 +198,15 @@ include 'includes/connection.php';
                         <option value="CMO (Marketing)">CMO (Marketing)</option>
                         <option value="CSO (Sales)">CSO (Sales)</option>
                         <option value="CPO (Purchasing)">CPO (Purchasing)</option>
+                        <option value="CPO (Purchasing)">CTO</option>
                     </select>
                 </div>
+
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Review Date</label>
+                    <input type="date" name="asset_review_date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Assigned to</label>
@@ -316,44 +327,44 @@ include 'includes/connection.php';
                 }
 
                 $fetch_note = "SELECT * FROM asset_comment WHERE asset_comment_parent_id = '$asset_id'";
-                $fetch_note_r = mysqli_query($connection,$fetch_note);
+                $fetch_note_r = mysqli_query($connection, $fetch_note);
                 $fetch_count = mysqli_num_rows($fetch_note_r);
-                if($fetch_count > 0) {
-                    while($row = mysqli_fetch_assoc($fetch_note_r)) {
+                if ($fetch_count > 0) {
+                    while ($row = mysqli_fetch_assoc($fetch_note_r)) {
                         $comment_id = $row['asset_comment_id'];
                         $comment_by = $row['asset_comment_by'];
                         $comment_date = $row['asset_comment_date'];
                         $comment_data = $row['asset_comment_data'];
-                ?>                
-                <!-- ========== SHOW COMMENTS ========== -->
-                <div class="note-container" style="margin-bottom: 20px;">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <p class="note-owner" style="flex: 1"><strong><?php echo $comment_by ?></strong> - <?php echo $comment_date ?></p>
-                        <form action="" method="POST" style="margin-top: 0 !important;">
-                            <input type="hidden" name="delete_comment_id" value="<?php echo $comment_id ?>">
-                            <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
-                                <ion-icon name="close-circle-outline"></ion-icon>
-                            </button>
-                        </form>
-                    </div>
-                    <div>
-                        <p class="main-note"><?php echo $comment_data ?></p>
-                        <!-- Read More -->
-                        <div class="d-flex justify-content-center align-items-center mt-3">
-                            <button class="read-more-btn">
-                                <ion-icon name="chevron-down-outline"></ion-icon>
-                            </button>
-                        </div>
+                ?>
+                        <!-- ========== SHOW COMMENTS ========== -->
+                        <div class="note-container" style="margin-bottom: 20px;">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <p class="note-owner" style="flex: 1"><strong><?php echo $comment_by ?></strong> - <?php echo $comment_date ?></p>
+                                <form action="" method="POST" style="margin-top: 0 !important;">
+                                    <input type="hidden" name="delete_comment_id" value="<?php echo $comment_id ?>">
+                                    <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
+                                        <ion-icon name="close-circle-outline"></ion-icon>
+                                    </button>
+                                </form>
+                            </div>
+                            <div>
+                                <p class="main-note"><?php echo $comment_data ?></p>
+                                <!-- Read More -->
+                                <div class="d-flex justify-content-center align-items-center mt-3">
+                                    <button class="read-more-btn">
+                                        <ion-icon name="chevron-down-outline"></ion-icon>
+                                    </button>
+                                </div>
 
-                        <!-- Read Less -->
-                        <div class="d-flex justify-content-center align-items-center mt-3">
-                            <button class="read-less-btn">
-                                <ion-icon name="chevron-up-outline"></ion-icon>
-                            </button>
+                                <!-- Read Less -->
+                                <div class="d-flex justify-content-center align-items-center mt-3">
+                                    <button class="read-less-btn">
+                                        <ion-icon name="chevron-up-outline"></ion-icon>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <?php } ?>
+                    <?php } ?>
                 <?php } else { ?>
                     <p style="font-size: 14px !important; margin-bottom: 20px;">No commenents added.</p>
                 <?php } ?>
