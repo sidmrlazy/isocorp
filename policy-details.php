@@ -223,7 +223,7 @@ include 'functions/policy-details/save-function.php';
                             <select style="font-size: 12px !important;" class="form-select" name="vc_status" required>
                                 <option disabled selected>Select status</option>
                                 <?php
-                                $statuses = ['Open', 'Closed', 'In Progress'];
+                                $statuses = ['Open', 'Closed', 'In Progress', 'Completed'];
                                 foreach ($statuses as $status) {
                                     $selected = ($status == $vc_status_value) ? 'selected' : '';
                                     echo "<option value=\"$status\" $selected>$status</option>";
