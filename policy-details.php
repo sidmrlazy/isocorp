@@ -290,7 +290,7 @@ include 'functions/policy-details/save-function.php';
                                             <div class="modal-body">
                                                 <p><strong>Updated On:</strong> <span id="history-updated-on"></span></p>
                                                 <div class="WYSIWYG-editor">
-                                                    <textarea id="history-content" style="width: 100%; height: 150px; white-space: pre-wrap;"></textarea>
+                                                    <textarea id="history-content" style="width: 100%; height: 500px !important; white-space: pre-wrap;"></textarea>
                                                 </div>
                                             </div>
                                         </div>
