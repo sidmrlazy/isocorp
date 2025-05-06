@@ -122,18 +122,19 @@ include 'functions/policy-details/save-function.php';
 
                     if (isset($_GET['inner_policy_id'])) {
                         $vc_data_id = $_GET['inner_policy_id'];
-                        $vc_screen_name = "Inner Policy";  // Adjust the screen name as needed
+                        $vc_screen_name = "Inner Policy";
                     } elseif (isset($_GET['linked_policy_id'])) {
                         $vc_data_id = $_GET['linked_policy_id'];
-                        $vc_screen_name = "Linked Policy"; // Adjust the screen name as needed
+                        $vc_screen_name = "Linked Policy";
                     } elseif (isset($_GET['policy_id'])) {
                         $vc_data_id = $_GET['policy_id'];
-                        $vc_screen_name = "Policy";  // Adjust the screen name as needed
+                        $vc_screen_name = "Policy";
                     }
 
-                    // Handle form submission for updating or inserting details
+                    // Handle form submission
                     if (isset($_POST['update-details'])) {
                         $vc_data_id = $_POST['vc_data_id'];
+                        $vc_screen_name = $_POST['vc_screen_name']; // Get it from hidden input
                         date_default_timezone_set('Asia/Kolkata');
                         $vc_updated_on = date('Y-m-d H:i:s');
                         $vc_assigned_to = $_POST['vc_assigned_to'];
@@ -144,7 +145,7 @@ include 'functions/policy-details/save-function.php';
                         $check_result = mysqli_query($connection, $check_query);
 
                         if (mysqli_num_rows($check_result) > 0) {
-                            // Update the record if exists
+                            // Update existing
                             $update_query = "UPDATE version_control 
                 SET vc_assigned_to = '$vc_assigned_to',
                     vc_status = '$vc_status',
@@ -153,7 +154,7 @@ include 'functions/policy-details/save-function.php';
                 WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name'";
                             $query_result = mysqli_query($connection, $update_query);
                         } else {
-                            // Insert a new record if not found
+                            // Insert new
                             $insert_query = "INSERT INTO version_control (
                 vc_data_id, 
                 vc_screen_name, 
@@ -172,7 +173,6 @@ include 'functions/policy-details/save-function.php';
                             $query_result = mysqli_query($connection, $insert_query);
                         }
 
-                        // Show success or error message
                         if ($query_result) {
                             echo "<div id='alertBox' class='alert alert-success'>Details saved successfully.</div>";
                         } else {
@@ -180,13 +180,13 @@ include 'functions/policy-details/save-function.php';
                         }
                     }
 
-                    // Fetch values to prepopulate form
+                    // Fetch existing values
                     $vc_assigned_to_value = '';
                     $vc_status_value = '';
 
-                    if ($vc_data_id) {
+                    if ($vc_data_id && $vc_screen_name) {
                         $get_vc_data_query = "SELECT vc_assigned_to, vc_status FROM version_control 
-                                  WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name' LIMIT 1";
+                              WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name' LIMIT 1";
                         $get_vc_data_result = mysqli_query($connection, $get_vc_data_query);
 
                         if (mysqli_num_rows($get_vc_data_result) > 0) {
@@ -200,10 +200,11 @@ include 'functions/policy-details/save-function.php';
                     <form action="" method="POST">
                         <input type="hidden" name="vc_data_id" value="<?php echo $vc_data_id ?>">
                         <input type="hidden" name="vc_updated_by" value="<?php echo $user_name ?>">
+                        <input type="hidden" name="vc_screen_name" value="<?php echo $vc_screen_name ?>">
 
                         <div class="mb-3">
                             <label style="font-size: 12px !important;" class="form-label">Assigned to</label>
-                            <select style="font-size: 12px !important;" class="form-select" name="vc_assigned_to">
+                            <select style="font-size: 12px !important;" class="form-select" name="vc_assigned_to" required>
                                 <option disabled selected>Select a user</option>
                                 <?php
                                 $get_assigned_user = "SELECT * FROM user";
@@ -219,7 +220,7 @@ include 'functions/policy-details/save-function.php';
 
                         <div class="mb-3">
                             <label style="font-size: 12px !important;" class="form-label">Status</label>
-                            <select style="font-size: 12px !important;" class="form-select" name="vc_status">
+                            <select style="font-size: 12px !important;" class="form-select" name="vc_status" required>
                                 <option disabled selected>Select status</option>
                                 <?php
                                 $statuses = ['Open', 'Closed', 'In Progress'];
@@ -234,14 +235,10 @@ include 'functions/policy-details/save-function.php';
                         <button type="submit" name="update-details" class="btn btn-sm btn-success">Submit</button>
                     </form>
                 </div>
-
             </div>
 
-
-
-
             <div style="flex: 1 !important; margin-bottom: 20px !important;">
-                <!-- ========== VERSION CONTROL ========== -->
+                <!-- ========== HISTORY ========== -->
                 <div style="margin: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
                     <div style="display: flex !important; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>History</h6>
@@ -322,13 +319,26 @@ include 'functions/policy-details/save-function.php';
                                 </script>
 
                             <?php } else { ?>
-                                <p style="font-size: 12px;">No previous policy details found.</p>
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-size: 12px !important;" scope="col">Previous Details</th>
+                                            <th style="font-size: 12px !important;" scope="col">Updated on</th>
+                                            <th style="font-size: 12px !important;" scope="col">View</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="3" style="font-size: 12px !important;">No previous policy details found.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             <?php } ?>
                             </div>
                     </div>
                 </div>
 
-                <!-- ========== SUPPORTING DOCUMENTS ========== -->
+                <!-- ========== DOCUMENTS ========== -->
                 <div style="margin: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Documents</h6>
@@ -515,7 +525,23 @@ include 'functions/policy-details/save-function.php';
                             </table>
                         </div>
                     <?php else: ?>
-                        <p style='font-size: 12px;'>No documents uploaded for this policy.</p>
+                        <!-- <p style='font-size: 12px;'>No documents uploaded for this policy.</p> -->
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                <th style="font-size: 12px !important;">Name</th>
+                                        <th style="font-size: 12px !important;">Version</th>
+                                        <th style="font-size: 12px !important;">Download</th>
+                                        <th style="font-size: 12px !important;">Edit</th>
+                                        <th style="font-size: 12px !important;">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="5" style="font-size: 12px !important;">No documents uploaded for this policy.</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     <?php endif; ?>
                 </div>
 
@@ -616,7 +642,20 @@ include 'functions/policy-details/save-function.php';
                             </table>
                         </div>
                     <?php } else { ?>
-                        <p style='font-size: 12px;'>No risks & treatments assigned to this policy.</p>
+                        <!-- <p style='font-size: 12px;'>No risks & treatments assigned to this policy.</p> -->
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                <th style="font-size: 12px !important;">Risk Name</th>
+                                <th style="font-size: 12px !important;">View</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="3" style="font-size: 12px !important;">No risks & treatments assigned to this policy.</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     <?php } ?>
 
                 </div>
