@@ -98,7 +98,7 @@ include 'functions/policy-details/save-function.php';
     <div class="row" style="margin-bottom: 40px;">
         <div class="col-md-6">
             <!-- ========== UPLOAD CONTENT ========== -->
-            <form action="" method="POST" style="background-color: #fff; margin-top: 10px; padding: 20px; border-radius: 10px;">
+            <form action="" method="POST" style="background-color: #fff;padding: 20px; border-radius: 10px;">
                 <input type="hidden" name="policy_id"
                     value="<?php echo isset($_GET['policy_id']) ? $_GET['policy_id'] : ''; ?>">
                 <input type="hidden" name="linked_policy_id"
