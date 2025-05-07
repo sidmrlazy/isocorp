@@ -118,40 +118,46 @@ include 'functions/policy-details/save-function.php';
             <!-- ========== ASSIGNMENT SECTION ========== -->
             <div style="background-color: #fff; margin-top: 10px; padding: 20px; border-radius: 10px;">
                 <?php
-                // Dynamically determine the screen name based on the available ID
+                // Identify the ID and its type
                 $vc_data_id = null;
-                $vc_screen_name = '';
+                $vc_data_type = '';
 
                 if (isset($_GET['inner_policy_id'])) {
                     $vc_data_id = $_GET['inner_policy_id'];
-                    $vc_screen_name = "Inner Policy";
+                    $vc_data_type = 'Inner Policy';
                 } elseif (isset($_GET['linked_policy_id'])) {
                     $vc_data_id = $_GET['linked_policy_id'];
-                    $vc_screen_name = "Linked Policy";
+                    $vc_data_type = 'Linked Policy';
                 } elseif (isset($_GET['policy_id'])) {
                     $vc_data_id = $_GET['policy_id'];
-                    $vc_screen_name = "Policy";
+                    $vc_data_type = 'Policy';
                 }
 
                 // Handle form submission
                 if (isset($_POST['update-details'])) {
                     $vc_data_id = $_POST['vc_data_id'];
-                    $vc_screen_name = $_POST['vc_screen_name']; // Get it from hidden input
+                    $vc_data_type = $_POST['vc_data_type'];
                     date_default_timezone_set('Asia/Kolkata');
                     $vc_updated_on = date('Y-m-d H:i:s');
                     $vc_assigned_to = $_POST['vc_assigned_to'];
                     $vc_status = $_POST['vc_status'];
                     $vc_updated_by = $_POST['vc_updated_by'];
 
-                    $check_query = "SELECT * FROM version_control WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name'";
+                    $check_query = "SELECT * FROM version_control WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_data_type'";
                     $check_result = mysqli_query($connection, $check_query);
 
                     if (mysqli_num_rows($check_result) > 0) {
-                        // Update existing
-                        $update_query = "UPDATE version_control SET vc_assigned_to = '$vc_assigned_to', vc_status = '$vc_status', vc_updated_on = '$vc_updated_on', vc_updated_by = '$vc_updated_by' WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name'";
+                        $update_query = "UPDATE version_control 
+                             SET vc_assigned_to = '$vc_assigned_to', 
+                                 vc_status = '$vc_status', 
+                                 vc_updated_on = '$vc_updated_on', 
+                                 vc_updated_by = '$vc_updated_by' 
+                             WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_data_type'";
                         $query_result = mysqli_query($connection, $update_query);
                     } else {
-                        $insert_query = "INSERT INTO version_control (vc_data_id, vc_screen_name, vc_assigned_to, vc_status, vc_updated_on, vc_updated_by) VALUES ('$vc_data_id', '$vc_screen_name', '$vc_assigned_to', '$vc_status', '$vc_updated_on', '$vc_updated_by')";
+                        $insert_query = "INSERT INTO version_control 
+                             (vc_data_id, vc_screen_name, vc_assigned_to, vc_status, vc_updated_on, vc_updated_by) 
+                             VALUES ('$vc_data_id', '$vc_data_type', '$vc_assigned_to', '$vc_status', '$vc_updated_on', '$vc_updated_by')";
                         $query_result = mysqli_query($connection, $insert_query);
                     }
 
@@ -161,12 +167,16 @@ include 'functions/policy-details/save-function.php';
                         echo "<div id='alertBox' class='alert alert-danger'>Error: " . mysqli_error($connection) . "</div>";
                     }
                 }
+
+                // Pre-fill values if available
                 $vc_assigned_to_value = '';
                 $vc_status_value = '';
 
-                if ($vc_data_id && $vc_screen_name) {
-                    $get_vc_data_query = "SELECT vc_assigned_to, vc_status FROM version_control 
-                              WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name' LIMIT 1";
+                if ($vc_data_id && $vc_data_type) {
+                    $get_vc_data_query = "SELECT vc_assigned_to, vc_status 
+                              FROM version_control 
+                              WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_data_type' 
+                              LIMIT 1";
                     $get_vc_data_result = mysqli_query($connection, $get_vc_data_query);
 
                     if (mysqli_num_rows($get_vc_data_result) > 0) {
@@ -178,9 +188,9 @@ include 'functions/policy-details/save-function.php';
                 ?>
 
                 <form action="" method="POST">
-                    <input type="hidden" name="vc_data_id" value="<?php echo $vc_data_id ?>">
-                    <input type="hidden" name="vc_updated_by" value="<?php echo $user_name ?>">
-                    <input type="hidden" name="vc_screen_name" value="<?php echo $vc_screen_name ?>">
+                    <input type="hidden" name="vc_data_id" value="<?php echo htmlspecialchars($vc_data_id); ?>">
+                    <input type="hidden" name="vc_data_type" value="<?php echo htmlspecialchars($vc_data_type); ?>">
+                    <input type="hidden" name="vc_updated_by" value="<?php echo htmlspecialchars($user_name); ?>">
 
                     <div class="mb-3">
                         <label style="font-size: 12px !important;" class="form-label">Assigned to</label>
@@ -215,6 +225,7 @@ include 'functions/policy-details/save-function.php';
                     <button type="submit" name="update-details" class="btn btn-sm btn-success">Submit</button>
                 </form>
             </div>
+
         </div>
 
         <div class="col-md-6">
@@ -599,7 +610,7 @@ include 'functions/policy-details/save-function.php';
                     <?php } ?>
 
                 </div>
-                <!-- ========== COMMENT ========== -->
+                <!-- ========== COMMENT SECTION ========== -->
                 <div class="mb-3" style="padding: 20px; border-radius: 10px; background-color: #fff;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Comments</h6>
@@ -607,34 +618,87 @@ include 'functions/policy-details/save-function.php';
                             <ion-icon name="add-outline"></ion-icon>
                         </button>
                     </div>
+
                     <?php
+                    // Determine ID and type
+                    $ca_comment_parent_id = null;
+                    $ca_comment_type = '';
+
+                    if (isset($_GET['inner_policy_id'])) {
+                        $ca_comment_parent_id = $_GET['inner_policy_id'];
+                        $ca_comment_type = 'Inner Policy';
+                    } elseif (isset($_GET['linked_policy_id'])) {
+                        $ca_comment_parent_id = $_GET['linked_policy_id'];
+                        $ca_comment_type = 'Linked Policy';
+                    } elseif (isset($_GET['policy_id'])) {
+                        $ca_comment_parent_id = $_GET['policy_id'];
+                        $ca_comment_type = 'Policy';
+                    }
+
+                    // Add comment logic
                     if (isset($_POST['add-new-comment'])) {
                         date_default_timezone_set('Asia/Kolkata');
                         $ca_comment_parent_id = mysqli_real_escape_string($connection, $_POST['ca_comment_parent_id']);
+                        $ca_comment_type = mysqli_real_escape_string($connection, $_POST['ca_comment_type']);
                         $ca_comment_data = mysqli_real_escape_string($connection, $_POST['ca_comment_data']);
                         $ca_comment_by = mysqli_real_escape_string($connection, $_POST['ca_comment_by']);
                         $ca_comment_date = date('Y-m-d H:i:s');
-                        $insert_comment_query = "INSERT INTO `tblca_comment` (
-                        `ca_comment_parent_id`,
-                        `ca_comment_data`,
-                        `ca_comment_by`,
-                        `ca_comment_date`
-                    ) VALUES (
-                        '$ca_comment_parent_id',
-                        '$ca_comment_data',
-                        '$ca_comment_by',
-                        '$ca_comment_date'
-                    )";
+
+                        $insert_comment_query = "INSERT INTO tblca_comment (
+            ca_comment_parent_id, ca_comment_type, ca_comment_data, ca_comment_by, ca_comment_date
+        ) VALUES (
+            '$ca_comment_parent_id', '$ca_comment_type', '$ca_comment_data', '$ca_comment_by', '$ca_comment_date'
+        )";
+
                         $insert_comment_result = mysqli_query($connection, $insert_comment_query);
+                    }
+
+                    // Delete comment logic
+                    if (isset($_POST['delete-note'])) {
+                        $ca_comment_id = mysqli_real_escape_string($connection, $_POST['ca_comment_id']);
+                        $delete_comment_query = "DELETE FROM tblca_comment WHERE ca_comment_id = '$ca_comment_id'";
+                        $delete_comment_result = mysqli_query($connection, $delete_comment_query);
+                    }
+
+                    // Fetch and display comments
+                    $get_comment_query = "SELECT * FROM tblca_comment 
+                          WHERE ca_comment_parent_id = '$ca_comment_parent_id' 
+                          AND ca_comment_type = '$ca_comment_type' 
+                          ORDER BY ca_comment_date DESC";
+                    $get_comment_result = mysqli_query($connection, $get_comment_query);
+
+                    if (mysqli_num_rows($get_comment_result) > 0) {
+                        while ($row = mysqli_fetch_assoc($get_comment_result)) {
+                            $main_comment_id = $row['ca_comment_id'];
+                            $main_comment = $row['ca_comment_data'];
+                            $main_comment_by = $row['ca_comment_by'];
+                            $main_comment_date = $row['ca_comment_date'];
+                    ?>
+                            <div style="margin-bottom: 20px !important; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+                                <form action="" method="POST" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <input type="hidden" name="ca_comment_id" value="<?php echo $main_comment_id ?>">
+                                    <p style="font-size: 12px !important; font-weight: 600 !important; margin: 0;"><?php echo $main_comment_by ?> - <?php echo $main_comment_date ?></p>
+                                    <button style="font-size: 12px !important;" name="delete-note" class="btn btn-sm btn-outline-danger">
+                                        <ion-icon name="close-circle-outline"></ion-icon>
+                                    </button>
+                                </form>
+                                <p style="margin: 0; font-size: 16px"><?php echo $main_comment ?></p>
+                            </div>
+                    <?php
+                        }
+                    } else {
+                        echo '<p style="font-size: 12px;">No comments added</p>';
                     }
                     ?>
 
                     <!-- ======= ADD COMMENT MODAL ======= -->
                     <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div action="" method="POST" class="modal-dialog modal-dialog-centered">
+                        <div class="modal-dialog modal-dialog-centered">
                             <form action="" method="POST" class="modal-content">
-                                <input type="text" name="ca_comment_parent_id" value="<?php echo $policy_id ?>" hidden>
-                                <input type="text" name="ca_comment_by" value="<?php echo $user_name ?>" hidden>
+                                <input type="hidden" name="ca_comment_parent_id" value="<?php echo htmlspecialchars($ca_comment_parent_id); ?>">
+                                <input type="hidden" name="ca_comment_type" value="<?php echo htmlspecialchars($ca_comment_type); ?>">
+                                <input type="hidden" name="ca_comment_by" value="<?php echo htmlspecialchars($user_name); ?>">
+
                                 <div class="modal-header">
                                     <h1 class="modal-title fs-5" id="exampleModalLabel">Add Comment</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -651,37 +715,8 @@ include 'functions/policy-details/save-function.php';
                             </form>
                         </div>
                     </div>
-                    <?php
-                    if (isset($_POST['delete-note'])) {
-                        $ca_comment_id = mysqli_real_escape_string($connection, $_POST['ca_comment_id']);
-                        $delete_comment_query = "DELETE FROM `tblca_comment` WHERE ca_comment_id = '$ca_comment_id'";
-                        $delete_comment_result = mysqli_query($connection, $delete_comment_query);
-                    }
-
-                    $get_comment = "SELECT * FROM `tblca_comment` WHERE `ca_comment_parent_id` = '$policy_id'";
-                    $get_comment_r = mysqli_query($connection, $get_comment);
-                    $get_comment_count = mysqli_num_rows($get_comment_r);
-                    if ($get_comment_count > 0) {
-                        while ($row = mysqli_fetch_assoc($get_comment_r)) {
-                            $main_comment_id = $row['ca_comment_id'];
-                            $main_comment = $row['ca_comment_data'];
-                            $main_comment_by = $row['ca_comment_by'];
-                            $main_comment_date = $row['ca_comment_date'];
-
-                    ?>
-                            <div style="margin-bottom: 20px !important; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-                                <form action="" method="POST" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <input type="hidden" name="ca_comment_id" value="<?php echo $main_comment_id ?>">
-                                    <p style="font-size: 12px !important; font-weight: 600 !important; margin: 0;"><?php echo $main_comment_by ?> - <?php echo $main_comment_date ?></p>
-                                    <button style="font-size: 12px !important;" name="delete-note" class="btn btn-sm btn-outline-danger"><ion-icon name="close-circle-outline"></ion-icon></button>
-                                </form>
-                                <p style="margin: 0; font-size: 16px"><?php echo $main_comment ?></p>
-                            </div>
-                        <?php }
-                    } else { ?>
-                        <p style="font-size: 12px;">No comments added</p>
-                    <?php } ?>
                 </div>
+
                 <!-- ========== HISTORY MODAL ========== -->
                 <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -693,7 +728,7 @@ include 'functions/policy-details/save-function.php';
                             <div class="modal-body">
                                 <p><strong>Updated On:</strong> <span id="history-updated-on"></span></p>
                                 <div class="WYSIWYG-editor">
-                                    <textarea id="history-content" style="width: 100%; height: 500px !important; white-space: pre-wrap;"></textarea>
+                                    <textarea id="history-content" style="width: 100%; height: 500px !important; white-space: pre-wrap; border: 0"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -706,16 +741,11 @@ include 'functions/policy-details/save-function.php';
                     btn.addEventListener('click', function() {
                         const versionDetails = this.getAttribute('data-version');
                         const updatedOn = this.getAttribute('data-updatedon');
-
-                        // Set the updated date
                         document.getElementById('history-updated-on').innerHTML = updatedOn;
-
-                        // Remove HTML tags and set the text in the textarea
                         document.getElementById('history-content').value = stripHtml(versionDetails);
                     });
                 });
 
-                // Function to strip HTML tags from a string
                 function stripHtml(str) {
                     var doc = new DOMParser().parseFromString(str, 'text/html');
                     return doc.body.textContent || "";
