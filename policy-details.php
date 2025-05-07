@@ -78,268 +78,209 @@ include 'functions/policy-details/save-function.php';
         <?php
             }
         }
-
-        $policy_content = "";
-        if ($policy_id && $policy_table) {
-            $query = "SELECT policy_details FROM policy_details WHERE policy_id = ? AND policy_table = ?";
-            $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, "is", $policy_id, $policy_table);
-            mysqli_stmt_execute($stmt);
-            $result = mysqli_stmt_get_result($stmt);
-
-            if ($result && mysqli_num_rows($result) > 0) {
-                $policy = mysqli_fetch_assoc($result);
-                $policy_content = stripslashes($policy["policy_details"]);
-            }
-        }
         ?>
-        <div style="margin-bottom: 0; display: flex; justify-content: space-between; align-items: flex-start;">
+    </div>
+    <?php
+    $policy_content = "";
+    if ($policy_id && $policy_table) {
+        $query = "SELECT policy_details FROM policy_details WHERE policy_id = ? AND policy_table = ?";
+        $stmt = mysqli_prepare($connection, $query);
+        mysqli_stmt_bind_param($stmt, "is", $policy_id, $policy_table);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            $policy = mysqli_fetch_assoc($result);
+            $policy_content = stripslashes($policy["policy_details"]);
+        }
+    }
+    ?>
+    <div class="row" style="margin-bottom: 40px;">
+        <div class="col-md-6">
             <!-- ========== UPLOAD CONTENT ========== -->
-            <div style="flex: 1 !important; margin-bottom: 50px;">
-                <form action="" method="POST" style="background-color: #fff; margin-top: 10px; padding: 20px; border-radius: 10px;">
-                    <input type="hidden" name="policy_id"
-                        value="<?php echo isset($_GET['policy_id']) ? $_GET['policy_id'] : ''; ?>">
-                    <input type="hidden" name="linked_policy_id"
-                        value="<?php echo isset($_GET['linked_policy_id']) ? $_GET['linked_policy_id'] : ''; ?>">
-                    <input type="hidden" name="inner_policy_id"
-                        value="<?php echo isset($_GET['inner_policy_id']) ? $_GET['inner_policy_id'] : ''; ?>">
-                    <input type="hidden" name="policy_table" value="<?php echo isset($policy_table) ? $policy_table : ''; ?>">
+            <form action="" method="POST" style="background-color: #fff; margin-top: 10px; padding: 20px; border-radius: 10px;">
+                <input type="hidden" name="policy_id"
+                    value="<?php echo isset($_GET['policy_id']) ? $_GET['policy_id'] : ''; ?>">
+                <input type="hidden" name="linked_policy_id"
+                    value="<?php echo isset($_GET['linked_policy_id']) ? $_GET['linked_policy_id'] : ''; ?>">
+                <input type="hidden" name="inner_policy_id"
+                    value="<?php echo isset($_GET['inner_policy_id']) ? $_GET['inner_policy_id'] : ''; ?>">
+                <input type="hidden" name="policy_table" value="<?php echo isset($policy_table) ? $policy_table : ''; ?>">
 
-                    <div class="WYSIWYG-editor">
-                        <textarea id="editorNew"><?php echo htmlspecialchars_decode($policy_content); ?></textarea>
-                    </div>
-                    <input type="hidden" name="editorContent" id="editorContent">
+                <div class="WYSIWYG-editor">
+                    <textarea id="editorNew"><?php echo htmlspecialchars_decode($policy_content); ?></textarea>
+                </div>
+                <input type="hidden" name="editorContent" id="editorContent">
 
-                    <button type="submit" name="save" class="btn btn-sm btn-success mt-3">Update</button>
-                </form>
+                <button type="submit" name="save" class="btn btn-sm btn-success mt-3">Update</button>
+            </form>
 
-                <!-- ========== ASSIGNMENT SECTION ========== -->
-                <div style="background-color: #fff; margin-top: 10px; padding: 20px; border-radius: 10px;">
-                    <?php
-                    // Dynamically determine the screen name based on the available ID
-                    $vc_data_id = null;
-                    $vc_screen_name = '';
+            <!-- ========== ASSIGNMENT SECTION ========== -->
+            <div style="background-color: #fff; margin-top: 10px; padding: 20px; border-radius: 10px;">
+                <?php
+                // Dynamically determine the screen name based on the available ID
+                $vc_data_id = null;
+                $vc_screen_name = '';
 
-                    if (isset($_GET['inner_policy_id'])) {
-                        $vc_data_id = $_GET['inner_policy_id'];
-                        $vc_screen_name = "Inner Policy";
-                    } elseif (isset($_GET['linked_policy_id'])) {
-                        $vc_data_id = $_GET['linked_policy_id'];
-                        $vc_screen_name = "Linked Policy";
-                    } elseif (isset($_GET['policy_id'])) {
-                        $vc_data_id = $_GET['policy_id'];
-                        $vc_screen_name = "Policy";
+                if (isset($_GET['inner_policy_id'])) {
+                    $vc_data_id = $_GET['inner_policy_id'];
+                    $vc_screen_name = "Inner Policy";
+                } elseif (isset($_GET['linked_policy_id'])) {
+                    $vc_data_id = $_GET['linked_policy_id'];
+                    $vc_screen_name = "Linked Policy";
+                } elseif (isset($_GET['policy_id'])) {
+                    $vc_data_id = $_GET['policy_id'];
+                    $vc_screen_name = "Policy";
+                }
+
+                // Handle form submission
+                if (isset($_POST['update-details'])) {
+                    $vc_data_id = $_POST['vc_data_id'];
+                    $vc_screen_name = $_POST['vc_screen_name']; // Get it from hidden input
+                    date_default_timezone_set('Asia/Kolkata');
+                    $vc_updated_on = date('Y-m-d H:i:s');
+                    $vc_assigned_to = $_POST['vc_assigned_to'];
+                    $vc_status = $_POST['vc_status'];
+                    $vc_updated_by = $_POST['vc_updated_by'];
+
+                    $check_query = "SELECT * FROM version_control WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name'";
+                    $check_result = mysqli_query($connection, $check_query);
+
+                    if (mysqli_num_rows($check_result) > 0) {
+                        // Update existing
+                        $update_query = "UPDATE version_control SET vc_assigned_to = '$vc_assigned_to', vc_status = '$vc_status', vc_updated_on = '$vc_updated_on', vc_updated_by = '$vc_updated_by' WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name'";
+                        $query_result = mysqli_query($connection, $update_query);
+                    } else {
+                        $insert_query = "INSERT INTO version_control (vc_data_id, vc_screen_name, vc_assigned_to, vc_status, vc_updated_on, vc_updated_by) VALUES ('$vc_data_id', '$vc_screen_name', '$vc_assigned_to', '$vc_status', '$vc_updated_on', '$vc_updated_by')";
+                        $query_result = mysqli_query($connection, $insert_query);
                     }
 
-                    // Handle form submission
-                    if (isset($_POST['update-details'])) {
-                        $vc_data_id = $_POST['vc_data_id'];
-                        $vc_screen_name = $_POST['vc_screen_name']; // Get it from hidden input
-                        date_default_timezone_set('Asia/Kolkata');
-                        $vc_updated_on = date('Y-m-d H:i:s');
-                        $vc_assigned_to = $_POST['vc_assigned_to'];
-                        $vc_status = $_POST['vc_status'];
-                        $vc_updated_by = $_POST['vc_updated_by'];
-
-                        $check_query = "SELECT * FROM version_control WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name'";
-                        $check_result = mysqli_query($connection, $check_query);
-
-                        if (mysqli_num_rows($check_result) > 0) {
-                            // Update existing
-                            $update_query = "UPDATE version_control 
-                SET vc_assigned_to = '$vc_assigned_to',
-                    vc_status = '$vc_status',
-                    vc_updated_on = '$vc_updated_on',
-                    vc_updated_by = '$vc_updated_by'
-                WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name'";
-                            $query_result = mysqli_query($connection, $update_query);
-                        } else {
-                            // Insert new
-                            $insert_query = "INSERT INTO version_control (
-                vc_data_id, 
-                vc_screen_name, 
-                vc_assigned_to, 
-                vc_status, 
-                vc_updated_on, 
-                vc_updated_by
-            ) VALUES (
-                '$vc_data_id',
-                '$vc_screen_name',
-                '$vc_assigned_to',
-                '$vc_status',
-                '$vc_updated_on',
-                '$vc_updated_by'
-            )";
-                            $query_result = mysqli_query($connection, $insert_query);
-                        }
-
-                        if ($query_result) {
-                            echo "<div id='alertBox' class='alert alert-success'>Details saved successfully.</div>";
-                        } else {
-                            echo "<div id='alertBox' class='alert alert-danger'>Error: " . mysqli_error($connection) . "</div>";
-                        }
+                    if ($query_result) {
+                        echo "<div id='alertBox' class='alert alert-success'>Details saved successfully.</div>";
+                    } else {
+                        echo "<div id='alertBox' class='alert alert-danger'>Error: " . mysqli_error($connection) . "</div>";
                     }
+                }
+                $vc_assigned_to_value = '';
+                $vc_status_value = '';
 
-                    // Fetch existing values
-                    $vc_assigned_to_value = '';
-                    $vc_status_value = '';
-
-                    if ($vc_data_id && $vc_screen_name) {
-                        $get_vc_data_query = "SELECT vc_assigned_to, vc_status FROM version_control 
+                if ($vc_data_id && $vc_screen_name) {
+                    $get_vc_data_query = "SELECT vc_assigned_to, vc_status FROM version_control 
                               WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_screen_name' LIMIT 1";
-                        $get_vc_data_result = mysqli_query($connection, $get_vc_data_query);
+                    $get_vc_data_result = mysqli_query($connection, $get_vc_data_query);
 
-                        if (mysqli_num_rows($get_vc_data_result) > 0) {
-                            $vc_data = mysqli_fetch_assoc($get_vc_data_result);
-                            $vc_assigned_to_value = $vc_data['vc_assigned_to'];
-                            $vc_status_value = $vc_data['vc_status'];
-                        }
+                    if (mysqli_num_rows($get_vc_data_result) > 0) {
+                        $vc_data = mysqli_fetch_assoc($get_vc_data_result);
+                        $vc_assigned_to_value = $vc_data['vc_assigned_to'];
+                        $vc_status_value = $vc_data['vc_status'];
                     }
-                    ?>
+                }
+                ?>
 
-                    <form action="" method="POST">
-                        <input type="hidden" name="vc_data_id" value="<?php echo $vc_data_id ?>">
-                        <input type="hidden" name="vc_updated_by" value="<?php echo $user_name ?>">
-                        <input type="hidden" name="vc_screen_name" value="<?php echo $vc_screen_name ?>">
+                <form action="" method="POST">
+                    <input type="hidden" name="vc_data_id" value="<?php echo $vc_data_id ?>">
+                    <input type="hidden" name="vc_updated_by" value="<?php echo $user_name ?>">
+                    <input type="hidden" name="vc_screen_name" value="<?php echo $vc_screen_name ?>">
 
-                        <div class="mb-3">
-                            <label style="font-size: 12px !important;" class="form-label">Assigned to</label>
-                            <select style="font-size: 12px !important;" class="form-select" name="vc_assigned_to" required>
-                                <option disabled selected>Select a user</option>
-                                <?php
-                                $get_assigned_user = "SELECT * FROM user";
-                                $get_assigned_user_r = mysqli_query($connection, $get_assigned_user);
-                                while ($row = mysqli_fetch_assoc($get_assigned_user_r)) {
-                                    $assigned_user_name = $row['isms_user_name'];
-                                    $selected = ($assigned_user_name == $vc_assigned_to_value) ? 'selected' : '';
-                                    echo "<option value=\"$assigned_user_name\" $selected>$assigned_user_name</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important;" class="form-label">Assigned to</label>
+                        <select style="font-size: 12px !important;" class="form-select" name="vc_assigned_to" required>
+                            <option disabled selected>Select a user</option>
+                            <?php
+                            $get_assigned_user = "SELECT * FROM user";
+                            $get_assigned_user_r = mysqli_query($connection, $get_assigned_user);
+                            while ($row = mysqli_fetch_assoc($get_assigned_user_r)) {
+                                $assigned_user_name = $row['isms_user_name'];
+                                $selected = ($assigned_user_name == $vc_assigned_to_value) ? 'selected' : '';
+                                echo "<option value=\"$assigned_user_name\" $selected>$assigned_user_name</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
 
-                        <div class="mb-3">
-                            <label style="font-size: 12px !important;" class="form-label">Status</label>
-                            <select style="font-size: 12px !important;" class="form-select" name="vc_status" required>
-                                <option disabled selected>Select status</option>
-                                <?php
-                                $statuses = ['Open', 'Closed', 'In Progress', 'Completed'];
-                                foreach ($statuses as $status) {
-                                    $selected = ($status == $vc_status_value) ? 'selected' : '';
-                                    echo "<option value=\"$status\" $selected>$status</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important;" class="form-label">Status</label>
+                        <select style="font-size: 12px !important;" class="form-select" name="vc_status" required>
+                            <option disabled selected>Select status</option>
+                            <?php
+                            $statuses = ['Open', 'Closed', 'In Progress', 'Completed'];
+                            foreach ($statuses as $status) {
+                                $selected = ($status == $vc_status_value) ? 'selected' : '';
+                                echo "<option value=\"$status\" $selected>$status</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
 
-                        <button type="submit" name="update-details" class="btn btn-sm btn-success">Submit</button>
-                    </form>
-                </div>
+                    <button type="submit" name="update-details" class="btn btn-sm btn-success">Submit</button>
+                </form>
             </div>
+        </div>
 
-            <div style="flex: 1 !important; margin-bottom: 20px !important;">
-                <!-- ========== HISTORY ========== -->
-                <div style="margin: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
-                    <div style="display: flex !important; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h6>History</h6>
-                    </div>
-                    <div style="width: 100% !important;">
-                        <?php
-                        $history_query = "SELECT * FROM policy_details_history WHERE policy_id = '$policy_id' ORDER BY policy_update_on DESC";
-                        $history_result = mysqli_query($connection, $history_query);
-                        if (mysqli_num_rows($history_result) > 0) {
-                        ?>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th style="font-size: 12px !important;" scope="col">Previous Details</th>
-                                            <th style="font-size: 12px !important;" scope="col">Updated on</th>
-                                            <th style="font-size: 12px !important;" scope="col">View</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php while ($history = mysqli_fetch_assoc($history_result)) { ?>
-                                            <tr>
-                                                <td style="font-size: 12px !important;">Details added</td>
-                                                <td style="font-size: 12px !important;"><?php echo $history['version_saved_on']; ?></td>
-                                                <td>
-                                                    <button
-                                                        class="btn btn-sm btn-outline-success view-history-btn"
-                                                        data-version="<?php echo htmlspecialchars($history['policy_details']); ?>"
-                                                        data-updatedon="<?php echo htmlspecialchars($history['version_saved_on']); ?>"
-                                                        style="font-size: 12px !important;"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#historyModal">
-                                                        View Previous Version
-                                                    </button>
-                                                </td>
-
-                                            </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                </table>
-                                <!-- ========== HISTORY MODAL ========== -->
-                                <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Previous Version Details</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p><strong>Updated On:</strong> <span id="history-updated-on"></span></p>
-                                                <div class="WYSIWYG-editor">
-                                                    <textarea id="history-content" style="width: 100%; height: 500px !important; white-space: pre-wrap;"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <script>
-                                    document.querySelectorAll('.view-history-btn').forEach(btn => {
-                                        btn.addEventListener('click', function() {
-                                            const versionDetails = this.getAttribute('data-version');
-                                            const updatedOn = this.getAttribute('data-updatedon');
-
-                                            // Set the updated date
-                                            document.getElementById('history-updated-on').innerHTML = updatedOn;
-
-                                            // Remove HTML tags and set the text in the textarea
-                                            document.getElementById('history-content').value = stripHtml(versionDetails);
-                                        });
-                                    });
-
-                                    // Function to strip HTML tags from a string
-                                    function stripHtml(str) {
-                                        var doc = new DOMParser().parseFromString(str, 'text/html');
-                                        return doc.body.textContent || "";
-                                    }
-                                </script>
-
-                            <?php } else { ?>
-                                <table class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th style="font-size: 12px !important;" scope="col">Previous Details</th>
-                                            <th style="font-size: 12px !important;" scope="col">Updated on</th>
-                                            <th style="font-size: 12px !important;" scope="col">View</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="3" style="font-size: 12px !important;">No previous policy details found.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            <?php } ?>
-                            </div>
-                    </div>
+        <div class="col-md-6">
+            <!-- ========== HISTORY ========== -->
+            <div class="mb-3" style="padding: 20px; border-radius: 10px; background-color: #fff;">
+                <div style="display: flex !important; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h6>History</h6>
                 </div>
+                <div style="width: 100% !important;">
+                    <?php
+                    $history_query = "SELECT * FROM policy_details_history WHERE policy_id = '$policy_id' ORDER BY policy_update_on DESC";
+                    $history_result = mysqli_query($connection, $history_query);
+                    if (mysqli_num_rows($history_result) > 0) {
+                    ?>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size: 12px !important;" scope="col">Previous Details</th>
+                                        <th style="font-size: 12px !important;" scope="col">Updated on</th>
+                                        <th style="font-size: 12px !important;" scope="col">View</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while ($history = mysqli_fetch_assoc($history_result)) { ?>
+                                        <tr>
+                                            <td style="font-size: 12px !important;">Details added</td>
+                                            <td style="font-size: 12px !important;"><?php echo $history['version_saved_on']; ?></td>
+                                            <td>
+                                                <button
+                                                    class="btn btn-sm btn-outline-success view-history-btn"
+                                                    data-version="<?php echo htmlspecialchars($history['policy_details']); ?>"
+                                                    data-updatedon="<?php echo htmlspecialchars($history['version_saved_on']); ?>"
+                                                    style="font-size: 12px !important;"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#historyModal">
+                                                    View Previous Version
+                                                </button>
+                                            </td>
 
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+
+
+                        <?php } else { ?>
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size: 12px !important;" scope="col">Previous Details</th>
+                                        <th style="font-size: 12px !important;" scope="col">Updated on</th>
+                                        <th style="font-size: 12px !important;" scope="col">View</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3" style="font-size: 12px !important;">No previous policy details found.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        <?php } ?>
+                        </div>
+                </div>
                 <!-- ========== DOCUMENTS ========== -->
-                <div style="margin: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
+                <div class="mb-3" style="padding: 20px; border-radius: 10px; background-color: #fff;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Documents</h6>
                         <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#uploadDoc" style="font-size: 12px !important;">
@@ -529,11 +470,11 @@ include 'functions/policy-details/save-function.php';
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                <th style="font-size: 12px !important;">Name</th>
-                                        <th style="font-size: 12px !important;">Version</th>
-                                        <th style="font-size: 12px !important;">Download</th>
-                                        <th style="font-size: 12px !important;">Edit</th>
-                                        <th style="font-size: 12px !important;">Delete</th>
+                                    <th style="font-size: 12px !important;">Name</th>
+                                    <th style="font-size: 12px !important;">Version</th>
+                                    <th style="font-size: 12px !important;">Download</th>
+                                    <th style="font-size: 12px !important;">Edit</th>
+                                    <th style="font-size: 12px !important;">Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -544,9 +485,8 @@ include 'functions/policy-details/save-function.php';
                         </table>
                     <?php endif; ?>
                 </div>
-
                 <!-- ========== RISKS ========== -->
-                <div style="margin: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
+                <div class="mb-3" style="padding: 20px; border-radius: 10px; background-color: #fff;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Associated Risks & Treatments</h6>
                         <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#riskModal" style="font-size: 12px !important;">
@@ -646,8 +586,8 @@ include 'functions/policy-details/save-function.php';
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                <th style="font-size: 12px !important;">Risk Name</th>
-                                <th style="font-size: 12px !important;">View</th>
+                                    <th style="font-size: 12px !important;">Risk Name</th>
+                                    <th style="font-size: 12px !important;">View</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -659,10 +599,8 @@ include 'functions/policy-details/save-function.php';
                     <?php } ?>
 
                 </div>
-
-
                 <!-- ========== COMMENT ========== -->
-                <div style="margin: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
+                <div class="mb-3" style="padding: 20px; border-radius: 10px; background-color: #fff;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Comments</h6>
                         <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#commentModal" style="font-size: 12px !important;">
@@ -744,7 +682,45 @@ include 'functions/policy-details/save-function.php';
                         <p style="font-size: 12px;">No comments added</p>
                     <?php } ?>
                 </div>
+                <!-- ========== HISTORY MODAL ========== -->
+                <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Previous Version Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Updated On:</strong> <span id="history-updated-on"></span></p>
+                                <div class="WYSIWYG-editor">
+                                    <textarea id="history-content" style="width: 100%; height: 500px !important; white-space: pre-wrap;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <script>
+                document.querySelectorAll('.view-history-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const versionDetails = this.getAttribute('data-version');
+                        const updatedOn = this.getAttribute('data-updatedon');
+
+                        // Set the updated date
+                        document.getElementById('history-updated-on').innerHTML = updatedOn;
+
+                        // Remove HTML tags and set the text in the textarea
+                        document.getElementById('history-content').value = stripHtml(versionDetails);
+                    });
+                });
+
+                // Function to strip HTML tags from a string
+                function stripHtml(str) {
+                    var doc = new DOMParser().parseFromString(str, 'text/html');
+                    return doc.body.textContent || "";
+                }
+            </script>
         </div>
     </div>
 </div>
