@@ -19,6 +19,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
             if ($row = mysqli_fetch_assoc($result)) {
+                $sim_id = htmlspecialchars($row['sim_id']);
                 $sim_topic = htmlspecialchars($row['sim_topic']);
                 $sim_details = htmlspecialchars($row['sim_details']);
                 $sim_status = htmlspecialchars($row['sim_status']);
@@ -65,7 +66,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             <div class="WYSIWYG-editor-container">
                 <div class="sim-topic-container-details">
                     <p>Topic:</p>
-                    <h5><?php echo $sim_topic ?? "N/A"; ?></h5>
+                    <h5><?php echo $sim_id . " " . $sim_topic ?? "N/A"; ?></h5>
                 </div>
                 <form action="" method="POST">
                     <div class="WYSIWYG-editor">
@@ -155,6 +156,16 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                 </div>
                 <!-- ======= ASSOCIATED RISKS TABLE ======= -->
                 <?php
+                if(isset($_POST['del-sim'])) {
+                    $risk_id = intval($_POST['risk_id']);
+                    $delete_query = "DELETE FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $policy_id AND clause_type = 'sim'";
+                    if (mysqli_query($connection, $delete_query)) {
+                        echo "<p style='font-size: 12px !important;' id='alertBox' class='alert alert-success'>Risk removed successfully.</p>";
+                    } else {
+                        echo "<p style='font-size: 12px !important;' id='alertBox' class='alert alert-danger'>Error removing risk.</p>";
+                    }
+                }
+
                 $fetch_risks_query = " SELECT r.risks_id, r.risks_name FROM 
                 risk_policies rp
                 JOIN risks r ON rp.risks_id = r.risks_id
@@ -169,6 +180,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                             <tr>
                                 <th style="font-size: 12px !important;">Risk Name</th>
                                 <th style="font-size: 12px !important;">View</th>
+                                <th style="font-size: 12px !important;">Remove</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -179,6 +191,12 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                         <a href="risks-details.php?id=<?php echo $risk['risks_id']; ?>" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">
                                             View Risk Details
                                         </a>
+                                    </td>
+                                    <td>
+                                        <form action="" method="POST">
+                                            <input type="text" name="risk_id" value="<?php echo $risk['risks_id']; ?>" hidden>
+                                            <button type="submit" name="del-risk" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Remove</button>
+                                        </form>
                                     </td>
                                 </tr>
                             <?php } ?>
