@@ -94,7 +94,7 @@ $risk = $result->fetch_assoc();
                     while ($mapping = mysqli_fetch_assoc($fetch_mappings_result)) {
                         if (in_array($mapping['clause_type'], ['policy', 'sub', 'linked', 'inner'])) {
                             $type = $mapping['clause_type'];
-                            $id = $mapping['risks_id'];
+                            $id = $mapping['clause_id'];
                             $display_text = "";
 
                             if ($type === 'policy') {
