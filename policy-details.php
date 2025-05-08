@@ -229,66 +229,69 @@ include 'functions/policy-details/save-function.php';
         </div>
 
         <div class="col-md-6">
-            <!-- ========== HISTORY ========== -->
-            <div class="mb-3" style="padding: 20px; border-radius: 10px; background-color: #fff;">
-                <div style="display: flex !important; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h6>History</h6>
-                </div>
-                <div style="width: 100% !important;">
-                    <?php
-                    $history_query = "SELECT * FROM policy_details_history WHERE policy_id = '$policy_id' ORDER BY policy_update_on DESC";
-                    $history_result = mysqli_query($connection, $history_query);
-                    if (mysqli_num_rows($history_result) > 0) {
-                    ?>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th style="font-size: 12px !important;" scope="col">Previous Details</th>
-                                        <th style="font-size: 12px !important;" scope="col">Updated on</th>
-                                        <th style="font-size: 12px !important;" scope="col">View</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php while ($history = mysqli_fetch_assoc($history_result)) { ?>
+            
+            <div class="mb-3">
+                <!-- ========== HISTORY ========== -->
+                <div style="background-color: #fff; padding: 20px; border-radius: 10px;">
+                    <div style="display: flex !important; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h6>History</h6>
+                    </div>
+                    <div style="width: 100% !important;">
+                        <?php
+                        $history_query = "SELECT * FROM policy_details_history WHERE policy_id = '$policy_id' ORDER BY policy_update_on DESC";
+                        $history_result = mysqli_query($connection, $history_query);
+                        if (mysqli_num_rows($history_result) > 0) {
+                        ?>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
                                         <tr>
-                                            <td style="font-size: 12px !important;">Details added</td>
-                                            <td style="font-size: 12px !important;"><?php echo $history['version_saved_on']; ?></td>
-                                            <td>
-                                                <button
-                                                    class="btn btn-sm btn-outline-success view-history-btn"
-                                                    data-version="<?php echo htmlspecialchars($history['policy_details']); ?>"
-                                                    data-updatedon="<?php echo htmlspecialchars($history['version_saved_on']); ?>"
-                                                    style="font-size: 12px !important;"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#historyModal">
-                                                    View Previous Version
-                                                </button>
-                                            </td>
-
+                                            <th style="font-size: 12px !important;" scope="col">Previous Details</th>
+                                            <th style="font-size: 12px !important;" scope="col">Updated on</th>
+                                            <th style="font-size: 12px !important;" scope="col">View</th>
                                         </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <?php while ($history = mysqli_fetch_assoc($history_result)) { ?>
+                                            <tr>
+                                                <td style="font-size: 12px !important;">Details added</td>
+                                                <td style="font-size: 12px !important;"><?php echo $history['version_saved_on']; ?></td>
+                                                <td>
+                                                    <button
+                                                        class="btn btn-sm btn-outline-success view-history-btn"
+                                                        data-version="<?php echo htmlspecialchars($history['policy_details']); ?>"
+                                                        data-updatedon="<?php echo htmlspecialchars($history['version_saved_on']); ?>"
+                                                        style="font-size: 12px !important;"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#historyModal">
+                                                        View Previous Version
+                                                    </button>
+                                                </td>
+
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
 
 
-                        <?php } else { ?>
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th style="font-size: 12px !important;" scope="col">Previous Details</th>
-                                        <th style="font-size: 12px !important;" scope="col">Updated on</th>
-                                        <th style="font-size: 12px !important;" scope="col">View</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="3" style="font-size: 12px !important;">No previous policy details found.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        <?php } ?>
-                        </div>
+                            <?php } else { ?>
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-size: 12px !important;" scope="col">Previous Details</th>
+                                            <th style="font-size: 12px !important;" scope="col">Updated on</th>
+                                            <th style="font-size: 12px !important;" scope="col">View</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="3" style="font-size: 12px !important;">No previous policy details found.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            <?php } ?>
+                            </div>
+                    </div>
                 </div>
                 <!-- ========== DOCUMENTS ========== -->
                 <div class="mb-3" style="padding: 20px; border-radius: 10px; background-color: #fff;">
