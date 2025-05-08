@@ -190,7 +190,7 @@ include 'functions/policy-details/save-function.php';
                 <form action="" method="POST">
                     <input type="hidden" name="vc_data_id" value="<?php echo htmlspecialchars($vc_data_id); ?>">
                     <input type="hidden" name="vc_data_type" value="<?php echo htmlspecialchars($vc_data_type); ?>">
-                    <input type="hidden" name="vc_updated_by" value="<?php echo htmlspecialchars($user_name); ?>">
+                    <!-- <input type="text" name="vc_updated_by" value="<?php echo htmlspecialchars($user_name); ?>"> -->
 
                     <div class="mb-3">
                         <label style="font-size: 12px !important;" class="form-label">Assigned to</label>
