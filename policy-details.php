@@ -229,7 +229,7 @@ include 'functions/policy-details/save-function.php';
         </div>
 
         <div class="col-md-6">
-            
+
             <div class="mb-3">
                 <!-- ========== HISTORY ========== -->
                 <div style="background-color: #fff; padding: 20px; border-radius: 10px;">
@@ -566,6 +566,17 @@ include 'functions/policy-details/save-function.php';
                     </div>
                     <!-- ======= ASSOCIATED RISKS TABLE ======= -->
                     <?php
+                    if (isset($_POST['del-risk'])) {
+                        $risk_id = intval($_POST['risk_id']);
+                        $clause_id = intval($policy_id); // or use $_POST if clause_id is submitted via the form
+                        $clause_type = 'policy'; // or use $_POST if clause_type is dynamic
+
+                        $delete_query = "DELETE FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $clause_id AND clause_type = '$clause_type'";
+                        mysqli_query($connection, $delete_query);
+
+                        echo "<div class='alert alert-success mt-2'>Risk removed from policy successfully.</div>";
+                    }
+
                     $fetch_risks_query = "SELECT r.risks_id, r.risks_name FROM risk_policies rp
                     JOIN risks r ON rp.risks_id = r.risks_id
                     WHERE rp.clause_id = $policy_id AND rp.clause_type = 'policy'";
@@ -579,6 +590,7 @@ include 'functions/policy-details/save-function.php';
                                     <tr>
                                         <th style="font-size: 12px !important;">Risk Name</th>
                                         <th style="font-size: 12px !important;">View</th>
+                                        <th style="font-size: 12px !important;">Remove</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -589,6 +601,15 @@ include 'functions/policy-details/save-function.php';
                                                 <a href="risks-details.php?id=<?php echo $risk['risks_id']; ?>" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">
                                                     View Risk Details
                                                 </a>
+                                            </td>
+                                            <td>
+                                                <form action="" method="POST">
+                                                    <input type="hidden" name="risk_id" value="<?php echo $risk['risks_id']; ?>">
+                                                    <input type="hidden" name="clause_id" value="<?php echo $policy_id; ?>">
+                                                    <input type="hidden" name="clause_type" value="policy">
+                                                    <button type="submit" name="del-risk" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">Remove</button>
+                                                </form>
+
                                             </td>
                                         </tr>
                                     <?php } ?>
