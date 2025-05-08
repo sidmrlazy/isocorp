@@ -163,7 +163,7 @@ $risk = $result->fetch_assoc();
 
                             if ($r = mysqli_fetch_assoc($q)) {
                                 $has_sims = true;
-                                echo "<li>" . htmlspecialchars($r['sim_id']) . " " . htmlspecialchars($r['sim_topic']) . "</li>";
+                                echo "<li>" . htmlspecialchars($r['sim_id']) . ". " . htmlspecialchars($r['sim_topic']) . "</li>";
                             }
                         }
                     }
