@@ -137,7 +137,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                         while ($row = mysqli_fetch_assoc($get_risks_r)) {
                                             $risks_id = $row['risks_id'];
                                             $risks_name = $row['risks_name'];
-                                            echo "<option style='border-bottom: 1px solid #e7e7e7; padding-bottom: 5px !important;' value=\"$risks_id\">$risks_id $risks_name</option>";
+                                            echo "<option style='border-bottom: 1px solid #e7e7e7; padding-bottom: 5px !important;' value=\"$risks_id\">. $risks_id $risks_name</option>";
                                         }
                                         ?>
                                     </select>
