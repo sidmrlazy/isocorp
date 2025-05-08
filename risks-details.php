@@ -93,7 +93,7 @@ $risk = $result->fetch_assoc();
                     echo "<ul style='font-size: 12px !important;'>";
                     while ($mapping = mysqli_fetch_assoc($fetch_mappings_result)) {
                         if (in_array($mapping['clause_type'], ['policy', 'sub', 'linked', 'inner'])) {
-                            $type = $mapping['clause_type'];
+                            // $type = $mapping['clause_type'];
                             $id = $mapping['clause_id'];
                             $display_text = "";
 
