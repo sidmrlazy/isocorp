@@ -274,6 +274,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             </div>
         </div>
     </div>
+</div>
     <script>
         $(document).ready(function() {
             $('#editorNewSim').summernote({
