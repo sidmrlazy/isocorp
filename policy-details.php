@@ -519,21 +519,18 @@ include 'functions/policy-details/save-function.php';
                             foreach ($risk_ids as $risk_id) {
                                 $risk_id = intval($risk_id);
 
-                                // Check if the relation already exists
                                 $check_exist = "SELECT * FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $clause_id AND clause_type = '$clause_type'";
                                 $result = mysqli_query($connection, $check_exist);
 
                                 if (mysqli_num_rows($result) == 0) {
-                                    // Insert new relationship
                                     $insert = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $clause_id, '$clause_type')";
                                     mysqli_query($connection, $insert);
                                 }
                             }
-
                             echo "<div class='alert alert-success mt-2'>Risks successfully linked to the policy/control.</div>";
                         }
                         ?>
-                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-dialog modal-dialog-centered modal-xl">
                             <form action="" method="POST" class="modal-content">
                                 <input type="hidden" name="clause_id" value="<?php echo $policy_id ?>">
                                 <input type="hidden" name="clause_type" value="policy">
@@ -543,16 +540,19 @@ include 'functions/policy-details/save-function.php';
                                 </div>
                                 <div class="modal-body">
                                     <div class="mb-3">
-                                        <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Risks</label>
-                                        <select name="risk_ids[]" style="font-size: 12px !important;" multiple class="form-select">
+                                        <label style="font-size: 12px !important;" for="riskSearch" class="form-label">Search Risks</label>
+                                        <input type="text" id="riskSearch" class="form-control mb-2" placeholder="Type to search risks..." style="font-size: 12px !important;">
+
+                                        <label style="font-size: 12px !important;" for="riskSelect" class="form-label">Risks</label>
+                                        <select name="risk_ids[]" id="riskSelect" style="font-size: 12px !important; height: 300px !important" multiple class="form-select">
                                             <option disabled selected>Choose Risks</option>
                                             <?php
-                                            $get_risks = "SELECT * FROM risks";
+                                            $get_risks = "SELECT * FROM risks ORDER BY risks_id ASC";
                                             $get_risks_r = mysqli_query($connection, $get_risks);
                                             while ($row = mysqli_fetch_assoc($get_risks_r)) {
                                                 $risks_id = $row['risks_id'];
                                                 $risks_name = $row['risks_name'];
-                                                echo "<option value=\"$risks_id\">$risks_name</option>";
+                                                echo "<option style='border-bottom: 1px solid #e7e7e7; padding-bottom: 5px !important;' value=\"$risks_id\">$risks_id.  $risks_name</option>";
                                             }
                                             ?>
                                         </select>
@@ -774,6 +774,28 @@ include 'functions/policy-details/save-function.php';
                     var doc = new DOMParser().parseFromString(str, 'text/html');
                     return doc.body.textContent || "";
                 }
+                $(document).ready(function() {
+                    $('#editorNewSim').summernote({
+                        height: 300,
+                        minHeight: 150,
+                        maxHeight: 500,
+                        focus: true
+                    });
+
+                    $('form').on('submit', function() {
+                        $('#editorNewSim').val($('#editorNewSim').summernote('code'));
+                    });
+                });
+
+                document.getElementById('riskSearch').addEventListener('keyup', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const options = document.querySelectorAll('#riskSelect option');
+
+                    options.forEach(option => {
+                        const text = option.textContent.toLowerCase();
+                        option.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                });
             </script>
         </div>
     </div>

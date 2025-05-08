@@ -83,7 +83,7 @@ $risk = $result->fetch_assoc();
             </ul>
 
             <div class="tab-content mt-3" id="riskTabContent">
-                <!-- POLICIES TAB -->
+                <!-- ============== POLICIES TAB ============== -->
                 <div class="tab-pane fade show active" id="policies" role="tabpanel">
                     <?php
                     mysqli_data_seek($fetch_mappings_result, 0);

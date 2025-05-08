@@ -95,7 +95,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
                 <!-- ========== SIM RISKS MODAL ========== -->
                 <div class="modal fade" id="riskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
                         <?php
                         if (isset($_POST['add-sim-risk'])) {
 
