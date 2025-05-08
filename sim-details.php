@@ -189,7 +189,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                     <td style="font-size: 12px !important;"><?php echo htmlspecialchars($risk['risks_name']); ?></td>
                                     <td>
                                         <a href="risks-details.php?id=<?php echo $risk['risks_id']; ?>" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">
-                                            View Risk Details
+                                            View Risk
                                         </a>
                                     </td>
                                     <td>
