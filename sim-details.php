@@ -130,10 +130,9 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                 <div class="mb-3">
                                     <label style="font-size: 12px !important;" for="riskSearch" class="form-label">Search Risks</label>
                                     <input type="text" id="riskSearch" class="form-control mb-2" placeholder="Type to search risks..." style="font-size: 12px !important;">
-                                </div>
-                                <div class="mb-3">
-                                    <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Risks</label>
-                                    <select name="risk_ids[]" style="font-size: 12px !important; height: 300px !important" multiple class="form-select">
+
+                                    <label style="font-size: 12px !important;" for="riskSelect" class="form-label">Risks</label>
+                                    <select name="risk_ids[]" id="riskSelect" style="font-size: 12px !important; height: 300px !important" multiple class="form-select">
                                         <option disabled selected>Choose Risks</option>
                                         <?php
                                         $get_risks = "SELECT * FROM risks ORDER BY risks_id ASC";
@@ -146,6 +145,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                         ?>
                                     </select>
                                 </div>
+
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" name="add-sim-risk" class="btn btn-primary">Save changes</button>
