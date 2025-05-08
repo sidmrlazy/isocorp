@@ -132,7 +132,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                     <select name="risk_ids[]" style="font-size: 12px !important; height: 300px !important" multiple class="form-select">
                                         <option disabled selected>Choose Risks</option>
                                         <?php
-                                        $get_risks = "SELECT * FROM risks ORDER BY risks_id DESC";
+                                        $get_risks = "SELECT * FROM risks ORDER BY risks_id ASC";
                                         $get_risks_r = mysqli_query($connection, $get_risks);
                                         while ($row = mysqli_fetch_assoc($get_risks_r)) {
                                             $risks_id = $row['risks_id'];
