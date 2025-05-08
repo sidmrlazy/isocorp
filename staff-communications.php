@@ -20,30 +20,17 @@ include 'includes/connection.php'; ?>
         <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px">
             <button type="button" data-bs-toggle="modal" data-bs-target="#insertComm" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon> Add </button>
         </div>
-        <!-- =========== INSERT COM =========== -->
+        <!-- =========== INSERT AND UPDATE COM =========== -->
         <div class="modal fade" id="insertComm" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <?php
-                if (isset($_POST['update-comm'])) {
-                    $comm_id = mysqli_real_escape_string($connection, $_POST['edit_comm_id']);
-                    $comm_data = mysqli_real_escape_string($connection, $_POST['edit_comm_data']);
-                    $comm_by = mysqli_real_escape_string($connection, $_POST['edit_comm_by']);
-                    $comm_date = mysqli_real_escape_string($connection, $_POST['edit_comm_date']);
-
-                    $update_comm = mysqli_query($connection, "UPDATE staff_comm SET comm_data='$comm_data', comm_by='$comm_by', comm_date='$comm_date' WHERE comm_id='$comm_id'") or die(mysqli_error($connection));
-
-                    if ($update_comm) {
-                        echo "<p style='font-size: 12px' id='alertBox' class='alert alert-success' role='alert'>Staff communication updated successfully!</p>";
-                    }
-                }
-
-
                 if (isset($_POST['insert-comm'])) {
                     $comm_data = mysqli_real_escape_string($connection, $_POST['comm_data']);
+                    $comm_details = mysqli_real_escape_string($connection, $_POST['comm_details']);
                     $comm_by = mysqli_real_escape_string($connection, $_POST['comm_by']);
                     $comm_date = mysqli_real_escape_string($connection, $_POST['comm_date']);
 
-                    $insert_comm = mysqli_query($connection, "INSERT INTO staff_comm (comm_data, comm_by, comm_date) VALUES ('$comm_data', '$comm_by', '$comm_date')") or die(mysqli_error($connection));
+                    $insert_comm = mysqli_query($connection, "INSERT INTO staff_comm (comm_data, comm_details, comm_by, comm_date) VALUES ('$comm_data', '$comm_details', '$comm_by', '$comm_date')") or die(mysqli_error($connection));
                     if ($insert_comm) {
                         echo "<p style='font-size: 12px' id='alertBox' class='alert alert-primary' role='alert'>Staff communication added successfully!</p>";
                     }
@@ -61,9 +48,15 @@ include 'includes/connection.php'; ?>
                                 <input type="date" name="comm_date" style="font-size: 12px;" class="form-control" value="">
                             </div>
                         </td>
-                        <div class="form-floating">
-                            <textarea name="comm_data" class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
-                            <label style="font-size: 12px;" for="floatingTextarea2">Comments</label>
+                        <div class="mb-3">
+                            <label style="font-size: 12px;" for="floatingTextarea2">Topic</label>
+                            <input name="comm_data" class="form-control" placeholder="Leave a comment here" />
+                        </div>
+                        <div class="mb-3">
+                            <label style="font-size: 12px;" for="edit">Details</label>
+                            <div class="WYSIWYG-editor">
+                                <textarea id="editorNew" name="comm_details"></textarea>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -74,32 +67,7 @@ include 'includes/connection.php'; ?>
             </div>
         </div>
 
-        <!-- =========== EDIT COM =========== -->
-        <div class="modal fade" id="editCommModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <form action="" method="POST" class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="editModalLabel">Edit Staff Communication</h1>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" name="edit_comm_id" id="edit_comm_id">
-                        <input type="text" value="<?php echo $user_name ?>" name="edit_comm_by" id="edit_comm_by" hidden>
-                        <div class="mb-3">
-                            <label style="font-size: 12px;" class="form-label">Upload Date</label>
-                            <input type="date" name="edit_comm_date" id="edit_comm_date" style="font-size: 12px;" class="form-control">
-                        </div>
-                        <div class="form-floating">
-                            <textarea name="edit_comm_data" id="edit_comm_data" class="form-control" style="height: 100px"></textarea>
-                            <label style="font-size: 12px;" for="edit_comm_data">Comments</label>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" name="update-comm" class="btn btn-primary">Update</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+
         <table class="table table-bordered table-striped table-hover">
             <?php
             if (isset($_POST['delete-comm'])) {
@@ -119,11 +87,12 @@ include 'includes/connection.php'; ?>
             ?>
                 <thead>
                     <tr>
-                        <th style="font-size: 12px !important;" scope="col">Content</th>
+                        <th style="font-size: 12px !important;" scope="col">Topic</th>
                         <th style="font-size: 12px !important;" scope="col">Uploaded Date</th>
                         <th style="font-size: 12px !important;" scope="col">Uploaded By</th>
                         <th style="font-size: 12px !important;" scope="col">Edit</th>
                         <th style="font-size: 12px !important;" scope="col">Delete</th>
+                        <th style="font-size: 12px !important;" scope="col">View</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -140,15 +109,7 @@ include 'includes/connection.php'; ?>
                             <td style="font-size: 12px !important;">
                                 <form action="" method="POST">
                                     <input type="text" value="<?php echo $comm_id ?>" name="comm_id" hidden>
-                                    <button
-                                        type="button"
-                                        class="btn btn-sm btn-outline-warning"
-                                        style="font-size: 12px !important;"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editCommModal"
-                                        onclick="populateEditModal('<?php echo $comm_id; ?>', '<?php echo htmlspecialchars(addslashes($comm_data)); ?>', '<?php echo $comm_by; ?>', '<?php echo $comm_date; ?>')">
-                                        Edit
-                                    </button>
+                                    <a href="edit-staff-comm.php?id=<?php echo $comm_id; ?>" class="btn btn-sm btn-outline-warning" style="font-size: 12px !important;">Edit</a>
                                 </form>
                             </td>
                             <td style="font-size: 12px !important;">
@@ -157,6 +118,10 @@ include 'includes/connection.php'; ?>
                                     <button style="font-size: 12px !important;" type="submit" name="delete-comm" class="btn btn-sm btn-outline-danger">Delete</button>
                                 </form>
                             </td>
+                            <td style="font-size: 12px !important;">
+                                <a style="font-size: 12px !important;" href="view-staff-comm.php?id=<?php echo $comm_id; ?>" class="btn btn-sm btn-outline-info">View Details</a>
+                            </td>
+
                         </tr>
                     <?php } ?>
                 </tbody>
@@ -164,12 +129,4 @@ include 'includes/connection.php'; ?>
         </table>
     </div>
 </div>
-<script>
-    function populateEditModal(id, data, by, date) {
-        document.getElementById('edit_comm_id').value = id;
-        document.getElementById('edit_comm_data').value = data;
-        document.getElementById('edit_comm_by').value = by;
-        document.getElementById('edit_comm_date').value = date;
-    }
-</script>
 <?php include 'includes/footer.php'; ?>
