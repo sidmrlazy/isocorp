@@ -127,7 +127,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <div class="mb-3">
+                                <div class="mb-3" >
                                     <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Risks</label>
                                     <select name="risk_ids[]" style="font-size: 12px !important; height: 300px !important" multiple class="form-select">
                                         <option disabled selected>Choose Risks</option>
@@ -137,7 +137,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                         while ($row = mysqli_fetch_assoc($get_risks_r)) {
                                             $risks_id = $row['risks_id'];
                                             $risks_name = $row['risks_name'];
-                                            echo "<option value=\"$risks_id\">$risks_name</option>";
+                                            echo "<option style='border-bottom: 1px solid #e7e7e7; padding-bottom: 5px !important;' value=\"$risks_id\">$risks_name</option>";
                                         }
                                         ?>
                                     </select>
