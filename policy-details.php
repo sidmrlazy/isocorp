@@ -294,7 +294,7 @@ include 'functions/policy-details/save-function.php';
                     </div>
                 </div>
                 <!-- ========== DOCUMENTS ========== -->
-                <div class="mb-3" style="padding: 20px; border-radius: 10px; background-color: #fff;">
+                <div class="mb-3" style="margin-top: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Documents</h6>
                         <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#uploadDoc" style="font-size: 12px !important;">
@@ -500,7 +500,7 @@ include 'functions/policy-details/save-function.php';
                     <?php endif; ?>
                 </div>
                 <!-- ========== RISKS ========== -->
-                <div class="mb-3" style="padding: 20px; border-radius: 10px; background-color: #fff;">
+                <div class="mb-3" style="margin-top: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Associated Risks & Treatments</h6>
                         <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#riskModal" style="font-size: 12px !important;">
@@ -614,7 +614,7 @@ include 'functions/policy-details/save-function.php';
 
                 </div>
                 <!-- ========== COMMENT SECTION ========== -->
-                <div class="mb-3" style="padding: 20px; border-radius: 10px; background-color: #fff;">
+                <div class="mb-3" style="margin-top: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Comments</h6>
                         <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#commentModal" style="font-size: 12px !important;">
