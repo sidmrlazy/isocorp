@@ -156,7 +156,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                 </div>
                 <!-- ======= ASSOCIATED RISKS TABLE ======= -->
                 <?php
-                if(isset($_POST['del-sim'])) {
+                if(isset($_POST['del-risk'])) {
                     $risk_id = intval($_POST['risk_id']);
                     $delete_query = "DELETE FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $policy_id AND clause_type = 'sim'";
                     if (mysqli_query($connection, $delete_query)) {
