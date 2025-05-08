@@ -93,7 +93,7 @@ $risk = $result->fetch_assoc();
                     echo "<ul style='font-size: 12px !important;'>";
                     while ($mapping = mysqli_fetch_assoc($fetch_mappings_result)) {
                         if (in_array($mapping['clause_type'], ['policy', 'sub', 'linked', 'inner'])) {
-                            // $type = $mapping['clause_type'];
+                            $type = $mapping['clause_type'];
                             $id = $mapping['clause_id'];
                             $display_text = "";
 
@@ -102,41 +102,40 @@ $risk = $result->fetch_assoc();
                                 if ($r = mysqli_fetch_assoc($q)) {
                                     $display_text = $r['policy_clause'] . " " . $r['policy_name'];
                                 }
-                            } 
-                            // elseif ($type === 'sub') {
-                            //     $q = mysqli_query($connection, "SELECT s.*, p.policy_clause, p.policy_name 
-                            //         FROM sub_control_policy s JOIN policy p ON p.policy_id = s.main_control_policy_id 
-                            //         WHERE s.sub_control_policy_id = $id");
-                            //     if ($r = mysqli_fetch_assoc($q)) {
-                            //         $display_text = $r['policy_clause'] . " " . $r['policy_name'] . " > " .
-                            //             $r['sub_control_policy_number'] . " " . $r['sub_control_policy_heading'];
-                            //     }
-                            // } elseif ($type === 'linked') {
-                            //     $q = mysqli_query($connection, "SELECT l.*, s.sub_control_policy_number, s.sub_control_policy_heading, p.policy_clause, p.policy_name 
-                            //         FROM linked_control_policy l 
-                            //         JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id 
-                            //         JOIN policy p ON p.policy_id = s.main_control_policy_id 
-                            //         WHERE l.linked_control_policy_id = $id");
-                            //     if ($r = mysqli_fetch_assoc($q)) {
-                            //         $display_text = $r['policy_clause'] . " " . $r['policy_name'] . " > " .
-                            //             $r['sub_control_policy_number'] . " " . $r['sub_control_policy_heading'] . " > " .
-                            //             $r['linked_control_policy_number'] . " - " . $r['linked_control_policy_heading'];
-                            //     }
-                            // } elseif ($type === 'inner') {
-                            //     $q = mysqli_query($connection, "SELECT i.*, l.linked_control_policy_number, l.linked_control_policy_heading,
-                            //         s.sub_control_policy_number, s.sub_control_policy_heading, p.policy_clause, p.policy_name 
-                            //         FROM inner_linked_control_policy i 
-                            //         JOIN linked_control_policy l ON l.linked_control_policy_id = i.linked_control_policy_id 
-                            //         JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id 
-                            //         JOIN policy p ON p.policy_id = s.main_control_policy_id 
-                            //         WHERE i.inner_linked_control_policy_id = $id");
-                            //     if ($r = mysqli_fetch_assoc($q)) {
-                            //         $display_text = $r['policy_clause'] . " " . $r['policy_name'] . " > " .
-                            //             $r['sub_control_policy_number'] . " " . $r['sub_control_policy_heading'] . " > " .
-                            //             $r['linked_control_policy_number'] . " " . $r['linked_control_policy_heading'] . " > " .
-                            //             $r['inner_linked_control_policy_number'] . " " . $r['inner_linked_control_policy_heading'];
-                            //     }
-                            // }
+                            } elseif ($type === 'sub') {
+                                $q = mysqli_query($connection, "SELECT s.*, p.policy_clause, p.policy_name 
+                                    FROM sub_control_policy s JOIN policy p ON p.policy_id = s.main_control_policy_id 
+                                    WHERE s.sub_control_policy_id = $id");
+                                if ($r = mysqli_fetch_assoc($q)) {
+                                    $display_text = $r['policy_clause'] . " " . $r['policy_name'] . " > " .
+                                        $r['sub_control_policy_number'] . " " . $r['sub_control_policy_heading'];
+                                }
+                            } elseif ($type === 'linked') {
+                                $q = mysqli_query($connection, "SELECT l.*, s.sub_control_policy_number, s.sub_control_policy_heading, p.policy_clause, p.policy_name 
+                                    FROM linked_control_policy l 
+                                    JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id 
+                                    JOIN policy p ON p.policy_id = s.main_control_policy_id 
+                                    WHERE l.linked_control_policy_id = $id");
+                                if ($r = mysqli_fetch_assoc($q)) {
+                                    $display_text = $r['policy_clause'] . " " . $r['policy_name'] . " > " .
+                                        $r['sub_control_policy_number'] . " " . $r['sub_control_policy_heading'] . " > " .
+                                        $r['linked_control_policy_number'] . " - " . $r['linked_control_policy_heading'];
+                                }
+                            } elseif ($type === 'inner') {
+                                $q = mysqli_query($connection, "SELECT i.*, l.linked_control_policy_number, l.linked_control_policy_heading,
+                                    s.sub_control_policy_number, s.sub_control_policy_heading, p.policy_clause, p.policy_name 
+                                    FROM inner_linked_control_policy i 
+                                    JOIN linked_control_policy l ON l.linked_control_policy_id = i.linked_control_policy_id 
+                                    JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id 
+                                    JOIN policy p ON p.policy_id = s.main_control_policy_id 
+                                    WHERE i.inner_linked_control_policy_id = $id");
+                                if ($r = mysqli_fetch_assoc($q)) {
+                                    $display_text = $r['policy_clause'] . " " . $r['policy_name'] . " > " .
+                                        $r['sub_control_policy_number'] . " " . $r['sub_control_policy_heading'] . " > " .
+                                        $r['linked_control_policy_number'] . " " . $r['linked_control_policy_heading'] . " > " .
+                                        $r['inner_linked_control_policy_number'] . " " . $r['inner_linked_control_policy_heading'];
+                                }
+                            }
 
                             if (!empty($display_text)) {
                                 $has_policies = true;
@@ -159,14 +158,16 @@ $risk = $result->fetch_assoc();
                     echo "<ul style='font-size: 12px !important;'>";
                     while ($mapping = mysqli_fetch_assoc($fetch_mappings_result)) {
                         if ($mapping['clause_type'] === 'sim') {
-                            $sim_id = $mapping['clause_id'];
-                            $q = mysqli_query($connection, "SELECT sim_topic FROM sim WHERE sim_id = $sim_id");
+                            $sim_id = (int)$mapping['clause_id']; // Cast to int for safety
+                            $q = mysqli_query($connection, "SELECT sim_id, sim_topic FROM sim WHERE sim_id = $sim_id");
+
                             if ($r = mysqli_fetch_assoc($q)) {
                                 $has_sims = true;
-                                echo "<li>" . htmlspecialchars($r['sim_topic']) . "</li>";
+                                echo "<li>" . htmlspecialchars($r['sim_id']) . " " . htmlspecialchars($r['sim_topic']) . "</li>";
                             }
                         }
                     }
+
                     echo "</ul>";
                     if (!$has_sims) {
                         echo "<p style='font-size: 12px !important;' class='text-muted'>No SIMs linked to this risk.</p>";
