@@ -29,6 +29,7 @@ $risk = $result->fetch_assoc();
         <h2><a href="risks-treatments.php">Risks & Treatments</a> > Risk & Treatments Details</h2>
     </div>
     <div style="display: flex; justify-content: center; align-items: flex-start">
+        <!-- ============== LEFT SECTION ============== -->
         <div style="width: 50% !important; margin: 5px !important;">
             <div class="table-responsive table-container">
                 <table class="table table-bordered">
@@ -93,7 +94,7 @@ $risk = $result->fetch_assoc();
                     while ($mapping = mysqli_fetch_assoc($fetch_mappings_result)) {
                         if (in_array($mapping['clause_type'], ['policy', 'sub', 'linked', 'inner'])) {
                             $type = $mapping['clause_type'];
-                            $id = $mapping['clause_id'];
+                            $id = $mapping['risks_id'];
                             $display_text = "";
 
                             if ($type === 'policy') {
@@ -149,7 +150,7 @@ $risk = $result->fetch_assoc();
                     ?>
                 </div>
 
-                <!-- SIMs TAB -->
+                <!-- ============= SIMs TAB ============= -->
                 <div class="tab-pane fade" id="sims" role="tabpanel">
                     <?php
                     mysqli_data_seek($fetch_mappings_result, 0);
