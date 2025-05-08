@@ -127,7 +127,11 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <div class="mb-3" >
+                                <div class="mb-3">
+                                    <label style="font-size: 12px !important;" for="riskSearch" class="form-label">Search Risks</label>
+                                    <input type="text" id="riskSearch" class="form-control mb-2" placeholder="Type to search risks..." style="font-size: 12px !important;">
+                                </div>
+                                <div class="mb-3">
                                     <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Risks</label>
                                     <select name="risk_ids[]" style="font-size: 12px !important; height: 300px !important" multiple class="form-select">
                                         <option disabled selected>Choose Risks</option>
@@ -275,19 +279,29 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         </div>
     </div>
 </div>
-    <script>
-        $(document).ready(function() {
-            $('#editorNewSim').summernote({
-                height: 300,
-                minHeight: 150,
-                maxHeight: 500,
-                focus: true
-            });
-
-            $('form').on('submit', function() {
-                $('#editorNewSim').val($('#editorNewSim').summernote('code'));
-            });
+<script>
+    $(document).ready(function() {
+        $('#editorNewSim').summernote({
+            height: 300,
+            minHeight: 150,
+            maxHeight: 500,
+            focus: true
         });
-    </script>
 
-    <?php include 'includes/footer.php'; ?>
+        $('form').on('submit', function() {
+            $('#editorNewSim').val($('#editorNewSim').summernote('code'));
+        });
+    });
+
+    document.getElementById('riskSearch').addEventListener('keyup', function() {
+        const searchTerm = this.value.toLowerCase();
+        const options = document.querySelectorAll('#riskSelect option');
+
+        options.forEach(option => {
+            const text = option.textContent.toLowerCase();
+            option.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+    });
+</script>
+
+<?php include 'includes/footer.php'; ?>
