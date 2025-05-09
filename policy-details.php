@@ -6,6 +6,8 @@ include 'includes/config.php';
 include 'functions/policy-details/save-function.php';
 ?>
 <div class="dashboard-container">
+
+    <!-- ========== CONTROL DETAILS ========== -->
     <div class="mb-3 policy-det-heading-section">
         <?php
         if (!$connection) {
@@ -82,18 +84,27 @@ include 'functions/policy-details/save-function.php';
     </div>
     <?php
     $policy_content = "";
-    if ($policy_id && $policy_table) {
-        $query = "SELECT policy_details FROM policy_details WHERE policy_id = ? AND policy_table = ?";
+    $valid_tables = ['policy', 'sub_control_policy', 'linked_control_policy', 'inner_linked_control_policy'];
+
+    if ($policy_id && in_array($policy_table, $valid_tables)) {
+        $table_map = [
+            'policy' => 'policy',
+            'sub_control_policy' => 'sub_control_policy',
+            'linked_control_policy' => 'linked_control_policy',
+            'inner_linked_control_policy' => 'inner_linked_control_policy'
+        ];
+        $query = "SELECT * FROM " . $table_map[$policy_table] . " WHERE {$policy_table}_id = ?";
         $stmt = mysqli_prepare($connection, $query);
-        mysqli_stmt_bind_param($stmt, "is", $policy_id, $policy_table);
+        mysqli_stmt_bind_param($stmt, "i", $policy_id);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         if ($result && mysqli_num_rows($result) > 0) {
             $policy = mysqli_fetch_assoc($result);
-            $policy_content = stripslashes($policy["policy_details"]);
+            $policy_content = stripslashes($policy[$policy_table . "_det"]); // e.g., policy_det, sub_control_policy_det, etc.
         }
     }
+
     ?>
     <div class="row" style="margin-bottom: 40px;">
         <div class="col-md-6">
@@ -511,14 +522,12 @@ include 'functions/policy-details/save-function.php';
                     <div class="modal fade" id="riskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <?php
                         if (isset($_POST['connect_risk'])) {
-
                             $risk_ids = $_POST['risk_ids'];
                             $clause_id = intval($_POST['clause_id']);
-                            $clause_type = mysqli_real_escape_string($connection, $_POST['clause_type']);
+                            $clause_type = mysqli_real_escape_string($connection, $_POST['clause_type']); // dynamic
 
                             foreach ($risk_ids as $risk_id) {
                                 $risk_id = intval($risk_id);
-
                                 $check_exist = "SELECT * FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $clause_id AND clause_type = '$clause_type'";
                                 $result = mysqli_query($connection, $check_exist);
 
@@ -527,13 +536,15 @@ include 'functions/policy-details/save-function.php';
                                     mysqli_query($connection, $insert);
                                 }
                             }
-                            echo "<div class='alert alert-success mt-2'>Risks successfully linked to the policy/control.</div>";
+                            echo "<div class='alert alert-success mt-2'>Risks successfully linked to the clause.</div>";
                         }
+
                         ?>
                         <div class="modal-dialog modal-dialog-centered modal-xl">
                             <form action="" method="POST" class="modal-content">
-                                <input type="hidden" name="clause_id" value="<?php echo $policy_id ?>">
-                                <input type="hidden" name="clause_type" value="policy">
+                                <input type="hidden" name="clause_id" value="<?php echo htmlspecialchars($policy_id); ?>">
+                                <input type="hidden" name="clause_type" value="<?php echo htmlspecialchars($policy_table); ?>">
+
 
                                 <div class="modal-header">
                                     <h1 class="modal-title fs-5" id="exampleModalLabel">Add Risk to Policy</h1>
@@ -568,18 +579,19 @@ include 'functions/policy-details/save-function.php';
                     <?php
                     if (isset($_POST['del-risk'])) {
                         $risk_id = intval($_POST['risk_id']);
-                        $clause_id = intval($policy_id); // or use $_POST if clause_id is submitted via the form
-                        $clause_type = 'policy'; // or use $_POST if clause_type is dynamic
+                        $clause_id = intval($_POST['clause_id']);
+                        $clause_type = mysqli_real_escape_string($connection, $_POST['clause_type']);
 
                         $delete_query = "DELETE FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $clause_id AND clause_type = '$clause_type'";
                         mysqli_query($connection, $delete_query);
 
-                        echo "<div class='alert alert-success mt-2'>Risk removed from policy successfully.</div>";
+                        echo "<div class='alert alert-success mt-2'>Risk removed from clause successfully.</div>";
                     }
+
 
                     $fetch_risks_query = "SELECT r.risks_id, r.risks_name FROM risk_policies rp
                     JOIN risks r ON rp.risks_id = r.risks_id
-                    WHERE rp.clause_id = $policy_id AND rp.clause_type = 'policy'";
+                    WHERE rp.clause_id = $policy_id AND rp.clause_type = '$policy_table'";
                     $fetch_risks_r = mysqli_query($connection, $fetch_risks_query);
                     ?>
 
@@ -605,8 +617,9 @@ include 'functions/policy-details/save-function.php';
                                             <td>
                                                 <form action="" method="POST">
                                                     <input type="hidden" name="risk_id" value="<?php echo $risk['risks_id']; ?>">
-                                                    <input type="hidden" name="clause_id" value="<?php echo $policy_id; ?>">
-                                                    <input type="hidden" name="clause_type" value="policy">
+                                                    <input type="hidden" name="clause_id" value="<?php echo htmlspecialchars($policy_id); ?>">
+                                                    <input type="hidden" name="clause_type" value="<?php echo htmlspecialchars($policy_table); ?>">
+
                                                     <button type="submit" name="del-risk" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">Remove</button>
                                                 </form>
 
