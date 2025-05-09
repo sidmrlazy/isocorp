@@ -86,6 +86,11 @@ $risk = $result->fetch_assoc();
             <div class="tab-content mt-3" id="riskTabContent">
                 <!-- ============== POLICIES TAB ============== -->
                 <div class="tab-pane fade show active" id="policies" role="tabpanel">
+
+                    <!-- =============== ADD POLICY BUTTON =============== -->
+                    <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
+                        <button type="submit" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Add Policy</button>
+                    </div>
                     <?php
                     mysqli_data_seek($fetch_mappings_result, 0);
                     $has_policies = false;
@@ -103,33 +108,33 @@ $risk = $result->fetch_assoc();
                             }
                         } elseif ($type === 'sub_control_policy') {
                             $q = mysqli_query($connection, "SELECT s.sub_control_policy_number, s.sub_control_policy_heading, p.policy_clause, p.policy_name 
-            FROM sub_control_policy s 
-            JOIN policy p ON p.policy_id = s.main_control_policy_id 
-            WHERE s.sub_control_policy_id = $id");
+                            FROM sub_control_policy s 
+                            JOIN policy p ON p.policy_id = s.main_control_policy_id 
+                            WHERE s.sub_control_policy_id = $id");
                             if ($r = mysqli_fetch_assoc($q)) {
                                 $display_text = "{$r['policy_clause']} {$r['policy_name']} > {$r['sub_control_policy_number']} {$r['sub_control_policy_heading']}";
                             }
                         } elseif ($type === 'linked_control_policy') {
                             $q = mysqli_query($connection, "SELECT l.linked_control_policy_number, l.linked_control_policy_heading,
-            s.sub_control_policy_number, s.sub_control_policy_heading, 
-            p.policy_clause, p.policy_name 
-            FROM linked_control_policy l
-            JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id
-            JOIN policy p ON p.policy_id = s.main_control_policy_id
-            WHERE l.linked_control_policy_id = $id");
+                            s.sub_control_policy_number, s.sub_control_policy_heading, 
+                            p.policy_clause, p.policy_name 
+                            FROM linked_control_policy l
+                            JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id
+                            JOIN policy p ON p.policy_id = s.main_control_policy_id
+                            WHERE l.linked_control_policy_id = $id");
                             if ($r = mysqli_fetch_assoc($q)) {
                                 $display_text = "{$r['policy_clause']} {$r['policy_name']} > {$r['sub_control_policy_number']} {$r['sub_control_policy_heading']} > {$r['linked_control_policy_number']} - {$r['linked_control_policy_heading']}";
                             }
                         } elseif ($type === 'inner_linked_control_policy') {
                             $q = mysqli_query($connection, "SELECT i.inner_linked_control_policy_number, i.inner_linked_control_policy_heading,
-            l.linked_control_policy_number, l.linked_control_policy_heading,
-            s.sub_control_policy_number, s.sub_control_policy_heading, 
-            p.policy_clause, p.policy_name 
-            FROM inner_linked_control_policy i 
-            JOIN linked_control_policy l ON l.linked_control_policy_id = i.linked_control_policy_id
-            JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id
-            JOIN policy p ON p.policy_id = s.main_control_policy_id
-            WHERE i.inner_linked_control_policy_id = $id");
+                            l.linked_control_policy_number, l.linked_control_policy_heading,
+                            s.sub_control_policy_number, s.sub_control_policy_heading, 
+                            p.policy_clause, p.policy_name 
+                            FROM inner_linked_control_policy i 
+                            JOIN linked_control_policy l ON l.linked_control_policy_id = i.linked_control_policy_id
+                            JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id
+                            JOIN policy p ON p.policy_id = s.main_control_policy_id
+                            WHERE i.inner_linked_control_policy_id = $id");
                             if ($r = mysqli_fetch_assoc($q)) {
                                 $display_text = "{$r['policy_clause']} {$r['policy_name']} > {$r['sub_control_policy_number']} {$r['sub_control_policy_heading']} > {$r['linked_control_policy_number']} {$r['linked_control_policy_heading']} > {$r['inner_linked_control_policy_number']} {$r['inner_linked_control_policy_heading']}";
                             }
@@ -141,7 +146,6 @@ $risk = $result->fetch_assoc();
                         }
                     }
                     echo "</ul>";
-
                     if (!$has_policies) {
                         echo "<p style='font-size: 12px !important;' class='text-muted'>No policies linked to this risk.</p>";
                     }

@@ -44,7 +44,7 @@ include 'includes/connection.php';
               </a>
             </li>
             <li>
-              <a class="dropdown-item" href="audit-program.php">
+              <a class="dropdown-item" href="#">
                 <ion-icon name="clipboard-outline"></ion-icon> Audit Programme
               </a>
             </li>
@@ -66,7 +66,7 @@ include 'includes/connection.php';
               <li><a class="dropdown-item" href="linked-sub-controls.php">Add linked Sub-Control</a></li>
               <li><a class="dropdown-item" href="inner-linked-control-policy-form.php">Add Inner linked Sub-Control</a></li>
               <hr> -->
-              <li><a class="dropdown-item" href="audit-program-setup.php">Audit Programme Setup</a></li>
+              <li><a class="dropdown-item" href="#">Audit Programme Setup</a></li>
               <hr>
               <li><a class="dropdown-item" href="user-setup.php">User Setup</a></li>
               <hr>
