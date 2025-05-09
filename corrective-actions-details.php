@@ -309,24 +309,25 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                 </div>
 
                 <!-- ========== SHOW COMMENTS ========== -->
-                <div class="note-container" style="margin-bottom: 20px;">
-                    <?php
-                    if (isset($_POST['delete-note'])) {
-                        $delete_comment_id = $_POST['delete_comment_id'];
-                        $delete_query = "DELETE FROM tblca_comment WHERE ca_comment_id = '$delete_comment_id'";
-                        $delete_res = mysqli_query($connection, $delete_query);
-                    }
 
-                    $fetch_comment_q = "SELECT * FROM `tblca_comment` WHERE `ca_comment_parent_id` = '$tbl_ca_id'";
-                    $fetch_comment_r = mysqli_query($connection, $fetch_comment_q);
-                    $fetch_comment_count = mysqli_num_rows($fetch_comment_r);
-                    if ($fetch_comment_count > 0) {
-                        while ($row = mysqli_fetch_assoc($fetch_comment_r)) {
-                            $ca_comment_id = $row['ca_comment_id'];
-                            $ca_comment_data = $row['ca_comment_data'];
-                            $comment_by = $row['ca_comment_by'];
-                            $ca_comment_date = $row['ca_comment_date'];
-                    ?>
+                <?php
+                if (isset($_POST['delete-note'])) {
+                    $delete_comment_id = $_POST['delete_comment_id'];
+                    $delete_query = "DELETE FROM tblca_comment WHERE ca_comment_id = '$delete_comment_id'";
+                    $delete_res = mysqli_query($connection, $delete_query);
+                }
+
+                $fetch_comment_q = "SELECT * FROM `tblca_comment` WHERE `ca_comment_parent_id` = '$tbl_ca_id'";
+                $fetch_comment_r = mysqli_query($connection, $fetch_comment_q);
+                $fetch_comment_count = mysqli_num_rows($fetch_comment_r);
+                if ($fetch_comment_count > 0) {
+                    while ($row = mysqli_fetch_assoc($fetch_comment_r)) {
+                        $ca_comment_id = $row['ca_comment_id'];
+                        $ca_comment_data = $row['ca_comment_data'];
+                        $comment_by = $row['ca_comment_by'];
+                        $ca_comment_date = $row['ca_comment_date'];
+                ?>
+                        <div style="margin-bottom: 20px;">
                             <div class="d-flex justify-content-center align-items-center">
                                 <p class="note-owner" style="flex: 1"><strong>
                                         <?php echo $comment_by ?></strong> - <?php echo $ca_comment_date ?></p>
@@ -339,59 +340,16 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                             </div>
                             <div>
                                 <p class="main-note"><?php echo $ca_comment_data ?></p>
-                                <!-- Read More -->
-                                <div class="d-flex justify-content-center align-items-center mt-3">
-                                    <button class="read-more-btn">
-                                        <ion-icon name="chevron-down-outline"></ion-icon>
-                                    </button>
-                                </div>
-
-                                <!-- Read Less -->
-                                <div class="d-flex justify-content-center align-items-center mt-3">
-                                    <button class="read-less-btn">
-                                        <ion-icon name="chevron-up-outline"></ion-icon>
-                                    </button>
-                                </div>
                             </div>
-                </div>
-            <?php } ?>
-        <?php } else { ?>
-            No Comments added.
-        <?php } ?>
+                        </div>
+
+                    <?php } ?>
+                <?php } else { ?>
+                    No Comments added.
+                <?php } ?>
             </div>
 
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const note = document.querySelector(".main-note");
-        const readMoreBtn = document.querySelector(".read-more-btn");
-        const readLessBtn = document.querySelector(".read-less-btn");
-
-        if (note) {
-            let words = note.innerText.trim().split(/\s+/);
-            if (words.length > 50) {
-                let shortenedText = words.slice(0, 50).join(" ") + "...";
-                let fullText = note.innerHTML; // Store original content
-
-                note.innerHTML = shortenedText;
-                note.parentElement.classList.add("show-read-more"); // Show Read More button
-
-                readMoreBtn.addEventListener("click", function() {
-                    note.innerHTML = fullText; // Expand text
-                    note.parentElement.classList.remove("show-read-more");
-                    note.parentElement.classList.add("show-read-less"); // Show Read Less button
-                });
-
-                readLessBtn.addEventListener("click", function() {
-                    note.innerHTML = shortenedText; // Collapse text
-                    note.parentElement.classList.remove("show-read-less");
-                    note.parentElement.classList.add("show-read-more"); // Show Read More button
-                });
-            }
-        }
-    });
-</script>
 <?php include 'includes/footer.php'; ?>
-
