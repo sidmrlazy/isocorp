@@ -1,20 +1,25 @@
 <?php
 include 'includes/header.php';
 include 'includes/navbar.php';
-include 'includes/connection.php';
-include 'includes/config.php';
+
+$user_id = isset($_COOKIE['user_id']) ? $_COOKIE['user_id'] : (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Guest');
+$comment_user_name = isset($_COOKIE['user_name']) ? $_COOKIE['user_name'] : (isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Guest');
+$user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'Guest');
 ?>
 <div class="dashboard-container">
     <?php
+    include 'includes/connection.php';
     if (isset($_GET['id'])) {
         $ca_id = $_GET['id'];
         $fetch_data = "SELECT * FROM tblca WHERE ca_id = '$ca_id'";
         $fetch_data_r = mysqli_query($connection, $fetch_data);
         $tbl_ca_id = "";
         $tbl_ca_description = "";
+        $tbl_ca_description_status_fetched = "";
         while ($row = mysqli_fetch_assoc($fetch_data_r)) {
             $tbl_ca_id = $row['ca_id'];
             $tbl_ca_description = $row['ca_description'];
+            $tbl_ca_description_status_fetched = $row['ca_description_status'];
         }
     }
 
@@ -56,7 +61,6 @@ include 'includes/config.php';
         $ca_severity = isset($_POST['ca_severity']) ? implode(',', $_POST['ca_severity']) : '';
 
         $ca_updated_date = date('Y-m-d');
-        $ca_updated_by = mysqli_real_escape_string($connection, $user_name);
         $ca_form_status = "1";
         if (!empty($ca_id)) {
             $update_form_query = "UPDATE tblca SET
@@ -66,7 +70,7 @@ include 'includes/config.php';
             ca_severity = '$ca_severity',
             ca_assigned_to = '$ca_assigned_to',
             ca_updated_date = '$ca_updated_date',
-            ca_updated_by = '$ca_updated_by',
+            ca_updated_by = '$user_name',
             ca_form_status = '$ca_form_status'
             WHERE ca_id = '$ca_id'";
 
@@ -95,7 +99,6 @@ include 'includes/config.php';
         $ca_severity = isset($_POST['ca_severity']) ? implode(',', $_POST['ca_severity']) : '';
 
         $ca_updated_date = date('Y-m-d');
-        $ca_updated_by = mysqli_real_escape_string($connection, $user_name);
         $ca_form_status = "2";
         if (!empty($ca_id)) {
             $update_form_query = "UPDATE tblca SET
@@ -105,7 +108,7 @@ include 'includes/config.php';
             ca_severity = '$ca_severity',
             ca_assigned_to = '$ca_assigned_to',
             ca_updated_date = '$ca_updated_date',
-            ca_updated_by = '$ca_updated_by',
+            ca_updated_by = '$user_name',
             ca_form_status = '$ca_form_status'
             WHERE ca_id = '$ca_id'";
 
@@ -125,6 +128,7 @@ include 'includes/config.php';
     }
     ?>
     <div class="section-divider mb-5">
+
         <!-- ============ FORM SECTION ============ -->
         <form class="form-container" action="" method="POST">
             <input type="text" name="new_ca_id" value="<?php echo $tbl_ca_id ?>" hidden>
@@ -198,28 +202,31 @@ include 'includes/config.php';
         <!-- ============ DESCRIPTION SECTION ============ -->
         <div style="flex: 2">
             <?php
-            if (isset($_POST['delete-note'])) {
-                $delete_comment_id = $_POST['delete_comment_id'];
-                $delete_query = "DELETE FROM tblca_comment WHERE ca_comment_id = '$delete_comment_id'";
-                $delete_res = mysqli_query($connection, $delete_query);
+            if (isset($_POST['save-draft-description'])) {
+                $tbl_ca_id = $_POST['ca_id'];
+                $tbl_ca_description = $_POST['ca_description'];
+                $tbl_ca_description_status = "1";
+                $tbl_ca_updated_date = date('Y-m-d');
+                $save_draft_query = "UPDATE tblca SET 
+                ca_description = '$tbl_ca_description', 
+                ca_description_status ='$tbl_ca_description_status',
+                ca_updated_by = '$comment_user_name',
+                ca_updated_date = '$tbl_ca_updated_date' 
+                WHERE ca_id = $tbl_ca_id";
+                $save_draft_result = mysqli_query($connection, $save_draft_query);
             }
-
-            if (isset($_POST['add-comment'])) {
-                $ca_comment_parent_id = $_POST['ca_comment_parent_id'];
-                $ca_comment_data = $_POST['ca_comment_data'];
-                $ca_comment_by = $_POST['ca_comment_by'];
-                $ca_comment_date = date('Y-m-d');
-
-                $add_comment_q = "INSERT INTO `tblca_comment`(
-                `ca_comment_parent_id`, 
-                `ca_comment_data`, 
-                `ca_comment_by`, 
-                `ca_comment_date`) VALUES (
-                '$ca_comment_parent_id',
-                '$ca_comment_data',
-                '$ca_comment_by',
-                '$ca_comment_date')";
-                $add_comment_r = mysqli_query($connection, $add_comment_q);
+            if (isset($_POST['submit-notes-description'])) {
+                $tbl_ca_id = $_POST['ca_id'];
+                $tbl_ca_description = $_POST['ca_description'];
+                $tbl_ca_description_status = "2";
+                $tbl_ca_updated_date = date('Y-m-d');
+                $save_draft_query = "UPDATE tblca SET 
+                ca_description = '$tbl_ca_description', 
+                ca_description_status ='$tbl_ca_description_status',
+                ca_updated_by = '$comment_user_name',
+                ca_updated_date = '$tbl_ca_updated_date' 
+                WHERE ca_id = $tbl_ca_id";
+                $save_draft_result = mysqli_query($connection, $save_draft_query);
             }
             ?>
             <form action="" method="POST" class="form-container">
@@ -228,10 +235,23 @@ include 'includes/config.php';
                     <label for="editorNew" class="form-label">Description</label>
                     <textarea id="editorNew" name="ca_description"><?php echo $tbl_ca_description ?></textarea>
                 </div>
-                <div class="btn-row">
-                    <button type="submit" name="save-draft-details" class="btn btn-dark btn-sm">Save Draft</button>
-                    <button type="submit" name="submit-notes-details" class="btn btn-success btn-sm">Submit Notes</button>
-                </div>
+                <?php if ($tbl_ca_description_status_fetched == '1') { ?>
+
+                    <div class="btn-row">
+                        <button type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
+                        <button type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
+                    </div>
+                <?php } else if ($tbl_ca_description_status_fetched == '2') { ?>
+                    <div class="btn-row d-none">
+                        <button type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
+                        <button type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
+                    </div>
+                <?php } else { ?>
+                    <div class="btn-row">
+                        <button type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
+                        <button type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
+                    </div>
+                <?php } ?>
             </form>
 
             <!-- ============ COMMENT SECTION ============ -->
@@ -245,22 +265,71 @@ include 'includes/config.php';
                         data-bs-target="#commentModal"
                         class="btn btn-sm btn-outline-dark">Add Note</button>
                 </div>
+                <!-- ======= ADD COMMENT MODAL ======= -->
+                <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div action="" method="POST" class="modal-dialog modal-dialog-centered modal-xl">
+                        <?php
+                        if (isset($_POST['add-comment'])) {
+                            $ca_comment_parent_id = $_POST['ca_comment_parent_id'];
+                            $ca_comment_data = $_POST['ca_comment_data'];
+                            $ca_comment_by = $_POST['new_comment'];
+                            $ca_comment_date = date('Y-m-d');
+
+                            $add_comment_q = "INSERT INTO `tblca_comment`(
+                    `ca_comment_parent_id`, 
+                    `ca_comment_data`, 
+                    `ca_comment_by`, 
+                    `ca_comment_date`) VALUES (
+                    '$ca_comment_parent_id',
+                    '$ca_comment_data',
+                    '$ca_comment_by',
+                    '$ca_comment_date')";
+                            $add_comment_r = mysqli_query($connection, $add_comment_q);
+                        }
+                        ?>
+                        <form action="" method="POST" class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Comment</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" name="ca_comment_parent_id" value="<?php echo $tbl_ca_id ?>" hidden>
+                                <input type="text" name="new_comment" value="<?php echo $comment_user_name ?>" hidden>
+
+                                <div class="WYSIWYG-editor form-floating">
+                                    <textarea class="form-control" name="ca_comment_data" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+                                    <label for="floatingTextarea2">Comments</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="add-comment" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
                 <!-- ========== SHOW COMMENTS ========== -->
-                <?php
-                $fetch_comment_q = "SELECT * FROM `tblca_comment` WHERE `ca_comment_parent_id` = '$tbl_ca_id'";
-                $fetch_comment_r = mysqli_query($connection, $fetch_comment_q);
-                $fetch_comment_count = mysqli_num_rows($fetch_comment_r);
-                if ($fetch_comment_count > 0) {
-                    while ($row = mysqli_fetch_assoc($fetch_comment_r)) {
-                        $ca_comment_id = $row['ca_comment_id'];
-                        $ca_comment_data = $row['ca_comment_data'];
-                        $ca_comment_by = $row['ca_comment_by'];
-                        $ca_comment_date = $row['ca_comment_date'];
-                ?>
-                        <div class="note-container" style="margin-bottom: 20px;">
+                <div class="note-container" style="margin-bottom: 20px;">
+                    <?php
+                    if (isset($_POST['delete-note'])) {
+                        $delete_comment_id = $_POST['delete_comment_id'];
+                        $delete_query = "DELETE FROM tblca_comment WHERE ca_comment_id = '$delete_comment_id'";
+                        $delete_res = mysqli_query($connection, $delete_query);
+                    }
+
+                    $fetch_comment_q = "SELECT * FROM `tblca_comment` WHERE `ca_comment_parent_id` = '$tbl_ca_id'";
+                    $fetch_comment_r = mysqli_query($connection, $fetch_comment_q);
+                    $fetch_comment_count = mysqli_num_rows($fetch_comment_r);
+                    if ($fetch_comment_count > 0) {
+                        while ($row = mysqli_fetch_assoc($fetch_comment_r)) {
+                            $ca_comment_id = $row['ca_comment_id'];
+                            $ca_comment_data = $row['ca_comment_data'];
+                            $comment_by = $row['ca_comment_by'];
+                            $ca_comment_date = $row['ca_comment_date'];
+                    ?>
                             <div class="d-flex justify-content-center align-items-center">
-                                <p class="note-owner" style="flex: 1"><strong><?php echo $ca_comment_by ?></strong> - <?php echo $ca_comment_date ?></p>
+                                <p class="note-owner" style="flex: 1"><strong>
+                                        <?php echo $comment_by ?></strong> - <?php echo $ca_comment_date ?></p>
                                 <form action="" method="POST" style="margin-top: 0 !important;">
                                     <input type="hidden" name="delete_comment_id" value="<?php echo $ca_comment_id ?>">
                                     <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
@@ -284,38 +353,13 @@ include 'includes/config.php';
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                    <?php } ?>
-                <?php } else { ?>
-                    No Comments added.
-                <?php } ?>
-            </div>
-
-
-
-            <!-- ======= ADD COMMENT MODAL ======= -->
-            <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div action="" method="POST" class="modal-dialog modal-dialog-centered">
-                    <form action="" method="POST" class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Add Comment</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="text" name="ca_comment_parent_id" value="<?php echo $tbl_ca_id ?>" hidden>
-                            <input type="text" name="ca_comment_by" value="<?php echo $user_name ?>" hidden>
-
-                            <div class="WYSIWYG-editor form-floating">
-                                <textarea id="editorNew" class="form-control" name="ca_comment_data" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
-                                <label for="floatingTextarea2">Comments</label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" name="add-comment" class="btn btn-primary">Submit</button>
-                        </div>
-                    </form>
                 </div>
+            <?php } ?>
+        <?php } else { ?>
+            No Comments added.
+        <?php } ?>
             </div>
+
         </div>
     </div>
 </div>
@@ -349,5 +393,4 @@ include 'includes/config.php';
         }
     });
 </script>
-<?php 
-include 'includes/footer.php'; ?>
+<?php include 'includes/footer.php'; ?>
