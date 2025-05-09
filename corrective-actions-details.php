@@ -199,7 +199,7 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
             </div>
         </form>
 
-        <!-- ============ DESCRIPTION SECTION ============ -->
+        <!-- =========== DESCRIPTION SECTION =========== -->
         <div style="flex: 2">
             <?php
             if (isset($_POST['save-draft-description'])) {
@@ -394,3 +394,4 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
     });
 </script>
 <?php include 'includes/footer.php'; ?>
+
