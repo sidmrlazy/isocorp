@@ -116,6 +116,7 @@ $color_map = [
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr class="risk-details-headers">
+                        <th style="font-size: 12px !important; font-weight: 600 !important;">#</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;">Risk/Threat</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;">Likelihood</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;">Impact</th>
@@ -149,6 +150,7 @@ $color_map = [
                     while ($row = $risks->fetch_assoc()):
                     ?>
                         <tr class="risk-details-content">
+                            <td><?= $row['risks_id'] ?></td>
                             <td>
                                 <a href="risks-details.php?id=<?= $row['risks_id'] ?>" class="text-primary">
                                     <?= htmlspecialchars($row['risks_name']) ?>
