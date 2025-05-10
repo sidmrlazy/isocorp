@@ -82,33 +82,40 @@ include 'functions/policy-details/save-function.php';
         }
         ?>
     </div>
-    <?php
-    $policy_content = "";
-    $valid_tables = ['policy', 'sub_control_policy', 'linked_control_policy', 'inner_linked_control_policy'];
 
-    if ($policy_id && in_array($policy_table, $valid_tables)) {
-        $table_map = [
-            'policy' => 'policy',
-            'sub_control_policy' => 'sub_control_policy',
-            'linked_control_policy' => 'linked_control_policy',
-            'inner_linked_control_policy' => 'inner_linked_control_policy'
-        ];
-        $query = "SELECT * FROM " . $table_map[$policy_table] . " WHERE {$policy_table}_id = ?";
-        $stmt = mysqli_prepare($connection, $query);
-        mysqli_stmt_bind_param($stmt, "i", $policy_id);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-
-        if ($result && mysqli_num_rows($result) > 0) {
-            $policy = mysqli_fetch_assoc($result);
-            $policy_content = stripslashes($policy[$policy_table . "_det"]); // e.g., policy_det, sub_control_policy_det, etc.
-        }
-    }
-
-    ?>
     <div class="row" style="margin-bottom: 40px;">
         <div class="col-md-6">
-            <!-- ========== UPLOAD CONTENT ========== -->
+            <?php
+            $policy_content = "";
+            $valid_tables = ['policy', 'sub_control_policy', 'linked_control_policy', 'inner_linked_control_policy'];
+
+            if ($policy_id && in_array($policy_table, $valid_tables)) {
+                // First try fetching from centralized policy_details table
+                $query = "SELECT policy_details FROM policy_details WHERE policy_id = ? AND policy_table = ?";
+                $stmt = mysqli_prepare($connection, $query);
+                mysqli_stmt_bind_param($stmt, "is", $policy_id, $policy_table);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+
+                if ($result && mysqli_num_rows($result) > 0) {
+                    $policy = mysqli_fetch_assoc($result);
+                    $policy_content = stripslashes($policy["policy_details"]);
+                } else {
+                    // Fallback to original table if not found in policy_details
+                    $query = "SELECT * FROM $policy_table WHERE {$policy_table}_id = ?";
+                    $stmt = mysqli_prepare($connection, $query);
+                    mysqli_stmt_bind_param($stmt, "i", $policy_id);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        $policy = mysqli_fetch_assoc($result);
+                        $policy_content = stripslashes($policy[$policy_table . "_det"]);
+                    }
+                }
+            }
+            ?>
+            <!-- ========== POLICY CONTENT SECTION ========== -->
             <form action="" method="POST" style="background-color: #fff;padding: 20px; border-radius: 10px;">
                 <input type="hidden" name="policy_id"
                     value="<?php echo isset($_GET['policy_id']) ? $_GET['policy_id'] : ''; ?>">
@@ -681,12 +688,7 @@ include 'functions/policy-details/save-function.php';
                         $ca_comment_by = mysqli_real_escape_string($connection, $_POST['ca_comment_by']);
                         $ca_comment_date = date('Y-m-d H:i:s');
 
-                        $insert_comment_query = "INSERT INTO tblca_comment (
-            ca_comment_parent_id, ca_comment_type, ca_comment_data, ca_comment_by, ca_comment_date
-        ) VALUES (
-            '$ca_comment_parent_id', '$ca_comment_type', '$ca_comment_data', '$ca_comment_by', '$ca_comment_date'
-        )";
-
+                        $insert_comment_query = "INSERT INTO tblca_comment (ca_comment_parent_id, ca_comment_type, ca_comment_data, ca_comment_by, ca_comment_date) VALUES ('$ca_comment_parent_id', '$ca_comment_type', '$ca_comment_data', '$ca_comment_by', '$ca_comment_date')";
                         $insert_comment_result = mysqli_query($connection, $insert_comment_query);
                     }
 
