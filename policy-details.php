@@ -620,7 +620,7 @@ include 'functions/policy-details/save-function.php';
                         $delete_query = "DELETE FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $clause_id AND clause_type = '$clause_type'";
                         mysqli_query($connection, $delete_query);
 
-                        echo "<div class='alert alert-success mt-2'>Risk removed from clause successfully.</div>";
+                        echo "<div style='font-size: 12px;' id='alertBox' class='alert alert-success mt-2'>Risk removed successfully.</div>";
                     }
 
 
