@@ -85,53 +85,56 @@ include 'functions/policy-details/save-function.php';
 
     <div class="row" style="margin-bottom: 40px;">
         <div class="col-md-6">
-            <?php
-            $policy_content = "";
-            $valid_tables = ['policy', 'sub_control_policy', 'linked_control_policy', 'inner_linked_control_policy'];
+            <!-- ========== POLICY CONTENT SECTION ========== -->
+            <div style="background-color: #fff;padding: 20px; border-radius: 10px;">
+                <?php
+                $policy_content = "";
+                $valid_tables = ['policy', 'sub_control_policy', 'linked_control_policy', 'inner_linked_control_policy'];
 
-            if ($policy_id && in_array($policy_table, $valid_tables)) {
-                // First try fetching from centralized policy_details table
-                $query = "SELECT policy_details FROM policy_details WHERE policy_id = ? AND policy_table = ?";
-                $stmt = mysqli_prepare($connection, $query);
-                mysqli_stmt_bind_param($stmt, "is", $policy_id, $policy_table);
-                mysqli_stmt_execute($stmt);
-                $result = mysqli_stmt_get_result($stmt);
-
-                if ($result && mysqli_num_rows($result) > 0) {
-                    $policy = mysqli_fetch_assoc($result);
-                    $policy_content = stripslashes($policy["policy_details"]);
-                } else {
-                    // Fallback to original table if not found in policy_details
-                    $query = "SELECT * FROM $policy_table WHERE {$policy_table}_id = ?";
+                if ($policy_id && in_array($policy_table, $valid_tables)) {
+                    // First try fetching from centralized policy_details table
+                    $query = "SELECT policy_details FROM policy_details WHERE policy_id = ? AND policy_table = ?";
                     $stmt = mysqli_prepare($connection, $query);
-                    mysqli_stmt_bind_param($stmt, "i", $policy_id);
+                    mysqli_stmt_bind_param($stmt, "is", $policy_id, $policy_table);
                     mysqli_stmt_execute($stmt);
                     $result = mysqli_stmt_get_result($stmt);
 
                     if ($result && mysqli_num_rows($result) > 0) {
                         $policy = mysqli_fetch_assoc($result);
-                        $policy_content = stripslashes($policy[$policy_table . "_det"]);
+                        $policy_content = stripslashes($policy["policy_details"]);
+                    } else {
+                        // Fallback to original table if not found in policy_details
+                        $query = "SELECT * FROM $policy_table WHERE {$policy_table}_id = ?";
+                        $stmt = mysqli_prepare($connection, $query);
+                        mysqli_stmt_bind_param($stmt, "i", $policy_id);
+                        mysqli_stmt_execute($stmt);
+                        $result = mysqli_stmt_get_result($stmt);
+
+                        if ($result && mysqli_num_rows($result) > 0) {
+                            $policy = mysqli_fetch_assoc($result);
+                            $policy_content = stripslashes($policy[$policy_table . "_det"]);
+                        }
                     }
                 }
-            }
-            ?>
-            <!-- ========== POLICY CONTENT SECTION ========== -->
-            <form action="" method="POST" style="background-color: #fff;padding: 20px; border-radius: 10px;">
-                <input type="hidden" name="policy_id"
-                    value="<?php echo isset($_GET['policy_id']) ? $_GET['policy_id'] : ''; ?>">
-                <input type="hidden" name="linked_policy_id"
-                    value="<?php echo isset($_GET['linked_policy_id']) ? $_GET['linked_policy_id'] : ''; ?>">
-                <input type="hidden" name="inner_policy_id"
-                    value="<?php echo isset($_GET['inner_policy_id']) ? $_GET['inner_policy_id'] : ''; ?>">
-                <input type="hidden" name="policy_table" value="<?php echo isset($policy_table) ? $policy_table : ''; ?>">
+                ?>
 
-                <div class="WYSIWYG-editor">
-                    <textarea id="editorNew"><?php echo htmlspecialchars_decode($policy_content); ?></textarea>
-                </div>
-                <input type="hidden" name="editorContent" id="editorContent">
+                <form action="" method="POST">
+                    <input type="hidden" name="policy_id"
+                        value="<?php echo isset($_GET['policy_id']) ? $_GET['policy_id'] : ''; ?>">
+                    <input type="hidden" name="linked_policy_id"
+                        value="<?php echo isset($_GET['linked_policy_id']) ? $_GET['linked_policy_id'] : ''; ?>">
+                    <input type="hidden" name="inner_policy_id"
+                        value="<?php echo isset($_GET['inner_policy_id']) ? $_GET['inner_policy_id'] : ''; ?>">
+                    <input type="hidden" name="policy_table" value="<?php echo isset($policy_table) ? $policy_table : ''; ?>">
 
-                <button type="submit" name="save" class="btn btn-sm btn-success mt-3">Update</button>
-            </form>
+                    <div class="WYSIWYG-editor">
+                        <textarea id="editorNew"><?php echo htmlspecialchars_decode($policy_content); ?></textarea>
+                    </div>
+                    <input type="hidden" name="editorContent" id="editorContent">
+
+                    <button type="submit" name="save" class="btn btn-sm btn-success mt-3">Update</button>
+                </form>
+            </div>
 
             <!-- ========== ASSIGNMENT SECTION ========== -->
             <div style="background-color: #fff; margin-top: 10px; padding: 20px; border-radius: 10px;">
@@ -151,6 +154,11 @@ include 'functions/policy-details/save-function.php';
                     $vc_data_type = 'Policy';
                 }
 
+                // Initialize prefilled values
+                $vc_assigned_to_value = '';
+                $vc_status_value = '';
+                $vc_due_date_value = '';
+
                 // Handle form submission
                 if (isset($_POST['update-details'])) {
                     $vc_data_id = $_POST['vc_data_id'];
@@ -159,48 +167,46 @@ include 'functions/policy-details/save-function.php';
                     $vc_updated_on = date('Y-m-d H:i:s');
                     $vc_assigned_to = $_POST['vc_assigned_to'];
                     $vc_status = $_POST['vc_status'];
-                    $vc_updated_by = $_POST['vc_updated_by'];
+                    $vc_due_date = $_POST['vc_due_date'];
+                    $vc_updated_by = isset($_POST['vc_updated_by']) ? $_POST['vc_updated_by'] : 'System';
 
-                    $check_query = "SELECT * FROM version_control WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_data_type'";
-                    $check_result = mysqli_query($connection, $check_query);
+                    // Use prepared statements to prevent SQL injection
+                    $check_stmt = mysqli_prepare($connection, "SELECT 1 FROM version_control WHERE vc_data_id = ? AND vc_screen_name = ?");
+                    mysqli_stmt_bind_param($check_stmt, "ss", $vc_data_id, $vc_data_type);
+                    mysqli_stmt_execute($check_stmt);
+                    $check_result = mysqli_stmt_get_result($check_stmt);
 
                     if (mysqli_num_rows($check_result) > 0) {
-                        $update_query = "UPDATE version_control 
-                             SET vc_assigned_to = '$vc_assigned_to', 
-                                 vc_status = '$vc_status', 
-                                 vc_updated_on = '$vc_updated_on', 
-                                 vc_updated_by = '$vc_updated_by' 
-                             WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_data_type'";
-                        $query_result = mysqli_query($connection, $update_query);
+                        $update_stmt = mysqli_prepare($connection, "UPDATE version_control 
+                SET vc_assigned_to = ?, vc_status = ?, vc_updated_on = ?, vc_updated_by = ?, vc_due_date = ?
+                WHERE vc_data_id = ? AND vc_screen_name = ?");
+                        mysqli_stmt_bind_param($update_stmt, "sssssss", $vc_assigned_to, $vc_status, $vc_updated_on, $vc_updated_by, $vc_due_date, $vc_data_id, $vc_data_type);
+                        $query_result = mysqli_stmt_execute($update_stmt);
                     } else {
-                        $insert_query = "INSERT INTO version_control 
-                             (vc_data_id, vc_screen_name, vc_assigned_to, vc_status, vc_updated_on, vc_updated_by) 
-                             VALUES ('$vc_data_id', '$vc_data_type', '$vc_assigned_to', '$vc_status', '$vc_updated_on', '$vc_updated_by')";
-                        $query_result = mysqli_query($connection, $insert_query);
+                        $insert_stmt = mysqli_prepare($connection, "INSERT INTO version_control 
+                (vc_data_id, vc_screen_name, vc_assigned_to, vc_status, vc_updated_on, vc_due_date, vc_updated_by)
+                VALUES (?, ?, ?, ?, ?, ?, ?)");
+                        mysqli_stmt_bind_param($insert_stmt, "sssssss", $vc_data_id, $vc_data_type, $vc_assigned_to, $vc_status, $vc_updated_on, $vc_due_date, $vc_updated_by);
+                        $query_result = mysqli_stmt_execute($insert_stmt);
                     }
 
-                    if ($query_result) {
-                        echo "<div id='alertBox' class='alert alert-success'>Details saved successfully.</div>";
-                    } else {
-                        echo "<div id='alertBox' class='alert alert-danger'>Error: " . mysqli_error($connection) . "</div>";
-                    }
+                    echo $query_result
+                        ? "<div id='alertBox' class='alert alert-success'>Details saved successfully.</div>"
+                        : "<div id='alertBox' class='alert alert-danger'>Error: " . mysqli_error($connection) . "</div>";
                 }
 
                 // Pre-fill values if available
-                $vc_assigned_to_value = '';
-                $vc_status_value = '';
-
                 if ($vc_data_id && $vc_data_type) {
-                    $get_vc_data_query = "SELECT vc_assigned_to, vc_status 
-                              FROM version_control 
-                              WHERE vc_data_id = '$vc_data_id' AND vc_screen_name = '$vc_data_type' 
-                              LIMIT 1";
-                    $get_vc_data_result = mysqli_query($connection, $get_vc_data_query);
+                    $get_stmt = mysqli_prepare($connection, "SELECT vc_assigned_to, vc_status, vc_due_date FROM version_control WHERE vc_data_id = ? AND vc_screen_name = ? LIMIT 1");
+                    mysqli_stmt_bind_param($get_stmt, "ss", $vc_data_id, $vc_data_type);
+                    mysqli_stmt_execute($get_stmt);
+                    $get_result = mysqli_stmt_get_result($get_stmt);
 
-                    if (mysqli_num_rows($get_vc_data_result) > 0) {
-                        $vc_data = mysqli_fetch_assoc($get_vc_data_result);
+                    if (mysqli_num_rows($get_result) > 0) {
+                        $vc_data = mysqli_fetch_assoc($get_result);
                         $vc_assigned_to_value = $vc_data['vc_assigned_to'];
                         $vc_status_value = $vc_data['vc_status'];
+                        $vc_due_date_value = $vc_data['vc_due_date'];
                     }
                 }
                 ?>
@@ -208,28 +214,27 @@ include 'functions/policy-details/save-function.php';
                 <form action="" method="POST">
                     <input type="hidden" name="vc_data_id" value="<?php echo htmlspecialchars($vc_data_id); ?>">
                     <input type="hidden" name="vc_data_type" value="<?php echo htmlspecialchars($vc_data_type); ?>">
-                    <!-- <input type="text" name="vc_updated_by" value="<?php echo htmlspecialchars($user_name); ?>"> -->
+                    <input type="hidden" name="vc_updated_by" value="<?php echo htmlspecialchars($user_name ?? 'System'); ?>">
 
                     <div class="mb-3">
-                        <label style="font-size: 12px !important;" class="form-label">Assigned to</label>
-                        <select style="font-size: 12px !important;" class="form-select" name="vc_assigned_to" required>
-                            <option disabled selected>Select a user</option>
+                        <label class="form-label" style="font-size: 12px;">Assigned to</label>
+                        <select class="form-select" name="vc_assigned_to" required style="font-size: 12px;">
+                            <option disabled <?php if (empty($vc_assigned_to_value)) echo 'selected'; ?>>Select a user</option>
                             <?php
-                            $get_assigned_user = "SELECT * FROM user";
-                            $get_assigned_user_r = mysqli_query($connection, $get_assigned_user);
-                            while ($row = mysqli_fetch_assoc($get_assigned_user_r)) {
-                                $assigned_user_name = $row['isms_user_name'];
-                                $selected = ($assigned_user_name == $vc_assigned_to_value) ? 'selected' : '';
-                                echo "<option value=\"$assigned_user_name\" $selected>$assigned_user_name</option>";
+                            $users = mysqli_query($connection, "SELECT isms_user_name FROM user");
+                            while ($row = mysqli_fetch_assoc($users)) {
+                                $name = $row['isms_user_name'];
+                                $selected = ($name == $vc_assigned_to_value) ? 'selected' : '';
+                                echo "<option value=\"$name\" $selected>$name</option>";
                             }
                             ?>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label style="font-size: 12px !important;" class="form-label">Status</label>
-                        <select style="font-size: 12px !important;" class="form-select" name="vc_status" required>
-                            <option disabled selected>Select status</option>
+                        <label class="form-label" style="font-size: 12px;">Status</label>
+                        <select class="form-select" name="vc_status" required style="font-size: 12px;">
+                            <option disabled <?php if (empty($vc_status_value)) echo 'selected'; ?>>Select status</option>
                             <?php
                             $statuses = ['Open', 'Closed', 'In Progress', 'Completed'];
                             foreach ($statuses as $status) {
@@ -240,14 +245,20 @@ include 'functions/policy-details/save-function.php';
                         </select>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size: 12px;">Due Date</label>
+                        <input class="form-control" style="font-size: 12px;" name="vc_due_date" type="date"
+                            value="<?php echo htmlspecialchars($vc_due_date_value); ?>">
+                    </div>
+
                     <button type="submit" name="update-details" class="btn btn-sm btn-success">Submit</button>
                 </form>
             </div>
 
+
         </div>
 
         <div class="col-md-6">
-
             <div class="mb-3">
                 <!-- ========== HISTORY ========== -->
                 <div style="background-color: #fff; padding: 20px; border-radius: 10px;">
@@ -256,7 +267,7 @@ include 'functions/policy-details/save-function.php';
                     </div>
                     <div style="width: 100% !important;">
                         <?php
-                        $history_query = "SELECT * FROM policy_details_history WHERE policy_id = '$policy_id' ORDER BY policy_update_on DESC";
+                        $history_query = "SELECT * FROM policy_details_history WHERE policy_id = '$policy_id' AND policy_table = '$policy_table' ORDER BY policy_update_on DESC";
                         $history_result = mysqli_query($connection, $history_query);
                         if (mysqli_num_rows($history_result) > 0) {
                         ?>
@@ -309,6 +320,23 @@ include 'functions/policy-details/save-function.php';
                                 </table>
                             <?php } ?>
                             </div>
+                    </div>
+                    <!-- ========== HISTORY MODAL ========== -->
+                    <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Previous Version Details</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Updated On:</strong> <span id="history-updated-on"></span></p>
+                                    <div class="WYSIWYG-editor">
+                                        <textarea id="history-content" style="width: 100%; height: 500px !important; white-space: pre-wrap; border: 0"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- ========== DOCUMENTS ========== -->
@@ -627,7 +655,9 @@ include 'functions/policy-details/save-function.php';
                                                     <input type="hidden" name="clause_id" value="<?php echo htmlspecialchars($policy_id); ?>">
                                                     <input type="hidden" name="clause_type" value="<?php echo htmlspecialchars($policy_table); ?>">
 
-                                                    <button type="submit" name="del-risk" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">Remove</button>
+                                                    <button type="submit" name="del-risk" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">
+                                                        <ion-icon name="trash-outline"></ion-icon>
+                                                    </button>
                                                 </form>
 
                                             </td>
@@ -752,24 +782,6 @@ include 'functions/policy-details/save-function.php';
                                     <button type="submit" name="add-new-comment" class="btn btn-primary">Submit</button>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ========== HISTORY MODAL ========== -->
-                <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Previous Version Details</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p><strong>Updated On:</strong> <span id="history-updated-on"></span></p>
-                                <div class="WYSIWYG-editor">
-                                    <textarea id="history-content" style="width: 100%; height: 500px !important; white-space: pre-wrap; border: 0"></textarea>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
