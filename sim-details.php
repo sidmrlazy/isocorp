@@ -61,7 +61,6 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     ?>
     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <!-- ========== MAIN LEFT SECTION ========== -->
-        <!-- ========== SIM DETAILS SECTION ========== -->
         <div style="width: 50%; margin: 5px; box-shadow: 0 2px 4px rgba(255,255,255,0.1);">
             <div class="WYSIWYG-editor-container">
                 <div class="sim-topic-container-details">
@@ -156,7 +155,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                 </div>
                 <!-- ======= ASSOCIATED RISKS TABLE ======= -->
                 <?php
-                if(isset($_POST['del-risk'])) {
+                if (isset($_POST['del-risk'])) {
                     $risk_id = intval($_POST['risk_id']);
                     $delete_query = "DELETE FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $policy_id AND clause_type = 'sim'";
                     if (mysqli_query($connection, $delete_query)) {
@@ -172,37 +171,42 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                 WHERE rp.clause_id = $policy_id AND rp.clause_type = 'sim'
                     ";
                 $fetch_risks_r = mysqli_query($connection, $fetch_risks_query);
+                $fetch_risks_count = mysqli_num_rows($fetch_risks_r);
+                if ($fetch_risks_count > 0) {
                 ?>
 
-                <div class="table-responsive mt-3">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th style="font-size: 12px !important;">Risk Name</th>
-                                <th style="font-size: 12px !important;">View</th>
-                                <th style="font-size: 12px !important;">Remove</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($risk = mysqli_fetch_assoc($fetch_risks_r)) { ?>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-striped">
+                            <thead>
                                 <tr>
-                                    <td style="font-size: 12px !important;"><?php echo htmlspecialchars($risk['risks_name']); ?></td>
-                                    <td>
-                                        <a href="risks-details.php?id=<?php echo $risk['risks_id']; ?>" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">
-                                            View Risk
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <form action="" method="POST">
-                                            <input type="text" name="risk_id" value="<?php echo $risk['risks_id']; ?>" hidden>
-                                            <button type="submit" name="del-risk" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Remove</button>
-                                        </form>
-                                    </td>
+                                    <th style="font-size: 12px !important;">Risk Name</th>
+                                    <th style="font-size: 12px !important;">View</th>
+                                    <th style="font-size: 12px !important;">Remove</th>
                                 </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                <?php while ($risk = mysqli_fetch_assoc($fetch_risks_r)) { ?>
+                                    <tr>
+                                        <td style="font-size: 12px !important;"><?php echo htmlspecialchars($risk['risks_name']); ?></td>
+                                        <td>
+                                            <a href="risks-details.php?id=<?php echo $risk['risks_id']; ?>" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">
+                                                View Risk
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <form action="" method="POST">
+                                                <input type="text" name="risk_id" value="<?php echo $risk['risks_id']; ?>" hidden>
+                                                <button type="submit" name="del-risk" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Remove</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php } else {
+                    echo "<p style='font-size: 12px; margin: 0'>No risks linked to this Security Incident</p>";
+                } ?>
             </div>
 
             <!-- ========== COMMENT SECTION ========== -->
