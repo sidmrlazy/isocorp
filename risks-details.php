@@ -89,7 +89,7 @@ $risk = $result->fetch_assoc();
 
                     <!-- =============== ADD POLICY BUTTON =============== -->
                     <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#assignPolicyModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Add Policy</button>
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#assignPolicyModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Policy</button>
                     </div>
                     <?php
                     mysqli_data_seek($fetch_mappings_result, 0);
@@ -264,7 +264,7 @@ $risk = $result->fetch_assoc();
                 <div class="tab-pane fade" id="sims" role="tabpanel">
                     <!-- =============== ADD SIM BUTTON =============== -->
                     <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#assignSimModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Add Security Incident</button>
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#assignSimModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Security Incident</button>
                     </div>
 
                     <?php
