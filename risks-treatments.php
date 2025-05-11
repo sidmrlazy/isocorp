@@ -141,7 +141,7 @@ $color_map = [
                 </thead>
                 <tbody>
                     <?php
-                    $risks = $connection->query("SELECT * FROM risks ORDER BY risks_created_at DESC");
+                    $risks = $connection->query("SELECT * FROM risks ORDER BY risks_created_at ASC");
                     while ($row = $risks->fetch_assoc()):
                     ?>
                         <tr class="risk-details-content">
