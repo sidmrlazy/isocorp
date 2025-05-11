@@ -11,14 +11,14 @@ include 'includes/config.php';
     </div>
 
     <?php
-    if(isset($_POST['delete'])){
+    if (isset($_POST['delete'])) {
         $ca_id = mysqli_real_escape_string($connection, $_POST['ca_id']);
         $delete = "DELETE FROM `tblca` WHERE ca_id = '$ca_id'";
         $delete_r = mysqli_query($connection, $delete);
     }
 
     if (isset($_POST['add-topic'])) {
-        date_default_timezone_set('Asia/Kolkata');    
+        date_default_timezone_set('Asia/Kolkata');
         $ca_topic = mysqli_real_escape_string($connection, $_POST['ca_topic']);
         $ca_created_date = date('m-d-Y H:i:s');
         $create_topic_query = "INSERT INTO `tblca`(
@@ -29,7 +29,7 @@ include 'includes/config.php';
             '$user_name', 
             '$ca_created_date')";
         $create_topic_result = mysqli_query($connection, $create_topic_query);
-        
+
         if ($create_topic_result) { ?>
             <div class="alert alert-success mt-3 mb-3" id="alertBox" role="alert">
                 Topic added successfully!
@@ -39,10 +39,10 @@ include 'includes/config.php';
             <div class="alert alert-danger mt-3 mb-3" id="alertBox" role="alert">
                 <?php echo die("Query Failed: " . mysqli_error($connection)); ?>
             </div>
-        <?php }
+    <?php }
     }
     ?>
-    
+
 
     <!-- ============ MODAL ============ -->
     <div class="modal fade" id="caModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -80,21 +80,21 @@ include 'includes/config.php';
     if ($get_count > 0) {
     ?>
         <div class="table-container">
-            <div class="table-responsive table-bordered table-striped">
-                <table class="table">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
                             <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">ID</th>
-                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">NAME</th>
-                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">STATUS</th>
-                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">FINANCIAL VALUE</th>
-                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">SOURCE</th>
-                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">SEVERITY</th>
-                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">ASSIGNED TO</th>
-                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">CREATED BY</th>
-                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">CREATED DATE</th>
+                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Name</th>
+                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Status</th>
+                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Value</th>
+                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Source</th>
+                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Severity</th>
+                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Assigned to</th>
+                            <!-- <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Created by</th> -->
+                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Created date</th>
                             <!-- <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">EDIT TOPIC</th> -->
-                            <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">DELETE TOPIC</th>
+                            <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -111,18 +111,18 @@ include 'includes/config.php';
                             $ca_created_date = $row['ca_created_date'];
                         ?>
                             <tr>
-                                <td style="font-size: 12px;"><?php echo $ca_id ?></td>
-                                <td style="font-size: 12px;">
+                                <td style="font-size: 12px !important;"><?php echo $ca_id ?></td>
+                                <td style="font-size: 12px !important;">
                                     <a href="corrective-actions-details.php?id=<?php echo $ca_id ?>"><?php echo $ca_topic ?></a>
                                 </td>
-                                <td style="font-size: 12px;"><?php echo $ca_status ?></td>
-                                <td style="font-size: 12px;"><?php echo $ca_financial_value ?></td>
-                                <td style="font-size: 12px;"><?php echo $ca_source ?></td>
-                                <td style="font-size: 12px;"><?php echo $ca_severity ?></td>
-                                <td style="font-size: 12px;"><?php echo $ca_assigned_to ?></td>
-                                <td style="font-size: 12px;"><?php echo $ca_created_by ?></td>
-                                <td style="font-size: 12px;"><?php echo $ca_created_date ?></td>
-                                <!-- <td style="font-size: 12px;" class="text-center">
+                                <td style="font-size: 12px !important;"><?php echo $ca_status ?></td>
+                                <td style="font-size: 12px !important;"><?php echo $ca_financial_value ?></td>
+                                <td style="font-size: 12px !important;"><?php echo $ca_source ?></td>
+                                <td style="font-size: 12px !important;"><?php echo $ca_severity ?></td>
+                                <td style="font-size: 12px !important;"><?php echo $ca_assigned_to ?></td>
+                                <!-- <td style="font-size: 12px !important;"><?php echo $ca_created_by ?></td> -->
+                                <td style="font-size: 12px !important;"><?php echo $ca_created_date ?></td>
+                                <!-- <td style="font-size: 12px !important;" class="text-center">
                                     <form action="" method="POST">
                                         <input type="text" name="ca_id" value="<?php echo $ca_id ?>" hidden>
                                         <button type="submit" name="edit-topic" class="btn btn-sm btn-warning">
@@ -130,11 +130,11 @@ include 'includes/config.php';
                                         </button>
                                     </form>
                                 </td> -->
-                                <td style="font-size: 12px;" class="text-center">
+                                <td style="font-size: 12px !important;" class="text-center">
                                     <form action="" method="POST">
                                         <input type="text" name="ca_id" value="<?php echo $ca_id ?>" hidden>
-                                        <button type="submit" name="delete" class="btn btn-sm btn-danger">
-                                            <ion-icon name="close-outline"></ion-icon>
+                                        <button type="submit" name="delete" class="btn btn-sm btn-outline-danger" style="font-size: 12px;">
+                                            Remove
                                         </button>
                                     </form>
                                 </td>
