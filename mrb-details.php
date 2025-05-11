@@ -6,9 +6,9 @@ include 'includes/connection.php';
 ?>
 
 <div class="dashboard-container">
-    <div style="display: flex; flex-direction: column-reverse;">
-        <!-- ======================== SECTION 1 ======================== -->
-        <div class="notes-section mt-1" style="flex: 1">
+    <div style="display: flex; flex-direction: row-reverse; justify-content: space-between; margin-bottom: 50px;">
+        <!-- ======================== COMMENT SECTION ======================== -->
+        <div class="notes-section mt-1" style="width: 50% !important">
             <div class="heading-row">
                 <p style="font-size: 18px;">Comments</p>
                 <!-- ========== ADD ========== -->
@@ -36,7 +36,6 @@ include 'includes/connection.php';
                 }
             }
 
-            // Insert Comment
             if (isset($_POST['add-note'])) {
                 $training_comment_parent_id = $_POST['training_comment_parent_id'];
                 $training_comment_by = $_POST['training_comment_by'];
@@ -57,7 +56,6 @@ include 'includes/connection.php';
                 exit();
             }
 
-            // Fetch and Display Comments
             $comment_query = "SELECT * FROM training_comment WHERE training_comment_parent_id = '$training_id' ORDER BY training_comment_datetime DESC";
             $comment_query_r = mysqli_query($connection, $comment_query);
 
@@ -70,7 +68,7 @@ include 'includes/connection.php';
             ?>
                     <div class="note-container" style="margin-bottom: 20px;">
                         <div class="d-flex justify-content-center align-items-center">
-                            <p class="note-owner" style="flex: 1"><strong><?php echo $training_comment_by; ?></strong> - <?php echo $training_comment_datetime; ?></p>
+                            <p style="flex: 1; margin: 0 !important; font-size: 12px"><strong style="font-weight: 600 !important;"><?php echo $training_comment_by; ?></strong> - <?php echo $training_comment_datetime; ?></p>
                             <form action="" method="POST" style="margin-top: 0 !important;">
                                 <input type="hidden" name="delete_comment_id" value="<?php echo $training_comment_id; ?>">
                                 <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
@@ -79,7 +77,7 @@ include 'includes/connection.php';
                             </form>
                         </div>
                         <div>
-                            <p class="main-note"><?php echo $training_comment_data; ?></p>
+                            <p style="font-size: 16px !important; margin: 0 !important"><?php echo $training_comment_data; ?></p>
                             <!-- Read More -->
                             <div class="d-flex justify-content-center align-items-center mt-3">
                                 <button class="read-more-btn">
@@ -138,10 +136,10 @@ include 'includes/connection.php';
             </div>
         </div>
 
-        <!-- ======================== SECTION 2 ======================== -->
-        <div class="WYSIWYG-editor-container m-1" style="flex: 2">
-            <div class="sim-topic-container-details">
-                <p>Details:</p>
+        <!-- ======================== MRB DETAILS SECTION ======================== -->
+        <div class="WYSIWYG-editor-container m-1" style="width: 50% !important; max-height: fit-content;">
+            <div style="margin-bottom: 15px;">
+                <p style="margin: 0">Details:</p>
                 <h5><?php echo htmlspecialchars($training_topic); ?></h5>
             </div>
 
@@ -188,7 +186,7 @@ include 'includes/connection.php';
 
             <form action="" method="POST">
                 <input type="hidden" name="training_parent_id" value="<?php echo htmlspecialchars($training_id); ?>">
-                <div class="WYSIWYG-editor">
+                <div class="WYSIWYG-editor" style="max-height: fit-content; overflow-y: auto;">
                     <textarea id="editorNew" name="training_details"><?php echo htmlspecialchars($training_data_fetched); ?></textarea>
                 </div>
                 <?php if ($training_details_status == "1") { ?>
