@@ -267,6 +267,22 @@ include 'functions/policy-details/save-function.php';
                     </div>
                     <div style="width: 100% !important;">
                         <?php
+                        if (isset($_POST['history_remove']) && isset($_POST['history_id'])) {
+                            $history_id = $_POST['history_id'];
+
+                            // Use prepared statements to prevent SQL injection
+                            $stmt = $connection->prepare("DELETE FROM policy_details_history WHERE history_id = ?");
+                            $stmt->bind_param("i", $history_id);
+
+                            if ($stmt->execute()) {
+                                echo "<div style='font-size: 12px;' id='alertBox' class='alert alert-success'>History record deleted successfully!</div>";
+                            } else {
+                                echo "<div style='font-size: 12px;' id='alertBox' class='alert alert-danger'>Error deleting record: " . $stmt->error . "</div>";
+                            }
+
+                            $stmt->close();
+                        }
+
                         $history_query = "SELECT * FROM policy_details_history WHERE policy_id = '$policy_id' AND policy_table = '$policy_table' ORDER BY policy_update_on DESC";
                         $history_result = mysqli_query($connection, $history_query);
                         if (mysqli_num_rows($history_result) > 0) {
@@ -278,6 +294,7 @@ include 'functions/policy-details/save-function.php';
                                             <th style="font-size: 12px !important;" scope="col">Previous Details</th>
                                             <th style="font-size: 12px !important;" scope="col">Updated on</th>
                                             <th style="font-size: 12px !important;" scope="col">View</th>
+                                            <th style="font-size: 12px !important;" scope="col">Remove</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -295,6 +312,14 @@ include 'functions/policy-details/save-function.php';
                                                         data-bs-target="#historyModal">
                                                         View Previous Version
                                                     </button>
+                                                </td>
+                                                <td>
+                                                    <form method="POST">
+                                                        <input type="hidden" name="history_id" value="<?php echo $history['history_id']; ?>">
+                                                        <button type="submit" name="history_remove" style="font-size: 12px;" class="btn btn-sm btn-outline-danger">
+                                                            Remove
+                                                        </button>
+                                                    </form>
                                                 </td>
 
                                             </tr>
