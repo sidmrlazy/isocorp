@@ -11,7 +11,7 @@ include 'includes/config.php';
     </div>
 
     <?php
-    if(isset($_POST['delete-asset'])) {
+    if (isset($_POST['delete-asset'])) {
         $asset_id = $_POST['asset_id'];
         $del = "DELETE FROM asset WHERE asset_id = '$asset_id'";
         $del_r = mysqli_query($connection, $del);
@@ -65,8 +65,8 @@ include 'includes/config.php';
     $count = mysqli_num_rows($fetch_r);
     if ($count > 0) {
     ?>
-        <div class="table-responsive table-container mt-3">
-            <table class="table table-bordered table-striped">
+        <div class="table-responsive table-container mt-3 mb-5">
+            <table class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">ID</th>
