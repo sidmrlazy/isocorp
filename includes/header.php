@@ -26,6 +26,9 @@ session_start();
   <!-- ========== CUSTOM STYLES ========== -->
   <link rel="stylesheet" href="assets/styles.css">
 
+  <!-- ========== CHART.JS ========== -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
   <!-- ========== CUSTOM JS ========== -->
   <script src="assets/custom.js"></script>
 

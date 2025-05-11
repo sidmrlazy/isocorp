@@ -31,6 +31,75 @@ $risk = $result->fetch_assoc();
     <div style="display: flex; justify-content: center; align-items: flex-start">
         <!-- ============== LEFT SECTION ============== -->
         <div style="width: 50% !important; margin: 5px !important;">
+            <!-- ============== GRAPH SECTION ============== -->
+            <div style="background-color: #fff; border-radius: 10px; padding: 20px; margin-bottom: 10px; height: 250px; width: 100% !important">
+                <?php
+                if ($risk_id > 0) {
+                    $risk_query = $connection->query("SELECT * FROM risks WHERE risks_id = $risk_id");
+                    $risk_data = $risk_query->fetch_assoc();
+                }
+                ?>
+
+                <?php if (!empty($risk_data)) : ?>
+
+                    <!-- <h5 class="mb-3">Risk Analysis Chart: <?= htmlspecialchars($risk_data['risks_name']) ?></h5> -->
+                    <h5 class="mb-3">Risk Analysis Chart</h5>
+                    <canvas id="riskChart" style="width: 100%; height: auto !important;"></canvas>
+
+                <?php endif; ?>
+                <?php if (!empty($risk_data)) : ?>
+                    <script>
+                        const ctx = document.getElementById('riskChart').getContext('2d');
+
+                        const likelihood_map = {
+                            'Very Low': 1,
+                            'Low': 2,
+                            'Medium': 3,
+                            'High': 4,
+                            'Very High': 5
+                        };
+                        const impact_map = {
+                            'Insignificant': 1,
+                            'Minor': 2,
+                            'Moderate': 3,
+                            'Major': 4,
+                            'Severe': 5
+                        };
+
+                        const likelihood = likelihood_map['<?= addslashes($risk_data['risks_likelihood']) ?>'] || 0;
+                        const impact = impact_map['<?= addslashes($risk_data['risks_impact']) ?>'] || 0;
+
+                        const riskChart = new Chart(ctx, {
+                            type: 'line', // Changed to line chart
+                            data: {
+                                labels: ['Likelihood', 'Impact'],
+                                datasets: [{
+                                    label: 'Risk Level',
+                                    data: [likelihood, impact],
+                                    backgroundColor: ['#6a946d', '#b86a79'],
+                                    borderColor: ['#6a946d', '#b86a79'],
+                                    fill: false, // For line charts, this ensures no fill under the line
+                                    borderWidth: 2
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 5,
+                                        ticks: {
+                                            stepSize: 1
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    </script>
+                <?php endif; ?>
+            </div>
+
+
+            <!-- ============== RISK DETAILS SECTION ============== -->
             <div class="table-responsive table-container">
                 <table class="table table-bordered">
                     <tr>
@@ -67,7 +136,9 @@ $risk = $result->fetch_assoc();
         </div>
 
         <!-- ============== TABS FOR SIMs AND POLICIES ============== -->
+
         <div style="background-color: #fff; width: 50% !important; margin: 5px; padding: 20px; border-radius: 10px;">
+
             <?php
             $risks_id = intval($risk['risks_id']);
             $fetch_mappings_query = "SELECT * FROM risk_policies WHERE risks_id = $risks_id";
@@ -83,9 +154,13 @@ $risk = $result->fetch_assoc();
                 </li>
             </ul>
 
+
+
+
             <div class="tab-content mt-3" id="riskTabContent">
                 <!-- ============== POLICIES TAB ============== -->
                 <div class="tab-pane fade show active" id="policies" role="tabpanel">
+
 
                     <!-- =============== ADD POLICY BUTTON =============== -->
                     <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
@@ -397,5 +472,7 @@ $risk = $result->fetch_assoc();
         }
     }
 </script>
+
+
 
 <?php include 'includes/footer.php'; ?>
