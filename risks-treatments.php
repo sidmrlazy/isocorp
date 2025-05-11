@@ -109,7 +109,7 @@ $color_map = [
         </div>
 
         <!-- =========== RISKS DETAILS =========== -->
-        <div class="table-responsive table-container" style="margin: 5px; flex: 2;">
+        <div class="table-responsive table-container" style="margin: 5px; flex: 2; height: 500px; overflow-y: auto; border: 1px solid #ccc;">
             <?php if ($user_role === '1') { ?>
                 <button class="btn btn-sm btn-outline-success mb-3" data-bs-toggle="modal" data-bs-target="#addRiskModal">Add Risk/Threat</button>
             <?php } ?>
