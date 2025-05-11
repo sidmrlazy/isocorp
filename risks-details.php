@@ -31,7 +31,7 @@ $risk = $result->fetch_assoc();
 
     <a href="risks-treatments.php" class="btn btn-sm btn-secondary mb-2">Back to Risks</a>
 
-    <div style="display: flex; justify-content: center; align-items: flex-start">
+    <div style="display: flex; justify-content: center; align-items: flex-start; margin-bottom: 40px;">
         <!-- ============== LEFT SECTION ============== -->
         <div style="width: 50% !important; margin: 5px !important;">
 
