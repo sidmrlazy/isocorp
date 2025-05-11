@@ -59,7 +59,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
     }
     ?>
-    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px !important;">
         <!-- ========== MAIN LEFT SECTION ========== -->
         <div style="width: 50%; margin: 5px; box-shadow: 0 2px 4px rgba(255,255,255,0.1);">
             <div class="WYSIWYG-editor-container">
