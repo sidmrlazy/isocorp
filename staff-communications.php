@@ -89,7 +89,7 @@ include 'includes/connection.php'; ?>
                     <tr>
                         <th style="font-size: 12px !important;" scope="col">Topic</th>
                         <th style="font-size: 12px !important;" scope="col">Uploaded Date</th>
-                        <th style="font-size: 12px !important;" scope="col">Uploaded By</th>
+                        <!-- <th style="font-size: 12px !important;" scope="col">Uploaded By</th> -->
                         <th style="font-size: 12px !important;" scope="col">Edit</th>
                         <th style="font-size: 12px !important;" scope="col">Delete</th>
                         <th style="font-size: 12px !important;" scope="col">View</th>
@@ -105,7 +105,7 @@ include 'includes/connection.php'; ?>
                         <tr>
                             <th style="font-size: 12px !important;"><?php echo $comm_data ?></th>
                             <td style="font-size: 12px !important;"><?php echo $comm_date ?></td>
-                            <td style="font-size: 12px !important;"><?php echo $comm_by ?></td>
+                            <!-- <td style="font-size: 12px !important;"><?php echo $comm_by ?></td> -->
                             <td style="font-size: 12px !important;">
                                 <form action="" method="POST">
                                     <input type="text" value="<?php echo $comm_id ?>" name="comm_id" hidden>
