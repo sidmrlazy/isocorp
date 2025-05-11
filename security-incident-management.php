@@ -136,7 +136,7 @@ if (isset($_POST['record'])) {
     if ($fetch_count > 0) {
     ?>
         <div class="table-responsive sim-table-container mb-5">
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr class="sim-th">
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">ID</th>
