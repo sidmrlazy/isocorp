@@ -1,5 +1,5 @@
 <div class="mt-5">
-    <table class="table table-bordered table-striped" id="policyTable">
+    <table class="table table-bordered table-striped table-hover" id="policyTable">
         <thead class="table-dark">
             <tr>
                 <th style="font-size: 12px !important;">Main Policy</th>
