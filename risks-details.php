@@ -28,9 +28,13 @@ $risk = $result->fetch_assoc();
         <h1>Risk & Treatments Details</h1>
         <h2><a href="risks-treatments.php">Risks & Treatments</a> > Risk & Treatments Details</h2>
     </div>
+
+    <a href="risks-treatments.php" class="btn btn-sm btn-secondary mb-2">Back to Risks</a>
+
     <div style="display: flex; justify-content: center; align-items: flex-start">
         <!-- ============== LEFT SECTION ============== -->
         <div style="width: 50% !important; margin: 5px !important;">
+
             <!-- ============== GRAPH SECTION ============== -->
             <div style="background-color: #fff; border-radius: 10px; padding: 20px; margin-bottom: 10px; height: 250px; width: 100% !important">
                 <?php
@@ -132,7 +136,7 @@ $risk = $result->fetch_assoc();
                     </tr>
                 </table>
             </div>
-            <a href="risks-treatments.php" class="btn btn-sm btn-secondary mt-3 mb-5">Back to Risks</a>
+
         </div>
 
         <!-- ============== TABS FOR SIMs AND POLICIES ============== -->
