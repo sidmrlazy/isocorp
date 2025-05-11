@@ -80,7 +80,7 @@ include 'includes/config.php';
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Owner/Lead</th>
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Assigned to </th>
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Created on</th>
-                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Created by</th>
+                        <!-- <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Created by</th> -->
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Review Date</th>
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Delete</th>
                     </tr>
@@ -116,7 +116,7 @@ include 'includes/config.php';
                             <td class="asset-data"><?php echo $asset_owner ?></td>
                             <td class="asset-data"><?php echo $asset_assigned_to ?></td>
                             <td class="asset-data"><?php echo $asset_created_date ?></td>
-                            <td class="asset-data"><?php echo $asset_created_by ?></td>
+                            <!-- <td class="asset-data"><?php echo $asset_created_by ?></td> -->
                             <td class="asset-data"><?php echo $asset_review_date ?></td>
                             <td class="text-center">
                                 <form action="" method="POST">
