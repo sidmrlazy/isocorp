@@ -120,7 +120,7 @@ $color_map = [
                 <label style="font-size: 12px;" for="floatingInput">Search Risks & Treatments</label>
             </div>
 
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr class="risk-details-headers">
                         <th style="font-size: 12px !important; font-weight: 600 !important;">#</th>
