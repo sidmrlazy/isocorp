@@ -35,7 +35,7 @@ $risk = $result->fetch_assoc();
                 <table class="table table-bordered">
                     <tr>
                         <th style="font-size: 12px !important; width: 20% !important;">Risk Name</th>
-                        <td style="font-size: 12px !important;"><?= htmlspecialchars($risk['risks_name']) ?></td>
+                        <td style="font-size: 14px !important; font-weight: 600"><?= htmlspecialchars($risk['risks_name']) ?></td>
                     </tr>
                     <tr>
                         <th style="font-size: 12px !important; width: 20% !important;">Treatment</th>
@@ -132,6 +132,7 @@ $risk = $result->fetch_assoc();
                     ?>
 
                     <?php if (!empty($policies)): ?>
+
                         <ul style="font-size: 12px !important; margin-top: 15px; padding-left: 20px;">
                             <?php foreach ($policies as $policy): ?>
                                 <?php
@@ -162,6 +163,7 @@ $risk = $result->fetch_assoc();
                                 </li>
                             <?php endforeach; ?>
                         </ul>
+
                     <?php else: ?>
                         <p style="font-size: 12px !important;" class="text-muted">No policies linked to this risk.</p>
                     <?php endif; ?>
@@ -240,6 +242,13 @@ $risk = $result->fetch_assoc();
                                 <div class="modal-body">
                                     <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
 
+                                    <!-- =========== SEARCH POLICY =========== -->
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="searchPolicyOptions" placeholder="Search Policies" onkeyup="filterPolicyOptions()" style="font-size: 12px;">
+                                        <label for="searchPolicyOptions" style="font-size: 12px;">Search Policies</label>
+                                    </div>
+
+
                                     <label style="font-size: 12px;" for="exampleInputEmail1" class="form-label">Select Policy/s</label>
                                     <select style="font-size: 12px;" name="assign_policies[]" id="policy_select" class="form-select" multiple size="10">
                                         <?php foreach ($available_policies as $policy): ?>
@@ -256,9 +265,7 @@ $risk = $result->fetch_assoc();
                             </form>
                         </div>
                     </div>
-
                 </div>
-
 
                 <!-- ============= SIMs TAB ============= -->
                 <div class="tab-pane fade" id="sims" role="tabpanel">
@@ -280,7 +287,7 @@ $risk = $result->fetch_assoc();
                                 if ($r = mysqli_fetch_assoc($q)) {
                                     $has_sims = true;
                         ?>
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                                         <li><?php echo htmlspecialchars($r['sim_id']) . ". " . htmlspecialchars($r['sim_topic']) ?></li>
                                         <a style="font-size: 10px" class="btn btn-sm btn-outline-success" href="sim-details.php?id=<?php echo $r['sim_id'] ?>">View</a>
                                     </div>
@@ -295,7 +302,7 @@ $risk = $result->fetch_assoc();
                         echo "<p style='font-size: 12px !important;' class='text-muted'>No SIMs linked to this risk.</p>";
                     }
 
-                    if (isset($_POST['connect_sim'])) {
+                    if (isset($_POST['assign-sim'])) {
                         $risk_id = intval($_POST['risk_id']);
                         $selected_sims = $_POST['assign_sims'] ?? [];
 
@@ -307,7 +314,7 @@ $risk = $result->fetch_assoc();
                             }
                         }
 
-                        echo "<div class='alert alert-success mt-2'>SIMs successfully linked to the risk.</div>";
+                        echo "<div style='font-size: 12px;' id='alertBox' class='alert alert-success mt-2'>SIMs successfully linked to the risk.</div>";
                     }
                     ?>
 
@@ -337,7 +344,13 @@ $risk = $result->fetch_assoc();
                                 <div class="modal-body">
                                     <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
 
-                                    <label style="font-size: 12px;" for="sim_select" class="form-label">Select SIMs</label>
+                                    <!-- =========== SEARCH POLICY =========== -->
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="searchSimOptions" placeholder="Search Policies" onkeyup="filterSimOptions()" style="font-size: 12px;">
+                                        <label for="searchSimOptions" style="font-size: 12px;">Search Policies</label>
+                                    </div>
+
+                                    <label style="font-size: 12px;" for="sim_select" class="form-label">Select Incident</label>
                                     <select style="font-size: 12px;" name="assign_sims[]" id="sim_select" class="form-select" multiple size="10">
                                         <?php foreach ($available_sims as $sim): ?>
                                             <option style="border-bottom: 1px solid #e7e7e7; padding-bottom: 10px; margin-top: 5px" value="<?= $sim['sim_id'] ?>">
@@ -359,5 +372,30 @@ $risk = $result->fetch_assoc();
         </div>
     </div>
 </div>
+<script>
+    function filterPolicyOptions() {
+        const input = document.getElementById('searchPolicyOptions');
+        const filter = input.value.toLowerCase();
+        const select = document.getElementById('policy_select');
+        const options = select.options;
+
+        for (let i = 0; i < options.length; i++) {
+            const txt = options[i].text.toLowerCase();
+            options[i].style.display = txt.includes(filter) ? '' : 'none';
+        }
+    }
+
+    function filterSimOptions() {
+        const input = document.getElementById('searchSimOptions');
+        const filter = input.value.toLowerCase();
+        const select = document.getElementById('sim_select');
+        const options = select.options;
+
+        for (let i = 0; i < options.length; i++) {
+            const txt = options[i].text.toLowerCase();
+            options[i].style.display = txt.includes(filter) ? '' : 'none';
+        }
+    }
+</script>
 
 <?php include 'includes/footer.php'; ?>
