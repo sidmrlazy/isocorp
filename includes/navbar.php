@@ -53,6 +53,16 @@ include 'includes/connection.php';
                 <ion-icon name="megaphone-outline"></ion-icon> Staff Communications
               </a>
             </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <ion-icon name="megaphone-outline"></ion-icon> Applicable Legislations
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <ion-icon name="megaphone-outline"></ion-icon> Interested Parties
+              </a>
+            </li>
           </ul>
         </li>
         <?php if ($user_role == '1') { ?>
