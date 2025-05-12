@@ -71,7 +71,7 @@ include 'functions/policy-details/save-function.php';
                 }
         ?>
 
-                <h1 style="font-size: 24px; font-weight: 500;">Policy Details</h1>
+                <!-- <h1 style="font-size: 24px; font-weight: 500;">Policy Details</h1> -->
                 <div class="details-container">
                     <h6 style="font-size: 16px !important;"><?= $policy_number . " " . $policy_heading ?></h6>
                     <p style="font-size: 16px !important; margin: 0;"><?= $policy_content ?></p>
