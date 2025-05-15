@@ -129,7 +129,7 @@ include('includes/connection.php'); ?>
                 <th>Name</th>
                 <th>Service Provider</th>
                 <th>Modem</th>
-                <th>IP</th>
+                <th>Internet Plan</th>
                 <th>Download Speed</th>
                 <th>Upload Speed</th>
                 <th>Image</th>
