@@ -2,7 +2,7 @@
 include('includes/header.php');
 include('includes/navbar.php');
 include('includes/connection.php'); ?>
-<div class="container" style="margin-top: 50px;">
+<div class="container" style="margin-top: 50px; margin-bottom: 30px;">
     <?php
     // Handle insert and update
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_or_update'])) {
