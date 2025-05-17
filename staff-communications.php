@@ -1,7 +1,10 @@
 <?php
 include 'includes/header.php';
 include 'includes/navbar.php';
-include 'includes/connection.php'; ?>
+include 'includes/connection.php';
+
+
+?>
 <div class="dashboard-container">
     <div class="screen-name-container">
         <h1>STAFF COMMUNICATIONS</h1>
@@ -15,6 +18,20 @@ include 'includes/connection.php'; ?>
             policies processes & controls, including thos relating to data protection for GDPR</p>
     </div>
 
+    <?php
+
+    if (isset($_POST['insert-comm'])) {
+        $comm_data = mysqli_real_escape_string($connection, $_POST['comm_data']);
+        $comm_details = mysqli_real_escape_string($connection, $_POST['comm_details']);
+        $comm_by = mysqli_real_escape_string($connection, $_POST['comm_by']);
+        $comm_date = mysqli_real_escape_string($connection, $_POST['comm_date']);
+
+        $insert_comm = mysqli_query($connection, "INSERT INTO staff_comm (comm_data, comm_details, comm_by, comm_date) VALUES ('$comm_data', '$comm_details', '$comm_by', '$comm_date')") or die(mysqli_error($connection));
+        if ($insert_comm) {
+            echo "<p style='font-size: 12px' id='alertBox' class='alert alert-primary' role='alert'>Staff communication added successfully!</p>";
+        }
+    }
+    ?>
 
     <div class="table-responsive" style="background-color: #fff; padding: 20px; border-radius: 10px;">
         <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px">
@@ -23,19 +40,6 @@ include 'includes/connection.php'; ?>
         <!-- =========== INSERT AND UPDATE COM =========== -->
         <div class="modal fade" id="insertComm" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
-                <?php
-                if (isset($_POST['insert-comm'])) {
-                    $comm_data = mysqli_real_escape_string($connection, $_POST['comm_data']);
-                    $comm_details = mysqli_real_escape_string($connection, $_POST['comm_details']);
-                    $comm_by = mysqli_real_escape_string($connection, $_POST['comm_by']);
-                    $comm_date = mysqli_real_escape_string($connection, $_POST['comm_date']);
-
-                    $insert_comm = mysqli_query($connection, "INSERT INTO staff_comm (comm_data, comm_details, comm_by, comm_date) VALUES ('$comm_data', '$comm_details', '$comm_by', '$comm_date')") or die(mysqli_error($connection));
-                    if ($insert_comm) {
-                        echo "<p style='font-size: 12px' id='alertBox' class='alert alert-primary' role='alert'>Staff communication added successfully!</p>";
-                    }
-                }
-                ?>
                 <form action="" method="POST" class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Add staff communication</h1>
@@ -50,7 +54,7 @@ include 'includes/connection.php'; ?>
                         </td>
                         <div class="mb-3">
                             <label style="font-size: 12px;" for="floatingTextarea2">Topic</label>
-                            <input name="comm_data" class="form-control" placeholder="Leave a comment here" />
+                            <input type="text" name="comm_data" class="form-control" placeholder="Enter topic" required />
                         </div>
                         <div class="mb-3">
                             <label style="font-size: 12px;" for="edit">Details</label>
