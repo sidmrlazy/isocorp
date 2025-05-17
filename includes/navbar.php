@@ -1,5 +1,7 @@
 <?php
-include 'includes/config.php';
+$user_id = isset($_COOKIE['user_id']) ? $_COOKIE['user_id'] : (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Guest');
+$user_name = isset($_COOKIE['user_name']) ? $_COOKIE['user_name'] : (isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Guest');
+$user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'Guest');
 include 'includes/connection.php';
 ?>
 <nav class="navbar navbar-expand-lg bg-body-tertiary custom-navbar">
@@ -21,46 +23,47 @@ include 'includes/connection.php';
             Work Area
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="security-incident-management.php"><ion-icon
-                  name="lock-closed-outline"></ion-icon> Security Incident Management</a></li>
+            <li><a class="dropdown-item" href="security-incident-management.php">
+                <ion-icon style="font-size: 20px !important;" name="lock-closed-outline"></ion-icon> Security Incident Management</a></li>
             <li>
               <a class="dropdown-item" href="mrb.php">
-                <ion-icon name="book-outline"></ion-icon> Management Review Board
+                <ion-icon style="font-size: 20px !important;" name="book-outline"></ion-icon> Management Review Board
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="asset-inventory.php">
-                <ion-icon name="desktop-outline"></ion-icon> Asset Inventory
+                <ion-icon style="font-size: 20px !important;" name="desktop-outline"></ion-icon> Asset Inventory
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="risks-treatments.php">
-                <ion-icon name="flask-outline"></ion-icon> Risks & Treatments
+                <ion-icon style="font-size: 20px !important;" name="flask-outline"></ion-icon> Risks & Treatments
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="corrective-actions.php">
-                <ion-icon name="construct-outline"></ion-icon> Corrective Actions & Improvements
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">
-                <ion-icon name="clipboard-outline"></ion-icon> Audit Programme
+                <ion-icon style="font-size: 20px !important;" name="construct-outline"></ion-icon> Corrective Actions & Improvements
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="staff-communications.php">
-                <ion-icon name="megaphone-outline"></ion-icon> Staff Communications
+                <ion-icon style="font-size: 20px !important;" name="megaphone-outline"></ion-icon> Staff Communications
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="#">
-                <ion-icon name="megaphone-outline"></ion-icon> Applicable Legislations
+                <ion-icon style="font-size: 20px !important;" name="glasses-outline"></ion-icon> Audit Programme
+              </a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="#">
+                <ion-icon style="font-size: 20px !important;" name="megaphone-outline"></ion-icon> Applicable Legislations
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="#">
-                <ion-icon name="megaphone-outline"></ion-icon> Interested Parties
+                <ion-icon style="font-size: 20px !important;" name="megaphone-outline"></ion-icon> Interested Parties
               </a>
             </li>
           </ul>
@@ -76,36 +79,31 @@ include 'includes/connection.php';
               <li><a class="dropdown-item" href="linked-sub-controls.php">Add linked Sub-Control</a></li>
               <li><a class="dropdown-item" href="inner-linked-control-policy-form.php">Add Inner linked Sub-Control</a></li>
               <hr> -->
-              <li><a class="dropdown-item" href="#">Audit Programme Setup</a></li>
+              <li><a class="dropdown-item" href="audit-program-setup.php">Audit Programme Setup</a></li>
               <hr>
               <li><a class="dropdown-item" href="user-setup.php">User Setup</a></li>
               <hr>
               <li><a class="dropdown-item" href="policy-setup.php">Policy Section Setup</a></li>
             </ul>
           </li>
-        <?php } elseif ($user_role == '2') { ?>
-          <li class="nav-item dropdown d-none">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Settings
-            </a>
-            <ul class="dropdown-menu">
-
-              <li><a class="dropdown-item" href="main-controls.php">Add Control</a></li>
-              <li><a class="dropdown-item" href="sub-controls.php">Add Sub-Control</a></li>
-              <li><a class="dropdown-item" href="linked-sub-controls.php">Add linked Sub-Control</a></li>
-              <li><a class="dropdown-item" href="inner-linked-control-policy-form.php">Add Inner linked Sub-Control</a></li>
-              <hr>
-              <li><a class="dropdown-item" href="add-mrb-topic.php">Management Review Board Setup</a></li>
-              <hr>
-              <li><a class="dropdown-item" href="user-setup.php">User Setup</a></li>
-            </ul>
-          </li>
         <?php } ?>
       </ul>
-      <form class="d-flex" role="search">
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <ion-icon name="person-circle-outline"></ion-icon> <?php echo htmlspecialchars($user_name); ?>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="#"><ion-icon name="person-outline"></ion-icon> Profile</a></li>
+            <li><a class="dropdown-item" href="logout.php"><ion-icon name="log-out-outline"></ion-icon> Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- <form class="d-flex" role="search">
         <a class="nav-link" aria-current="page" href="logout.php"><ion-icon name="log-out-outline"></ion-icon>
           Logout</a>
-      </form>
+      </form> -->
     </div>
   </div>
 </nav>
