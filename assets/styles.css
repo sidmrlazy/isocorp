@@ -4,6 +4,10 @@ body {
 * {
   /* font-family: "Open Sans", sans-serif; */
 }
+::selection {
+  color: #fff;
+  background: #266937;
+}
 
 /* ========= GENERAL ========= */
 .under-development-container {
@@ -106,9 +110,9 @@ h4 {
 }
 
 /* ========= NAVBR ========= */
-.navbar {
+/* .navbar {
   background-color: #266937 !important;
-}
+} */
 .navbar-brand {
   color: #fff;
 }
@@ -116,7 +120,7 @@ h4 {
   width: 25%;
 }
 .nav-link {
-  color: #fff;
+  color: #266937;
 }
 .dropdown-item {
   font-size: 15px;

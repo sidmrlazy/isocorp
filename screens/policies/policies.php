@@ -1,4 +1,4 @@
-<div class="mt-5">
+<div class="table-responsive ">
     <table class="table table-bordered table-striped table-hover" id="policyTable">
         <thead class="table-dark">
             <tr>
