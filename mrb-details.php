@@ -1,9 +1,9 @@
 <?php
 ob_start();
 include 'includes/header.php';
+include('includes/auth_check.php');
 include 'includes/navbar.php';
 include 'includes/connection.php';
-include('includes/auth_check.php');
 ?>
 
 <div class="dashboard-container">
