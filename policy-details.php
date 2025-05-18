@@ -5,93 +5,93 @@ include 'includes/connection.php';
 include 'includes/config.php';
 ?>
 <div class="dashboard-container">
-<?php
-if (isset($_POST['save'])) {
-    $policy_id = $_POST['policy_id'] ?? null;
-    $linked_policy_id = $_POST['linked_policy_id'] ?? null;
-    $inner_policy_id = $_POST['inner_policy_id'] ?? null;
-    $policy_table = $_POST['policy_table'] ?? null;
-    $editorContent = $_POST['editorContent'] ?? null;
-    $editorBlob = !empty($editorContent) ? addslashes($editorContent) : null;
+    <?php
+    if (isset($_POST['save'])) {
+        $policy_id = $_POST['policy_id'] ?? null;
+        $linked_policy_id = $_POST['linked_policy_id'] ?? null;
+        $inner_policy_id = $_POST['inner_policy_id'] ?? null;
+        $policy_table = $_POST['policy_table'] ?? null;
+        $editorContent = $_POST['editorContent'] ?? null;
+        $editorBlob = !empty($editorContent) ? addslashes($editorContent) : null;
 
-    if (!empty($policy_table)) {
-        if (!empty($policy_id) || !empty($linked_policy_id) || !empty($inner_policy_id)) {
-            $current_policy_id = !empty($policy_id) ? $policy_id : (!empty($linked_policy_id) ? $linked_policy_id : $inner_policy_id);
+        if (!empty($policy_table)) {
+            if (!empty($policy_id) || !empty($linked_policy_id) || !empty($inner_policy_id)) {
+                $current_policy_id = !empty($policy_id) ? $policy_id : (!empty($linked_policy_id) ? $linked_policy_id : $inner_policy_id);
 
-            $query = "SELECT 1 FROM policy_details WHERE policy_id = ? AND policy_table = ?";
-            $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, "is", $current_policy_id, $policy_table);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_store_result($stmt);
-            $rowCount = mysqli_stmt_num_rows($stmt);
+                $query = "SELECT 1 FROM policy_details WHERE policy_id = ? AND policy_table = ?";
+                $stmt = mysqli_prepare($connection, $query);
+                mysqli_stmt_bind_param($stmt, "is", $current_policy_id, $policy_table);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_store_result($stmt);
+                $rowCount = mysqli_stmt_num_rows($stmt);
 
-            date_default_timezone_set('Asia/Kolkata');
-            $update_on = date('Y-m-d H:i:s');
-            $updated_by = $user_name;
+                date_default_timezone_set('Asia/Kolkata');
+                $update_on = date('Y-m-d H:i:s');
+                $updated_by = $user_name;
 
-            if ($rowCount > 0) {
-                // ✅ Step: Fetch current record BEFORE updating (for history)
-                $fetch_query = "SELECT * FROM policy_details WHERE policy_id = ? AND policy_table = ?";
-                $fetch_stmt = mysqli_prepare($connection, $fetch_query);
-                mysqli_stmt_bind_param($fetch_stmt, "is", $current_policy_id, $policy_table);
-                mysqli_stmt_execute($fetch_stmt);
-                $result = mysqli_stmt_get_result($fetch_stmt);
+                if ($rowCount > 0) {
+                    // ✅ Step: Fetch current record BEFORE updating (for history)
+                    $fetch_query = "SELECT * FROM policy_details WHERE policy_id = ? AND policy_table = ?";
+                    $fetch_stmt = mysqli_prepare($connection, $fetch_query);
+                    mysqli_stmt_bind_param($fetch_stmt, "is", $current_policy_id, $policy_table);
+                    mysqli_stmt_execute($fetch_stmt);
+                    $result = mysqli_stmt_get_result($fetch_stmt);
 
-                if ($result && mysqli_num_rows($result) > 0) {
-                    $existingData = mysqli_fetch_assoc($result);
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        $existingData = mysqli_fetch_assoc($result);
 
-                    // ✅ Step: Save OLD data to history table
-                    $history_query = "INSERT INTO policy_details_history (
+                        // ✅ Step: Save OLD data to history table
+                        $history_query = "INSERT INTO policy_details_history (
                         policy_details_id, policy_id, policy_table, policy_details, 
                         policy_document, policy_assigned_to, policy_status, 
                         policy_update_on, policy_updated_by
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                    $history_stmt = mysqli_prepare($connection, $history_query);
-                    mysqli_stmt_bind_param(
-                        $history_stmt,
-                        "issssssss",
-                        $existingData['policy_details_id'],
-                        $existingData['policy_id'],
-                        $existingData['policy_table'],
-                        $existingData['policy_details'],
-                        $existingData['policy_document'],
-                        $existingData['policy_assigned_to'],
-                        $existingData['policy_status'],
-                        $existingData['policy_update_on'],
-                        $existingData['policy_updated_by']
-                    );
-                    mysqli_stmt_execute($history_stmt);
-                }
+                        $history_stmt = mysqli_prepare($connection, $history_query);
+                        mysqli_stmt_bind_param(
+                            $history_stmt,
+                            "issssssss",
+                            $existingData['policy_details_id'],
+                            $existingData['policy_id'],
+                            $existingData['policy_table'],
+                            $existingData['policy_details'],
+                            $existingData['policy_document'],
+                            $existingData['policy_assigned_to'],
+                            $existingData['policy_status'],
+                            $existingData['policy_update_on'],
+                            $existingData['policy_updated_by']
+                        );
+                        mysqli_stmt_execute($history_stmt);
+                    }
 
-                // ✅ Step: Now update the live data
-                $update_query = "UPDATE policy_details 
+                    // ✅ Step: Now update the live data
+                    $update_query = "UPDATE policy_details 
                     SET policy_details = ?, policy_update_on = ?, policy_updated_by = ?
                     WHERE policy_id = ? AND policy_table = ?";
-                $stmt = mysqli_prepare($connection, $update_query);
-                mysqli_stmt_bind_param($stmt, "sssis", $editorBlob, $update_on, $updated_by, $current_policy_id, $policy_table);
-                mysqli_stmt_execute($stmt);
-            } else {
-                // ✅ Step: Insert new policy_details row
-                $insert_query = "INSERT INTO policy_details (
+                    $stmt = mysqli_prepare($connection, $update_query);
+                    mysqli_stmt_bind_param($stmt, "sssis", $editorBlob, $update_on, $updated_by, $current_policy_id, $policy_table);
+                    mysqli_stmt_execute($stmt);
+                } else {
+                    // ✅ Step: Insert new policy_details row
+                    $insert_query = "INSERT INTO policy_details (
                     policy_id, policy_table, policy_details, policy_document, policy_update_on, policy_updated_by
                 ) VALUES (?, ?, ?, NULL, ?, ?)";
-                $stmt = mysqli_prepare($connection, $insert_query);
-                mysqli_stmt_bind_param($stmt, "issss", $current_policy_id, $policy_table, $editorBlob, $update_on, $updated_by);
-                mysqli_stmt_execute($stmt);
-            }
+                    $stmt = mysqli_prepare($connection, $insert_query);
+                    mysqli_stmt_bind_param($stmt, "issss", $current_policy_id, $policy_table, $editorBlob, $update_on, $updated_by);
+                    mysqli_stmt_execute($stmt);
+                }
 
-            if ($stmt && mysqli_stmt_affected_rows($stmt) > 0) {
-                echo '<div id="alertBox" class="alert alert-success mt-3 mb-3">Policy details saved successfully.</div>';
+                if ($stmt && mysqli_stmt_affected_rows($stmt) > 0) {
+                    echo '<div id="alertBox" class="alert alert-success mt-3 mb-3">Policy details saved successfully.</div>';
 
-                // ✅ Step: Insert activity log
-                $activity_done_on = $policy_table;
-                $activity_done_on_id = $current_policy_id;
-                $activity_name = "Added details to policy";
-                $activity_by = $user_name;
-                $activity_date = date('m-d-Y H:i:s');
+                    // ✅ Step: Insert activity log
+                    $activity_done_on = $policy_table;
+                    $activity_done_on_id = $current_policy_id;
+                    $activity_name = "Added details to policy";
+                    $activity_by = $user_name;
+                    $activity_date = date('m-d-Y H:i:s');
 
-                $activity_sql = "INSERT INTO activity (
+                    $activity_sql = "INSERT INTO activity (
                     activity_done_on, 
                     activity_done_on_id, 
                     activity_name, 
@@ -99,19 +99,19 @@ if (isset($_POST['save'])) {
                     activity_date
                 ) VALUES (?, ?, ?, ?, ?)";
 
-                $activity_stmt = mysqli_prepare($connection, $activity_sql);
-                mysqli_stmt_bind_param($activity_stmt, "sisss", $activity_done_on, $activity_done_on_id, $activity_name, $activity_by, $activity_date);
-                mysqli_stmt_execute($activity_stmt);
-            } else {
-                echo '<div id="alertBox" class="alert alert-danger mt-3 mb-3">Error saving policy details: ' . mysqli_error($connection) . '</div>';
+                    $activity_stmt = mysqli_prepare($connection, $activity_sql);
+                    mysqli_stmt_bind_param($activity_stmt, "sisss", $activity_done_on, $activity_done_on_id, $activity_name, $activity_by, $activity_date);
+                    mysqli_stmt_execute($activity_stmt);
+                } else {
+                    echo '<div id="alertBox" class="alert alert-danger mt-3 mb-3">Error saving policy details: ' . mysqli_error($connection) . '</div>';
+                }
             }
         }
     }
-}
-?>
+    ?>
 
     <!-- ========== CONTROL DETAILS ========== -->
-    <div class="mb-3 policy-det-heading-section">
+    <div class="card p-3 mb-3">
         <?php
         if (!$connection) {
             die("<div style='font-size: 12px !important;' id='alertBox' class='alert alert-danger mt-3 mb-3'>Database connection failed: " . mysqli_connect_error() . "</div>");
@@ -175,7 +175,7 @@ if (isset($_POST['save'])) {
         ?>
 
                 <!-- <h1 style="font-size: 24px; font-weight: 500;">Policy Details</h1> -->
-                <div class="details-container">
+                <div>
                     <h6 style="font-size: 16px !important;"><?= $policy_number . " " . $policy_heading ?></h6>
                     <p style="font-size: 16px !important; margin: 0;"><?= $policy_content ?></p>
                 </div>
@@ -189,7 +189,7 @@ if (isset($_POST['save'])) {
     <div class="row" style="margin-bottom: 40px;">
         <div class="col-md-6">
             <!-- ========== POLICY CONTENT SECTION ========== -->
-            <div style="background-color: #fff;padding: 20px; border-radius: 10px;">
+            <div class="card p-3">
                 <?php
                 $policy_content = "";
                 $valid_tables = ['policy', 'sub_control_policy', 'linked_control_policy', 'inner_linked_control_policy'];
@@ -240,7 +240,7 @@ if (isset($_POST['save'])) {
             </div>
 
             <!-- ========== ASSIGNMENT SECTION ========== -->
-            <div style="background-color: #fff; margin-top: 10px; padding: 20px; border-radius: 10px;">
+            <div class="card p-3 mt-3 mb-3">
                 <?php
                 // Identify the ID and its type
                 $vc_data_id = null;
@@ -364,7 +364,7 @@ if (isset($_POST['save'])) {
         <div class="col-md-6">
             <div class="mb-3">
                 <!-- ========== HISTORY ========== -->
-                <div style="background-color: #fff; padding: 20px; border-radius: 10px;">
+                <div class="card p-3 mb-3">
                     <div style="display: flex !important; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>History</h6>
                     </div>
@@ -391,7 +391,7 @@ if (isset($_POST['save'])) {
                         if (mysqli_num_rows($history_result) > 0) {
                         ?>
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped">
+                                <table class="table table-bordered table-striped table-hover">
                                     <thead>
                                         <tr>
                                             <th style="font-size: 12px !important;" scope="col">Previous Details</th>
@@ -451,7 +451,7 @@ if (isset($_POST['save'])) {
                     </div>
                     <!-- ========== HISTORY MODAL ========== -->
                     <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-dialog modal-xl modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Previous Version Details</h5>
@@ -459,6 +459,8 @@ if (isset($_POST['save'])) {
                                 </div>
                                 <div class="modal-body">
                                     <p><strong>Updated On:</strong> <span id="history-updated-on"></span></p>
+
+
                                     <div class="WYSIWYG-editor">
                                         <textarea id="history-content" style="width: 100%; height: 500px !important; white-space: pre-wrap; border: 0"></textarea>
                                     </div>
@@ -468,7 +470,7 @@ if (isset($_POST['save'])) {
                     </div>
                 </div>
                 <!-- ========== DOCUMENTS ========== -->
-                <div class="mb-3" style="margin-top: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
+                <div class="card p-3 mb-3">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Documents</h6>
                         <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#uploadDoc" style="font-size: 12px !important;">
@@ -611,7 +613,7 @@ if (isset($_POST['save'])) {
 
                     if ($result && mysqli_num_rows($result) > 0): ?>
                         <div class="table-responsive mt-2">
-                            <table class="table table-striped table-bordered">
+                            <table class="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th style="font-size: 12px !important;">Name</th>
@@ -674,7 +676,7 @@ if (isset($_POST['save'])) {
                     <?php endif; ?>
                 </div>
                 <!-- ========== RISKS ========== -->
-                <div class="mb-3" style="margin-top: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
+                <div class="mb-3 card p-3">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Associated Risks & Treatments</h6>
                         <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#riskModal" style="font-size: 12px !important;">
@@ -760,7 +762,7 @@ if (isset($_POST['save'])) {
 
                     <?php if (mysqli_num_rows($fetch_risks_r) > 0) { ?>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
+                            <table class="table table-bordered table-striped table-hover">
                                 <thead>
                                     <tr>
                                         <th style="font-size: 12px !important;">Risk Name</th>
@@ -813,7 +815,7 @@ if (isset($_POST['save'])) {
 
                 </div>
                 <!-- ========== COMMENT SECTION ========== -->
-                <div class="mb-3" style="margin-top: 10px; padding: 20px; border-radius: 10px; background-color: #fff;">
+                <div class="card p-3 mb-3">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Comments</h6>
                         <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#commentModal" style="font-size: 12px !important;">
