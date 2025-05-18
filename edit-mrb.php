@@ -17,10 +17,10 @@ include('includes/connection.php'); ?>
     }
     ?>
 
-    <form action="mrb.php" method="POST" class="form-container">
+    <form action="mrb.php" method="POST" class="card p-3 w-50">
         <input type="text" value="<?php echo $fetched_training_id ?>" name="fetched_training_id" hidden>
         <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Topic</label>
+            <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Topic</label>
             <input type="text" name="new_training_topic" class="form-control" id="exampleInputEmail1" value="<?php echo $fetched_training_topic ?>" aria-describedby="emailHelp">
         </div>
 

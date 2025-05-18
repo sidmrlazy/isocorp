@@ -28,12 +28,12 @@ include 'includes/connection.php';
 
         $insert_comm = mysqli_query($connection, "INSERT INTO staff_comm (comm_data, comm_details, comm_by, comm_date) VALUES ('$comm_data', '$comm_details', '$comm_by', '$comm_date')") or die(mysqli_error($connection));
         if ($insert_comm) {
-            echo "<p style='font-size: 12px' id='alertBox' class='alert alert-primary' role='alert'>Staff communication added successfully!</p>";
+            echo "<p style='font-size: 12px' id='alertBox' class='alert alert-success' role='alert'>Staff communication added successfully!</p>";
         }
     }
     ?>
 
-    <div class="table-responsive" style="background-color: #fff; padding: 20px; border-radius: 10px;">
+    <div class="table-responsive card p-3">
         <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px">
             <button type="button" data-bs-toggle="modal" data-bs-target="#insertComm" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon> Add </button>
         </div>
@@ -89,7 +89,7 @@ include 'includes/connection.php';
                 echo "<p style='font-size: 12px; font-weight: 600'>No staff communications found!</p>";
             } else {
             ?>
-                <thead>
+                <thead class="table-dark">
                     <tr>
                         <th style="font-size: 12px !important;" scope="col">Topic</th>
                         <th style="font-size: 12px !important;" scope="col">Uploaded Date</th>

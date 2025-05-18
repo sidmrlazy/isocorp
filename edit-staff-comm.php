@@ -6,8 +6,6 @@ include 'includes/connection.php';
 
 <div class="dashboard-container mb-5">
     <?php
-
-
     if (!isset($_GET['id'])) {
         echo "Invalid Request.";
         exit;
@@ -30,7 +28,7 @@ include 'includes/connection.php';
         }
     }
     ?>
-    <form method="POST" style="background-color: #fff; padding: 20px; border-radius: 10px;">
+    <form method="POST" class="card p-3">
         <input type="hidden" name="comm_by" value="<?php echo $row['comm_by']; ?>">
         <div class="mb-3">
             <label for="comm_date" class="form-label">Upload Date</label>
@@ -46,8 +44,9 @@ include 'includes/connection.php';
                 <textarea id="editorNew" name="comm_details"><?php echo htmlspecialchars($row['comm_details']); ?></textarea>
             </div>
         </div>
-        <button type="submit" name="update-comm" class="btn btn-primary">Update</button>
-        <a href="staff-communications.php" class="btn btn-secondary">Back</a>
+        <div class="d-flex justify-content-end">
+            <button type="submit" name="update-comm" class="btn btn-sm btn-outline-success">Update</button>
+        </div>
     </form>
 </div>
 

@@ -79,10 +79,10 @@ include 'includes/config.php';
     $get_count = mysqli_num_rows($get_res);
     if ($get_count > 0) {
     ?>
-        <div class="table-container">
+        <div class="card p-3">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover">
-                    <thead>
+                    <thead class="table-dark">
                         <tr>
                             <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">ID</th>
                             <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Name</th>

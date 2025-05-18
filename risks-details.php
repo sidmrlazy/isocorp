@@ -31,12 +31,12 @@ $risk = $result->fetch_assoc();
 
     <a href="risks-treatments.php" class="btn btn-sm btn-secondary mb-2">Back to Risks</a>
 
-    <div style="display: flex; justify-content: center; align-items: flex-start; margin-bottom: 40px;">
+    <div class="row">
         <!-- ============== LEFT SECTION ============== -->
-        <div style="width: 50% !important; margin: 5px !important;">
+        <div class="col-md-6">
 
             <!-- ============== GRAPH SECTION ============== -->
-            <div style="background-color: #fff; border-radius: 10px; padding: 20px; margin-bottom: 10px; height: 250px; width: 100% !important">
+            <div class="card p-3 mb-3">
                 <?php
                 if ($risk_id > 0) {
                     $risk_query = $connection->query("SELECT * FROM risks WHERE risks_id = $risk_id");
@@ -104,7 +104,7 @@ $risk = $result->fetch_assoc();
 
 
             <!-- ============== RISK DETAILS SECTION ============== -->
-            <div class="table-responsive table-container">
+            <div class="table-responsive card p-3">
                 <table class="table table-bordered">
                     <tr>
                         <th style="font-size: 12px !important; width: 20% !important;">Risk Name</th>
@@ -141,162 +141,160 @@ $risk = $result->fetch_assoc();
 
         <!-- ============== TABS FOR SIMs AND POLICIES ============== -->
 
-        <div style="background-color: #fff; width: 50% !important; margin: 5px; padding: 20px; border-radius: 10px;">
+        <div class="col-md-6">
 
             <?php
             $risks_id = intval($risk['risks_id']);
             $fetch_mappings_query = "SELECT * FROM risk_policies WHERE risks_id = $risks_id";
             $fetch_mappings_result = mysqli_query($connection, $fetch_mappings_query);
             ?>
-
-            <ul class="nav nav-tabs" id="riskTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button style="color: #000;" class="nav-link active" id="policies-tab" data-bs-toggle="tab" data-bs-target="#policies" type="button" role="tab">Linked Policies</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button style="color: #000;" class="nav-link" id="sims-tab" data-bs-toggle="tab" data-bs-target="#sims" type="button" role="tab">Linked Security Incidents</button>
-                </li>
-            </ul>
-
-
+            <div class="card p-3">
+                <ul class="nav nav-tabs" id="riskTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button style="color: #000;" class="nav-link active" id="policies-tab" data-bs-toggle="tab" data-bs-target="#policies" type="button" role="tab">Linked Policies</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button style="color: #000;" class="nav-link" id="sims-tab" data-bs-toggle="tab" data-bs-target="#sims" type="button" role="tab">Linked Security Incidents</button>
+                    </li>
+                </ul>
 
 
-            <div class="tab-content mt-3" id="riskTabContent">
-                <!-- ============== POLICIES TAB ============== -->
-                <div class="tab-pane fade show active" id="policies" role="tabpanel">
+                <div class="tab-content mt-3" id="riskTabContent">
+                    <!-- ============== POLICIES TAB ============== -->
+                    <div class="tab-pane fade show active" id="policies" role="tabpanel">
 
 
-                    <!-- =============== ADD POLICY BUTTON =============== -->
-                    <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#assignPolicyModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Policy</button>
-                    </div>
-                    <?php
-                    mysqli_data_seek($fetch_mappings_result, 0);
-                    $policies = [];
+                        <!-- =============== ADD POLICY BUTTON =============== -->
+                        <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#assignPolicyModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Policy</button>
+                        </div>
+                        <?php
+                        mysqli_data_seek($fetch_mappings_result, 0);
+                        $policies = [];
 
-                    while ($mapping = mysqli_fetch_assoc($fetch_mappings_result)) {
-                        $type = $mapping['clause_type'];
-                        $id = intval($mapping['clause_id']);
-                        $display_text = "";
+                        while ($mapping = mysqli_fetch_assoc($fetch_mappings_result)) {
+                            $type = $mapping['clause_type'];
+                            $id = intval($mapping['clause_id']);
+                            $display_text = "";
 
-                        if ($type === 'policy') {
-                            $q = mysqli_query($connection, "SELECT policy_clause, policy_name FROM policy WHERE policy_id = $id");
-                            if ($r = mysqli_fetch_assoc($q)) {
-                                $display_text = "{$r['policy_clause']} {$r['policy_name']}";
+                            if ($type === 'policy') {
+                                $q = mysqli_query($connection, "SELECT policy_clause, policy_name FROM policy WHERE policy_id = $id");
+                                if ($r = mysqli_fetch_assoc($q)) {
+                                    $display_text = "{$r['policy_clause']} {$r['policy_name']}";
+                                }
+                            } elseif ($type === 'sub_control_policy') {
+                                $q = mysqli_query($connection, "SELECT s.sub_control_policy_number, s.sub_control_policy_heading, p.policy_clause, p.policy_name FROM sub_control_policy s JOIN policy p ON p.policy_id = s.main_control_policy_id WHERE s.sub_control_policy_id = $id");
+                                if ($r = mysqli_fetch_assoc($q)) {
+                                    $display_text = "{$r['policy_clause']} {$r['policy_name']} > {$r['sub_control_policy_number']} {$r['sub_control_policy_heading']}";
+                                }
+                            } elseif ($type === 'linked_control_policy') {
+                                $q = mysqli_query($connection, "SELECT l.linked_control_policy_number, l.linked_control_policy_heading, s.sub_control_policy_number, s.sub_control_policy_heading, p.policy_clause, p.policy_name FROM linked_control_policy l JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id JOIN policy p ON p.policy_id = s.main_control_policy_id WHERE l.linked_control_policy_id = $id");
+                                if ($r = mysqli_fetch_assoc($q)) {
+                                    $display_text = "{$r['policy_clause']} {$r['policy_name']} > {$r['sub_control_policy_number']} {$r['sub_control_policy_heading']} > {$r['linked_control_policy_number']} - {$r['linked_control_policy_heading']}";
+                                }
+                            } elseif ($type === 'inner_linked_control_policy') {
+                                $q = mysqli_query($connection, "SELECT i.inner_linked_control_policy_number, i.inner_linked_control_policy_heading, l.linked_control_policy_number, l.linked_control_policy_heading, s.sub_control_policy_number, s.sub_control_policy_heading, p.policy_clause, p.policy_name FROM inner_linked_control_policy i JOIN linked_control_policy l ON l.linked_control_policy_id = i.linked_control_policy_id JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id JOIN policy p ON p.policy_id = s.main_control_policy_id WHERE i.inner_linked_control_policy_id = $id");
+                                if ($r = mysqli_fetch_assoc($q)) {
+                                    $display_text = "{$r['policy_clause']} {$r['policy_name']} > {$r['sub_control_policy_number']} {$r['sub_control_policy_heading']} > {$r['linked_control_policy_number']} {$r['linked_control_policy_heading']} > {$r['inner_linked_control_policy_number']} {$r['inner_linked_control_policy_heading']}";
+                                }
                             }
-                        } elseif ($type === 'sub_control_policy') {
-                            $q = mysqli_query($connection, "SELECT s.sub_control_policy_number, s.sub_control_policy_heading, p.policy_clause, p.policy_name FROM sub_control_policy s JOIN policy p ON p.policy_id = s.main_control_policy_id WHERE s.sub_control_policy_id = $id");
-                            if ($r = mysqli_fetch_assoc($q)) {
-                                $display_text = "{$r['policy_clause']} {$r['policy_name']} > {$r['sub_control_policy_number']} {$r['sub_control_policy_heading']}";
-                            }
-                        } elseif ($type === 'linked_control_policy') {
-                            $q = mysqli_query($connection, "SELECT l.linked_control_policy_number, l.linked_control_policy_heading, s.sub_control_policy_number, s.sub_control_policy_heading, p.policy_clause, p.policy_name FROM linked_control_policy l JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id JOIN policy p ON p.policy_id = s.main_control_policy_id WHERE l.linked_control_policy_id = $id");
-                            if ($r = mysqli_fetch_assoc($q)) {
-                                $display_text = "{$r['policy_clause']} {$r['policy_name']} > {$r['sub_control_policy_number']} {$r['sub_control_policy_heading']} > {$r['linked_control_policy_number']} - {$r['linked_control_policy_heading']}";
-                            }
-                        } elseif ($type === 'inner_linked_control_policy') {
-                            $q = mysqli_query($connection, "SELECT i.inner_linked_control_policy_number, i.inner_linked_control_policy_heading, l.linked_control_policy_number, l.linked_control_policy_heading, s.sub_control_policy_number, s.sub_control_policy_heading, p.policy_clause, p.policy_name FROM inner_linked_control_policy i JOIN linked_control_policy l ON l.linked_control_policy_id = i.linked_control_policy_id JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id JOIN policy p ON p.policy_id = s.main_control_policy_id WHERE i.inner_linked_control_policy_id = $id");
-                            if ($r = mysqli_fetch_assoc($q)) {
-                                $display_text = "{$r['policy_clause']} {$r['policy_name']} > {$r['sub_control_policy_number']} {$r['sub_control_policy_heading']} > {$r['linked_control_policy_number']} {$r['linked_control_policy_heading']} > {$r['inner_linked_control_policy_number']} {$r['inner_linked_control_policy_heading']}";
+                            if (!empty($display_text)) {
+                                $policies[] = [
+                                    'text' => htmlspecialchars($display_text),
+                                    'id' => $id,
+                                    'type' => $type
+                                ];
                             }
                         }
-                        if (!empty($display_text)) {
-                            $policies[] = [
-                                'text' => htmlspecialchars($display_text),
-                                'id' => $id,
-                                'type' => $type
-                            ];
-                        }
-                    }
-                    ?>
+                        ?>
 
-                    <?php if (!empty($policies)): ?>
+                        <?php if (!empty($policies)): ?>
 
-                        <ul style="font-size: 12px !important; margin-top: 15px; padding-left: 20px;">
-                            <?php foreach ($policies as $policy): ?>
-                                <?php
-                                // Determine correct query parameter based on type
-                                switch ($policy['type']) {
-                                    case 'policy':
-                                        $param = 'policy_id';
-                                        break;
-                                    // case 'sub_control_policy':
-                                    //     $param = 'sub_policy_id';
-                                    //     break;
-                                    case 'linked_control_policy':
-                                        $param = 'linked_policy_id';
-                                        break;
-                                    case 'inner_linked_control_policy':
-                                        $param = 'inner_policy_id';
-                                        break;
-                                    default:
-                                        $param = 'policy_id'; // fallback
-                                }
-                                $url = "policy-details.php?$param=" . $policy['id'];
-                                ?>
-                                <li style="margin-bottom: 5px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span><?= $policy['text'] ?></span>
-                                        <a href="<?= $url ?>" class="btn btn-sm btn-outline-success" style="font-size: 10px;">View</a>
-                                    </div>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
+                            <ul style="font-size: 12px !important; margin-top: 15px; padding-left: 20px;">
+                                <?php foreach ($policies as $policy): ?>
+                                    <?php
+                                    // Determine correct query parameter based on type
+                                    switch ($policy['type']) {
+                                        case 'policy':
+                                            $param = 'policy_id';
+                                            break;
+                                        // case 'sub_control_policy':
+                                        //     $param = 'sub_policy_id';
+                                        //     break;
+                                        case 'linked_control_policy':
+                                            $param = 'linked_policy_id';
+                                            break;
+                                        case 'inner_linked_control_policy':
+                                            $param = 'inner_policy_id';
+                                            break;
+                                        default:
+                                            $param = 'policy_id'; // fallback
+                                    }
+                                    $url = "policy-details.php?$param=" . $policy['id'];
+                                    ?>
+                                    <li style="margin-bottom: 5px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span><?= $policy['text'] ?></span>
+                                            <a href="<?= $url ?>" class="btn btn-sm btn-outline-success" style="font-size: 10px;">View</a>
+                                        </div>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
 
-                    <?php else: ?>
-                        <p style="font-size: 12px !important;" class="text-muted">No policies linked to this risk.</p>
-                    <?php endif; ?>
+                        <?php else: ?>
+                            <p style="font-size: 12px !important;" class="text-muted">No policies linked to this risk.</p>
+                        <?php endif; ?>
 
-                    <!-- =============== ADD POLICY MODAL =============== -->
-                    <div class="modal fade" id="assignPolicyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-xl">
-                            <?php
-                            if (isset($_POST['connect_risk'])) {
-                                $risk_id = $_POST['risk_id'];  // You might need to capture the risk ID too if it's part of the form
-                                $selected_policies = $_POST['assign_policies'];  // Policies assigned from the modal
-
-                                foreach ($selected_policies as $policy) {
-                                    // Extract the policy type and ID from the format: "type:id"
-                                    list($type, $id) = explode(':', $policy);
-
-                                    // Insert the policy assignment into the risk_policies table
-                                    $query = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $id, '$type')";
-                                    mysqli_query($connection, $query);
-                                }
-
-                                echo "<div class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
-                            }
-                            ?>
-
-                            <form method="POST" class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Policies</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
+                        <!-- =============== ADD POLICY MODAL =============== -->
+                        <div class="modal fade" id="assignPolicyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
                                 <?php
                                 if (isset($_POST['connect_risk'])) {
-                                    $risk_id = intval($_POST['risk_id']);
-                                    $selected_policies = $_POST['assign_policies'] ?? [];
+                                    $risk_id = $_POST['risk_id'];  // You might need to capture the risk ID too if it's part of the form
+                                    $selected_policies = $_POST['assign_policies'];  // Policies assigned from the modal
 
                                     foreach ($selected_policies as $policy) {
+                                        // Extract the policy type and ID from the format: "type:id"
                                         list($type, $id) = explode(':', $policy);
-                                        $id = intval($id);
-                                        $type = mysqli_real_escape_string($connection, $type);
 
-                                        // Prevent duplicates (optional, recommended)
-                                        $exists = mysqli_query($connection, "SELECT 1 FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $id AND clause_type = '$type'");
-                                        if (mysqli_num_rows($exists) === 0) {
-                                            $query = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $id, '$type')";
-                                            mysqli_query($connection, $query);
-                                        }
+                                        // Insert the policy assignment into the risk_policies table
+                                        $query = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $id, '$type')";
+                                        mysqli_query($connection, $query);
                                     }
 
                                     echo "<div class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
                                 }
+                                ?>
 
-                                // Fetch all available policies for assignment
-                                $available_policies = [];
-                                $all_policies_query = "SELECT 'policy' AS type, policy_id AS id, CONCAT(policy_clause, ' ', policy_name) AS name FROM policy
+                                <form method="POST" class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Policies</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <?php
+                                    if (isset($_POST['connect_risk'])) {
+                                        $risk_id = intval($_POST['risk_id']);
+                                        $selected_policies = $_POST['assign_policies'] ?? [];
+
+                                        foreach ($selected_policies as $policy) {
+                                            list($type, $id) = explode(':', $policy);
+                                            $id = intval($id);
+                                            $type = mysqli_real_escape_string($connection, $type);
+
+                                            // Prevent duplicates (optional, recommended)
+                                            $exists = mysqli_query($connection, "SELECT 1 FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $id AND clause_type = '$type'");
+                                            if (mysqli_num_rows($exists) === 0) {
+                                                $query = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $id, '$type')";
+                                                mysqli_query($connection, $query);
+                                            }
+                                        }
+
+                                        echo "<div class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
+                                    }
+
+                                    // Fetch all available policies for assignment
+                                    $available_policies = [];
+                                    $all_policies_query = "SELECT 'policy' AS type, policy_id AS id, CONCAT(policy_clause, ' ', policy_name) AS name FROM policy
                                 UNION SELECT 'sub_control_policy', sub_control_policy_id, CONCAT(p.policy_clause, ' ', p.policy_name, ' > ', s.sub_control_policy_number, ' ', s.sub_control_policy_heading) FROM sub_control_policy s
                                 JOIN policy p ON p.policy_id = s.main_control_policy_id
                                 UNION
@@ -313,140 +311,141 @@ $risk = $result->fetch_assoc();
                                 JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id
                                 JOIN policy p ON p.policy_id = s.main_control_policy_id
                             ";
-                                $res = mysqli_query($connection, $all_policies_query);
-                                while ($row = mysqli_fetch_assoc($res)) {
-                                    $available_policies[] = $row;
-                                }
-                                ?>
-                                <div class="modal-body">
-                                    <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
+                                    $res = mysqli_query($connection, $all_policies_query);
+                                    while ($row = mysqli_fetch_assoc($res)) {
+                                        $available_policies[] = $row;
+                                    }
+                                    ?>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
 
-                                    <!-- =========== SEARCH POLICY =========== -->
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="searchPolicyOptions" placeholder="Search Policies" onkeyup="filterPolicyOptions()" style="font-size: 12px;">
-                                        <label for="searchPolicyOptions" style="font-size: 12px;">Search Policies</label>
+                                        <!-- =========== SEARCH POLICY =========== -->
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="searchPolicyOptions" placeholder="Search Policies" onkeyup="filterPolicyOptions()" style="font-size: 12px;">
+                                            <label for="searchPolicyOptions" style="font-size: 12px;">Search Policies</label>
+                                        </div>
+
+
+                                        <label style="font-size: 12px;" for="exampleInputEmail1" class="form-label">Select Policy/s</label>
+                                        <select style="font-size: 12px;" name="assign_policies[]" id="policy_select" class="form-select" multiple size="10">
+                                            <?php foreach ($available_policies as $policy): ?>
+                                                <option style="border-bottom: 1px solid #e7e7e7; padding-bottom: 10px; margin-top: 5px" value="<?= $policy['type'] . ':' . $policy['id'] ?>">
+                                                    <?= htmlspecialchars($policy['name']) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
-
-
-                                    <label style="font-size: 12px;" for="exampleInputEmail1" class="form-label">Select Policy/s</label>
-                                    <select style="font-size: 12px;" name="assign_policies[]" id="policy_select" class="form-select" multiple size="10">
-                                        <?php foreach ($available_policies as $policy): ?>
-                                            <option style="border-bottom: 1px solid #e7e7e7; padding-bottom: 10px; margin-top: 5px" value="<?= $policy['type'] . ':' . $policy['id'] ?>">
-                                                <?= htmlspecialchars($policy['name']) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" name="connect_risk" class="btn btn-primary">Save changes</button>
-                                </div>
-                            </form>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" name="connect_risk" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- ============= SIMs TAB ============= -->
-                <div class="tab-pane fade" id="sims" role="tabpanel">
-                    <!-- =============== ADD SIM BUTTON =============== -->
-                    <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#assignSimModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Security Incident</button>
-                    </div>
+                    <!-- ============= SIMs TAB ============= -->
+                    <div class="tab-pane fade" id="sims" role="tabpanel">
+                        <!-- =============== ADD SIM BUTTON =============== -->
+                        <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#assignSimModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Security Incident</button>
+                        </div>
 
-                    <?php
-                    mysqli_data_seek($fetch_mappings_result, 0);
-                    $has_sims = false;
-                    ?>
-                    <ul style='font-size: 12px !important;'>
-                        <?php while ($mapping = mysqli_fetch_assoc($fetch_mappings_result)) {
-                            if ($mapping['clause_type'] === 'sim') {
-                                $sim_id = (int)$mapping['clause_id'];
-                                $q = mysqli_query($connection, "SELECT sim_id, sim_topic FROM sim WHERE sim_id = $sim_id");
-
-                                if ($r = mysqli_fetch_assoc($q)) {
-                                    $has_sims = true;
-                        ?>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                                        <li><?php echo htmlspecialchars($r['sim_id']) . ". " . htmlspecialchars($r['sim_topic']) ?></li>
-                                        <a style="font-size: 10px" class="btn btn-sm btn-outline-success" href="sim-details.php?id=<?php echo $r['sim_id'] ?>">View</a>
-                                    </div>
                         <?php
+                        mysqli_data_seek($fetch_mappings_result, 0);
+                        $has_sims = false;
+                        ?>
+                        <ul style='font-size: 12px !important;'>
+                            <?php while ($mapping = mysqli_fetch_assoc($fetch_mappings_result)) {
+                                if ($mapping['clause_type'] === 'sim') {
+                                    $sim_id = (int)$mapping['clause_id'];
+                                    $q = mysqli_query($connection, "SELECT sim_id, sim_topic FROM sim WHERE sim_id = $sim_id");
+
+                                    if ($r = mysqli_fetch_assoc($q)) {
+                                        $has_sims = true;
+                            ?>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                            <li><?php echo htmlspecialchars($r['sim_id']) . ". " . htmlspecialchars($r['sim_topic']) ?></li>
+                                            <a style="font-size: 10px" class="btn btn-sm btn-outline-success" href="sim-details.php?id=<?php echo $r['sim_id'] ?>">View</a>
+                                        </div>
+                            <?php
+                                    }
                                 }
                             }
+                            ?>
+                        </ul>
+                        <?php
+                        if (!$has_sims) {
+                            echo "<p style='font-size: 12px !important;' class='text-muted'>No SIMs linked to this risk.</p>";
+                        }
+
+                        if (isset($_POST['assign-sim'])) {
+                            $risk_id = intval($_POST['risk_id']);
+                            $selected_sims = $_POST['assign_sims'] ?? [];
+
+                            foreach ($selected_sims as $sim_id) {
+                                $sim_id = intval($sim_id);
+                                $exists = mysqli_query($connection, "SELECT 1 FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $sim_id AND clause_type = 'sim'");
+                                if (mysqli_num_rows($exists) === 0) {
+                                    mysqli_query($connection, "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $sim_id, 'sim')");
+                                }
+                            }
+
+                            echo "<div style='font-size: 12px;' id='alertBox' class='alert alert-success mt-2'>SIMs successfully linked to the risk.</div>";
                         }
                         ?>
-                    </ul>
-                    <?php
-                    if (!$has_sims) {
-                        echo "<p style='font-size: 12px !important;' class='text-muted'>No SIMs linked to this risk.</p>";
-                    }
 
-                    if (isset($_POST['assign-sim'])) {
-                        $risk_id = intval($_POST['risk_id']);
-                        $selected_sims = $_POST['assign_sims'] ?? [];
-
-                        foreach ($selected_sims as $sim_id) {
-                            $sim_id = intval($sim_id);
-                            $exists = mysqli_query($connection, "SELECT 1 FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $sim_id AND clause_type = 'sim'");
-                            if (mysqli_num_rows($exists) === 0) {
-                                mysqli_query($connection, "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $sim_id, 'sim')");
-                            }
-                        }
-
-                        echo "<div style='font-size: 12px;' id='alertBox' class='alert alert-success mt-2'>SIMs successfully linked to the risk.</div>";
-                    }
-                    ?>
-
-                    <!-- =============== ADD SIM MODAL =============== -->
-                    <div class="modal fade" id="assignSimModal" tabindex="-1" aria-labelledby="assignSimModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-xl">
-                            <form action="" method="POST" class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="assignSimModalLabel">Assign Security Incident</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <?php
-                                $available_sims = [];
-                                $sim_query = "SELECT * FROM sim";
-                                $sim_query_r = mysqli_query($connection, $sim_query);
-
-                                if (!$sim_query_r) {
-                                    die("Query Failed: " . mysqli_error($connection));
-                                }
-
-                                while ($row = mysqli_fetch_assoc($sim_query_r)) {
-                                    $available_sims[] = $row;
-                                }
-                                ?>
-
-
-                                <div class="modal-body">
-                                    <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
-
-                                    <!-- =========== SEARCH POLICY =========== -->
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="searchSimOptions" placeholder="Search Policies" onkeyup="filterSimOptions()" style="font-size: 12px;">
-                                        <label for="searchSimOptions" style="font-size: 12px;">Search Policies</label>
+                        <!-- =============== ADD SIM MODAL =============== -->
+                        <div class="modal fade" id="assignSimModal" tabindex="-1" aria-labelledby="assignSimModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                <form action="" method="POST" class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="assignSimModalLabel">Assign Security Incident</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
+                                    <?php
+                                    $available_sims = [];
+                                    $sim_query = "SELECT * FROM sim";
+                                    $sim_query_r = mysqli_query($connection, $sim_query);
 
-                                    <label style="font-size: 12px;" for="sim_select" class="form-label">Select Incident</label>
-                                    <select style="font-size: 12px;" name="assign_sims[]" id="sim_select" class="form-select" multiple size="10">
-                                        <?php foreach ($available_sims as $sim): ?>
-                                            <option style="border-bottom: 1px solid #e7e7e7; padding-bottom: 10px; margin-top: 5px" value="<?= $sim['sim_id'] ?>">
-                                                <?= htmlspecialchars($sim['sim_id'] . ' - ' . $sim['sim_topic']) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" name="assign-sim" class="btn btn-primary">Save changes</button>
-                                </div>
-                            </form>
+                                    if (!$sim_query_r) {
+                                        die("Query Failed: " . mysqli_error($connection));
+                                    }
+
+                                    while ($row = mysqli_fetch_assoc($sim_query_r)) {
+                                        $available_sims[] = $row;
+                                    }
+                                    ?>
+
+
+                                    <div class="modal-body">
+                                        <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
+
+                                        <!-- =========== SEARCH POLICY =========== -->
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="searchSimOptions" placeholder="Search Policies" onkeyup="filterSimOptions()" style="font-size: 12px;">
+                                            <label for="searchSimOptions" style="font-size: 12px;">Search Policies</label>
+                                        </div>
+
+                                        <label style="font-size: 12px;" for="sim_select" class="form-label">Select Incident</label>
+                                        <select style="font-size: 12px;" name="assign_sims[]" id="sim_select" class="form-select" multiple size="10">
+                                            <?php foreach ($available_sims as $sim): ?>
+                                                <option style="border-bottom: 1px solid #e7e7e7; padding-bottom: 10px; margin-top: 5px" value="<?= $sim['sim_id'] ?>">
+                                                    <?= htmlspecialchars($sim['sim_id'] . ' - ' . $sim['sim_topic']) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" name="assign-sim" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
     </div>

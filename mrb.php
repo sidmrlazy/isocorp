@@ -10,9 +10,9 @@ include('includes/connection.php'); ?>
         <h2><a href="dashboard.php">Dashboard</a> > Management Review Board</h2>
     </div>
 
-    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addTopicModal">Add Topic</button>
+    <button type="button" class="btn btn-sm btn-outline-success" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#addTopicModal">Add Topic</button>
     <?php
-    if(isset($_POST['edit-training-topic'])) {
+    if (isset($_POST['edit-training-topic'])) {
         $fetched_training_id = $_POST['fetched_training_id'];
         $new_training_topic = $_POST['new_training_topic'];
 
@@ -20,11 +20,10 @@ include('includes/connection.php'); ?>
         $update_comment_r = mysqli_query($connection, $update_comment);
     }
 
-    if(isset($_POST['delete-topic'])) {
+    if (isset($_POST['delete-topic'])) {
         $training_id = $_POST['training_id'];
         $delete_query = "DELETE FROM training WHERE training_id = $training_id";
         $delete_result = mysqli_query($connection, $delete_query);
-
     }
     if (isset($_POST['add-topic'])) {
         $mrb_topic = mysqli_real_escape_string($connection, $_POST['mrb_topic']);
@@ -41,15 +40,15 @@ include('includes/connection.php'); ?>
     $insert_res_count = mysqli_num_rows($fetch_data_r);
     if ($insert_res_count > 0) {
     ?>
-        <div class="table-container table-responsive mt-3">
-            <table class="table table-bordered table-striped">
-                <thead>
+        <div class="card p-3 table-responsive mt-3">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="table-dark">
                     <tr>
-                        <th style="font-size: 12px;" scope="col">#</th>
-                        <th style="font-size: 12px;" scope="col">Topic</th>
-                        <th style="font-size: 12px;" scope="col">Created On</th>
-                        <th class="text-center" style="font-size: 12px;" scope="col">Edit</th>
-                        <th class="text-center" style="font-size: 12px;" scope="col">Delete</th>
+                        <th style="font-size: 12px !important;" scope="col">#</th>
+                        <th style="font-size: 12px !important;" scope="col">Topic</th>
+                        <th style="font-size: 12px !important;" scope="col">Created On</th>
+                        <th class="text-center" style="font-size: 12px !important;" scope="col">Edit</th>
+                        <th class="text-center" style="font-size: 12px !important;" scope="col">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,7 +59,7 @@ include('includes/connection.php'); ?>
                         $training_date = $row['training_date'];
                     ?>
                         <tr>
-                            <th style="font-size: 12px" scope="row"><?php echo $training_id ?></th>
+                            <th style="font-size: 12px !important;" scope="row"><?php echo $training_id ?></th>
                             <td style="font-size: 12px">
                                 <a href="mrb-details.php?id=<?php echo $training_id; ?>">
                                     <?php echo $training_topic ?>

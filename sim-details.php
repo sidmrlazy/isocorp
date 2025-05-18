@@ -59,14 +59,11 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
     }
     ?>
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px !important;">
+    <div class="row mb-5">
         <!-- ========== MAIN LEFT SECTION ========== -->
-        <div style="width: 50%; margin: 5px; box-shadow: 0 2px 4px rgba(255,255,255,0.1);">
-            <div class="WYSIWYG-editor-container">
-                <div class="sim-topic-container-details">
-                    <p>Topic:</p>
-                    <h5><?php echo $sim_id . " " . $sim_topic ?? "N/A"; ?></h5>
-                </div>
+        <div class="col-md-6">
+            <div class="card p-3">
+                <p style="margin: 0;"><strong>Topic:</strong> <?php echo $sim_id . " " . $sim_topic ?? "N/A"; ?></p>
                 <form action="" method="POST">
                     <div class="WYSIWYG-editor">
                         <?php if ($sim_final == '2') { ?>
@@ -84,9 +81,9 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         </div>
 
         <!-- ========== MAIN RIGHT SECTION ========== -->
-        <div style="width: 50% !important;">
+        <div class="col-md-6">
             <!-- ========== SIM RISKS SECTION ========== -->
-            <div style="margin-top: 15px; padding: 20px; border-radius: 10px; background-color: #fff !important;">
+            <div class="card p-3 mb-3">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <h6>Linked Risks & Treatments</h6>
                     <button class="btn btn-sm btn-outline-success" style="font-size: 12px !important; margin: 0 !important;" data-bs-toggle="modal" data-bs-target="#riskModal">+</button>
@@ -210,7 +207,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             </div>
 
             <!-- ========== COMMENT SECTION ========== -->
-            <div style="margin-top: 15px; padding: 20px; border-radius: 10px; background-color: #fff !important;">
+            <div class="card p-3 mb-3">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <h6>Comments</h6>
                     <button class="btn btn-sm btn-outline-success" style="font-size: 12px !important; margin: 0 !important;" data-bs-toggle="modal" data-bs-target="#addComment">+</button>

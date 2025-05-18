@@ -127,80 +127,82 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
         }
     }
     ?>
-    <div class="section-divider mb-5">
+    <div class="row mb-5">
 
         <!-- ============ FORM SECTION ============ -->
-        <form class="form-container" action="" method="POST">
-            <input type="text" name="new_ca_id" value="<?php echo $tbl_ca_id ?>" hidden>
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Status</label>
-                <select name="ca_status" class="form-select" aria-label="Default select example">
-                    <option selected>Open this select menu</option>
-                    <option value="To-do">To-do</option>
-                    <option value="Assessment">Assessment</option>
-                    <option value="Awaiting Board Approval">Awaiting Board Approval</option>
-                    <option value="Implementation">Implementation</option>
-                    <option value="Monitoring">Monitoring</option>
-                    <option value="Resolved">Resolved</option>
-                </select>
-            </div>
+        <div class="col-md-6">
+            <form class="card p-3" action="" method="POST">
+                <input type="text" name="new_ca_id" value="<?php echo $tbl_ca_id ?>" hidden>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Status</label>
+                    <select name="ca_status" class="form-select" aria-label="Default select example">
+                        <option selected>Open this select menu</option>
+                        <option value="To-do">To-do</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Awaiting Board Approval">Awaiting Board Approval</option>
+                        <option value="Implementation">Implementation</option>
+                        <option value="Monitoring">Monitoring</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Financial Value</label>
-                <input type="text" class="form-control" name="ca_financial_value" id="exampleInputEmail1" aria-describedby="emailHelp">
-            </div>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Financial Value</label>
+                    <input type="text" class="form-control" name="ca_financial_value" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
 
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Source</label>
-                <select name="ca_source[]" class="form-select" aria-label="Default select example" multiple>
-                    <option selected>Open this select menu</option>
-                    <option value="To-do">Pre-stage 1</option>
-                    <option value="External Audit Findings">External Audit Findings</option>
-                    <option value="Internal Audit Findings">Internal Audit Findings</option>
-                    <option value="Concern/Complaint">Concern/Complaint</option>
-                    <option value="Security Incident/Event/Weakness">Security Incident/Event/Weakness</option>
-                    <option value="Measurement Trend">Measurement Trend</option>
-                    <option value="Risk Assessment">Risk Assessment</option>
-                    <option value="Suggestions">Suggestions</option>
-                    <option value="Process Review">Process Review</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Source</label>
+                    <select name="ca_source[]" class="form-select" aria-label="Default select example" multiple>
+                        <option selected>Open this select menu</option>
+                        <option value="To-do">Pre-stage 1</option>
+                        <option value="External Audit Findings">External Audit Findings</option>
+                        <option value="Internal Audit Findings">Internal Audit Findings</option>
+                        <option value="Concern/Complaint">Concern/Complaint</option>
+                        <option value="Security Incident/Event/Weakness">Security Incident/Event/Weakness</option>
+                        <option value="Measurement Trend">Measurement Trend</option>
+                        <option value="Risk Assessment">Risk Assessment</option>
+                        <option value="Suggestions">Suggestions</option>
+                        <option value="Process Review">Process Review</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Severity</label>
-                <select name="ca_severity[]" class="form-select" aria-label="Default select example" multiple>
-                    <option selected>Open this select menu</option>
-                    <option value="Major Non-Conformity">Major Non-Conformity</option>
-                    <option value="Minor Non-Conformity">Minor Non-Conformity</option>
-                    <option value="Observation">Observation</option>
-                    <option value="Opportunity for Improvement">Opportunity for Improvement</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Severity</label>
+                    <select name="ca_severity[]" class="form-select" aria-label="Default select example" multiple>
+                        <option selected>Open this select menu</option>
+                        <option value="Major Non-Conformity">Major Non-Conformity</option>
+                        <option value="Minor Non-Conformity">Minor Non-Conformity</option>
+                        <option value="Observation">Observation</option>
+                        <option value="Opportunity for Improvement">Opportunity for Improvement</option>
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Assigned to</label>
-                <select class="form-select" name="ca_assigned_to" aria-label="Default select example">
-                    <option selected>Open this select menu</option>
-                    <?php
-                    $fetch_user = "SELECT * FROM user";
-                    $fetch_user_r = mysqli_query($connection, $fetch_user);
-                    while ($row = mysqli_fetch_assoc($fetch_user_r)) {
-                        $user_name = $row['isms_user_name'];
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Assigned to</label>
+                    <select class="form-select" name="ca_assigned_to" aria-label="Default select example">
+                        <option selected>Open this select menu</option>
+                        <?php
+                        $fetch_user = "SELECT * FROM user";
+                        $fetch_user_r = mysqli_query($connection, $fetch_user);
+                        while ($row = mysqli_fetch_assoc($fetch_user_r)) {
+                            $user_name = $row['isms_user_name'];
 
-                    ?>
-                        <option value="<?php echo $user_name ?>"><?php echo $user_name ?></option>
-                    <?php } ?>
-                </select>
-            </div>
-            <div class="btn-row">
-                <button type="submit" name="save-form-draft" class="btn btn-dark btn-sm">Save Draft</button>
-                <button type="submit" name="submit-form-draft" class="btn btn-success btn-sm">Submit Notes</button>
-            </div>
-        </form>
+                        ?>
+                            <option value="<?php echo $user_name ?>"><?php echo $user_name ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="btn-row">
+                    <button type="submit" name="save-form-draft" class="btn btn-dark btn-sm">Save Draft</button>
+                    <button type="submit" name="submit-form-draft" class="btn btn-success btn-sm">Submit Notes</button>
+                </div>
+            </form>
+        </div>
 
         <!-- =========== DESCRIPTION SECTION =========== -->
-        <div style="flex: 2">
+        <div class="col-md-6">
             <?php
             if (isset($_POST['save-draft-description'])) {
                 $tbl_ca_id = $_POST['ca_id'];
@@ -229,7 +231,7 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                 $save_draft_result = mysqli_query($connection, $save_draft_query);
             }
             ?>
-            <form action="" method="POST" class="form-container">
+            <form action="" method="POST" class="card p-3">
                 <input type="text" name="ca_id" value="<?php echo $tbl_ca_id ?>" hidden>
                 <div class="WYSIWYG-editor">
                     <label for="editorNew" class="form-label">Description</label>
@@ -255,7 +257,7 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
             </form>
 
             <!-- ============ COMMENT SECTION ============ -->
-            <div class="notes-section mt-1">
+            <div class="card p-3 mt-3">
                 <div class="heading-row">
                     <p style="font-size: 18px;">Comments</p>
                     <button
@@ -345,7 +347,7 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
 
                     <?php } ?>
                 <?php } else { ?>
-                    No Comments added.
+                    <p style="margin: 0; font-size: 12px !important;">No Comments added.</p>
                 <?php } ?>
             </div>
 

@@ -116,14 +116,16 @@ include 'includes/connection.php'; ?>
         }
     }
     ?>
-    <div class="sim-topic-container">
+    <!-- =========== CREATE TOPIC SECTION =========== -->
+    <div class="card p-3 mt-3">
         <form action="" method="POST">
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Create Topic</label>
-                <input type="text" name="sim_topic" class="form-control" id="exampleInputEmail1"
-                    aria-describedby="emailHelp" required>
+                <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Create Topic</label>
+                <input style="font-size: 12px !important;" type="text" name="sim_topic" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required placeholder="Enter topic">
             </div>
-            <button type="submit" name="create" class="btn btn-primary">Create</button>
+            <div class="d-flex justify-content-end">
+                <button type="submit" name="create" class="btn btn-sm btn-outline-success">Create</button>
+            </div>
         </form>
     </div>
     <?php
@@ -140,9 +142,9 @@ include 'includes/connection.php'; ?>
     $fetch_count = mysqli_num_rows($fetch_r);
     if ($fetch_count > 0) {
     ?>
-        <div class="table-responsive sim-table-container mb-5">
+        <div class="table-responsive card mb-5 p-3 mt-3">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
+                <thead class="table-dark">
                     <tr class="sim-th">
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">ID</th>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Name</th>
@@ -181,7 +183,7 @@ include 'includes/connection.php'; ?>
                         <tr class="sim-th">
                             <form action="" method="POST">
                                 <!-- ================ SERIAL NUMBER ================ -->
-                                <th scope="row">
+                                <th scope="row" style="font-size: 12px !important;">
                                     <input type="hidden" name="sim_id" value="<?php echo $sim_id ?>">
                                     <?php echo $sim_id ?>
                                 </th>

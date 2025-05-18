@@ -23,34 +23,24 @@ include 'includes/config.php';
         $insert_r = mysqli_query($connection, $insert);
     }
     ?>
+    <div class="d-flex justify-content-end align-items-center">
+        <button type="button" class="btn btn-outline-success btn-sm" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#addNewItem">
+            <ion-icon name="add-circle-outline"></ion-icon> New Item
+        </button>
+    </div>
 
-    <!-- =========== IF USER IS ADMIN =========== -->
-    <?php if ($user_role == '1') { ?>
-        <div class="d-flex justify-content-end align-items-center">
-            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addNewItem">
-                <ion-icon name="add-circle-outline"></ion-icon> New Item
-            </button>
-        </div>
-        <!-- =========== IF USER IS READ ONLY =========== -->
-    <?php } elseif ($user_role == '2') { ?>
-        <div class="d-none justify-content-end align-items-center">
-            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addNewItem">
-                <ion-icon name="add-circle-outline"></ion-icon> New Item
-            </button>
-        </div>
-    <?php } ?>
     <!-- ============ ADD NEW ITEM MODAL ============ -->
     <div class="modal fade" id="addNewItem" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <form action="" method="POST" class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">New Item</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add New Item</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-floating mb-3">
-                        <input type="text" name="asset_name" class="form-control" id="floatingInput" placeholder="">
-                        <label for="floatingInput">Item name</label>
+                    <div class="mb-3">
+                        <label style="font-size: 12px;" for="floatingInput">Item name</label>
+                        <input style="font-size: 12px;" type="text" name="asset_name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -65,9 +55,9 @@ include 'includes/config.php';
     $count = mysqli_num_rows($fetch_r);
     if ($count > 0) {
     ?>
-        <div class="table-responsive table-container mt-3 mb-5">
+        <div class="table-responsive card p-3 mt-3 mb-5">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
+                <thead class="table-dark">
                     <tr>
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">ID</th>
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Name</th>

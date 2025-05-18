@@ -84,7 +84,8 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
 
 
 <div class="dashboard-container">
-    <div class="asset-details">
+    <!-- =========== ASSET DETAILS SECTION =========== -->
+    <div class="card p-3">
         <p class="asset-details-heading">Asset Inventory details</p>
         <?php if (!empty($fetched_asset_name)) { ?>
             <p class="asset-details-notes"><?php echo htmlspecialchars($fetched_asset_name); ?></p>
@@ -94,9 +95,11 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
             </div>
         <?php } ?>
     </div>
-    <div style="display: flex; justify-content: space-around; align-items: flex-start;">
-        <div class="form-container mb-5" style="width: 50%; max-height: 502px; overflow: hidden; display: flex; flex-direction: column;">
-            <form action="" method="POST" style="overflow-y: auto; flex-grow: 1; padding-right: 10px;">
+
+    <div class="row mt-3 mb-5">
+        <!-- =========== LEFT SECTION =========== -->
+        <div class="col-md-6">
+            <form action="" method="POST" class="card p-3">
                 <input type="hidden" name="asset_id" value="<?php echo htmlspecialchars($asset_id); ?>">
 
                 <div class="mb-3">
@@ -162,15 +165,17 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
                     <label class="form-label">Assigned To</label>
                     <input type="text" name="asset_assigned_to" class="form-control" value="<?php echo htmlspecialchars($asset_assigned_to); ?>">
                 </div>
-
-                <button type="submit" name="save-asset-draft-form" class="btn btn-secondary me-2">Save Draft</button>
-                <button type="submit" name="submit-asset-draft-form" class="btn btn-primary">Submit</button>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" name="save-asset-draft-form" class="btn btn-sm btn-outline-secondary me-2">Save Draft</button>
+                    <button type="submit" name="submit-asset-draft-form" class="btn btn-sm btn-outline-success">Submit</button>
+                </div>
             </form>
         </div>
 
-        <!-- ========== FORM END ========== -->
-        <div style="flex: 2">
-            <div class="form-container">
+        <!-- ========== RIGHT SECTION ========== -->
+        <div class="col-md-6">
+            <!-- ========== NOTES SECTION ========== -->
+            <div class="card p-3 mb-3">
                 <form action="" method="POST">
                     <input type="text" value="<?php echo $asset_id ?>" name="fetched_asset_id" hidden>
                     <div class="WYSIWYG-editor">
@@ -197,14 +202,14 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
                         </div>
                     <?php } else { ?>
                         <div class="btn-row">
-                            <button type="submit" name="save-draft-details" class="btn btn-dark btn-sm">Save Draft</button>
-                            <button type="submit" name="submit-notes-details" class="btn btn-success btn-sm">Submit Notes</button>
+                            <button type="submit" name="save-draft-details" class="btn btn-outline-dark btn-sm">Save Draft</button>
+                            <button type="submit" name="submit-notes-details" class="btn btn-outline-success btn-sm">Submit Notes</button>
                         </div>
                     <?php } ?>
                 </form>
             </div>
             <!-- ============ COMMENT SECTION ============ -->
-            <div class="notes-section mt-1">
+            <div class="card p-3">
                 <div class="heading-row">
                     <p style="font-size: 18px;">Comments</p>
                     <button
@@ -289,7 +294,7 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
             </div>
             <!-- ======= ADD COMMENT MODAL ======= -->
             <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div action="" method="POST" class="modal-dialog modal-dialog-centered">
+                <div action="" method="POST" class="modal-dialog modal-dialog-centered modal-lg">
                     <form action="" method="POST" class="modal-content">
                         <input type="text" value="<?php echo $asset_id ?>" name="asset_comment_parent_id" hidden>
                         <div class="modal-header">
