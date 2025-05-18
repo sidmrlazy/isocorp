@@ -1,6 +1,8 @@
 <?php
 include('includes/header.php');
-include('includes/navbar.php'); ?>
+include('includes/navbar.php');
+include('includes/auth_check.php');
+?>
 <div class="dashboard-container">
     <div class="screen-name-container">
         <h1>MANAGEMENT REVIEW BOARD SETUP</h1>
