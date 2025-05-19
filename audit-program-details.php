@@ -54,7 +54,7 @@ if (isset($_GET['id'])) {
                 <div class="mb-3">
                     <label style="font-size: 12px !important;" for="exampleFormControlInput1" class="form-label">Description</label>
                     <div class="WYSIWYG-editor">
-                        <textarea name="ap_ph_desc" id="editorNew"><?php echo $ap_phase_desc ?></textarea>
+                        <textarea name="ap_ph_desc" id="editorNew"><?php echo htmlspecialchars($ap_phase_desc); ?></textarea>
                     </div>
                 </div>
                 <div class="d-flex justify-content-end">
