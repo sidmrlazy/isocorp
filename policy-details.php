@@ -339,7 +339,7 @@ include 'includes/config.php';
                         <select class="form-select" name="vc_status" required style="font-size: 12px;">
                             <option disabled <?php if (empty($vc_status_value)) echo 'selected'; ?>>Select status</option>
                             <?php
-                            $statuses = ['Open', 'Closed', 'In Progress', 'Completed'];
+                            $statuses = ['Open', 'In Progress', 'Completed'];
                             foreach ($statuses as $status) {
                                 $selected = ($status == $vc_status_value) ? 'selected' : '';
                                 echo "<option value=\"$status\" $selected>$status</option>";
