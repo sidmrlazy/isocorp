@@ -73,11 +73,11 @@ if (isset($_GET['program_id'])) {
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Activity Name</label>
+                    <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Phase Name</label>
                     <input type="text" name="ap_act_name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                 </div>
 
-                <button type="submit" name="add-activity" style="width: 20%; font-size: 12px !important" class="btn btn-sm btn-outline-success">Add Activity</button>
+                <button type="submit" name="add-activity" style="width: 20%; font-size: 12px !important" class="btn btn-sm btn-outline-success">Add Phase</button>
             </form>
 
             <!-- ========= PHASE NAME ========= -->
@@ -112,7 +112,7 @@ if (isset($_GET['program_id'])) {
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Select Activity</label>
+                    <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Select Phase</label>
                     <select style="font-size: 12px !important;" name="ap_ph_act_id" id="ap_ph_act_id" class="form-select" aria-label="Default select example">
                         <option selected>Select Activity</option>
                         <?php
@@ -127,11 +127,11 @@ if (isset($_GET['program_id'])) {
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Phase Name</label>
+                    <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Activity Name</label>
                     <input type="text" name="ap_ph_name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                 </div>
 
-                <button type="submit" name="add-phase" style="width: 20%; font-size: 12px !important" class="btn btn-sm btn-outline-success">Add Phase</button>
+                <button type="submit" name="add-phase" style="width: 20%; font-size: 12px !important" class="btn btn-sm btn-outline-success">Add Activity</button>
             </form>
             <script>
                 $(document).ready(function() {
@@ -165,8 +165,8 @@ if (isset($_GET['program_id'])) {
                         <tr>
                             <th style="font-size: 12px !important;" scope="col">#</th>
                             <th style="font-size: 12px !important;" scope="col">Program</th>
-                            <th style="font-size: 12px !important;" scope="col">Activity</th>
                             <th style="font-size: 12px !important;" scope="col">Phase</th>
+                            <th style="font-size: 12px !important;" scope="col">Activity</th>
                             <th style="font-size: 12px !important;" scope="col">Delete</th>
                         </tr>
                     </thead>
@@ -203,8 +203,8 @@ if (isset($_GET['program_id'])) {
                             <tr>
                                 <td style="font-size: 12px;"><?php echo $serial++; ?></td>
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($program); ?></td>
-                                <td style="font-size: 12px;"><?php echo htmlspecialchars($activity); ?></td>
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($phase); ?></td>
+                                <td style="font-size: 12px;"><?php echo htmlspecialchars($activity); ?></td>
                                 <td>
                                     <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this phase?');">
                                         <input type="hidden" name="delete_id" value="<?php echo $ph_id; ?>">
