@@ -677,15 +677,7 @@ include 'includes/config.php';
                 </div>
                 <!-- ========== RISKS ========== -->
                 <div class="mb-3 card p-3">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h6>Associated Risks & Treatments</h6>
-                        <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#riskModal" style="font-size: 12px !important;">
-                            <ion-icon name="add-outline"></ion-icon>
-                        </button>
-                    </div>
-                    <!-- ======= ADD RISK MODAL ======= -->
-                    <div class="modal fade" id="riskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <?php
+                     <?php
                         if (isset($_POST['connect_risk'])) {
                             $risk_ids = $_POST['risk_ids'];
                             $clause_id = intval($_POST['clause_id']);
@@ -701,10 +693,19 @@ include 'includes/config.php';
                                     mysqli_query($connection, $insert);
                                 }
                             }
-                            echo "<div class='alert alert-success mt-2'>Risks successfully linked to the clause.</div>";
+                            echo "<div id='alertBox' style='font-size: 12px !important;' class='alert alert-success mt-2'>Risks successfully linked to the clause.</div>";
                         }
 
                         ?>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h6>Associated Risks & Treatments</h6>
+                        <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#riskModal" style="font-size: 12px !important;">
+                            <ion-icon name="add-outline"></ion-icon>
+                        </button>
+                    </div>
+                    <!-- ======= ADD RISK MODAL ======= -->
+                    <div class="modal fade" id="riskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                       
                         <div class="modal-dialog modal-dialog-centered modal-xl">
                             <form action="" method="POST" class="modal-content">
                                 <input type="hidden" name="clause_id" value="<?php echo htmlspecialchars($policy_id); ?>">
