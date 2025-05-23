@@ -204,8 +204,8 @@ if (isset($_GET['program_id'])) {
                             <tr>
                                 <td style="font-size: 12px;"><?php echo $serial++; ?></td>
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($program); ?></td>
-                                <td style="font-size: 12px;"><?php echo htmlspecialchars($phase); ?></td>
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($activity); ?></td>
+                                <td style="font-size: 12px;"><?php echo htmlspecialchars($phase); ?></td>
                                 <td>
                                     <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this phase?');">
                                         <input type="hidden" name="delete_id" value="<?php echo $ph_id; ?>">
