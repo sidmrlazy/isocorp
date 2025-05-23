@@ -62,8 +62,9 @@ include 'includes/navbar.php';
                             <tr>
                                 <td style="font-size: 12px;"><?php echo $serial++; ?></td>
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($program); ?></td>
-                                <td style="font-size: 12px;"><?php echo htmlspecialchars($phase); ?></td>
+                                
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($activity); ?></td>
+                                <td style="font-size: 12px;"><?php echo htmlspecialchars($phase); ?></td>
                                 
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($assigned_to); ?></td>
                                 <td style="font-size: 12px;"><?php echo date('m-d-Y', strtotime(htmlspecialchars($due_date))); ?></td>
