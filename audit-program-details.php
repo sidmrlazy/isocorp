@@ -38,23 +38,34 @@ if (isset($_GET['id'])) {
         <!-- ============ LEFT SECTION ============ -->
         <div class="col-md-6">
             <?php
+            // Assume $ap_phase_id is already defined earlier in your code
             if (isset($_POST['update-desc'])) {
                 $ap_phase_desc = mysqli_real_escape_string($connection, $_POST['ap_ph_desc']);
-                $insert_des = "UPDATE ap_phase SET ap_ph_desc = '$ap_phase_desc' WHERE ap_phase_id = '$ap_phase_id'";
+                $update_desc_query = "UPDATE ap_phase SET ap_ph_desc = '$ap_phase_desc' WHERE ap_phase_id = '$ap_phase_id'";
+                $update_desc_result = mysqli_query($connection, $update_desc_query);
 
-                $insert_des_r = mysqli_query($connection, $insert_des);
-                if ($insert_des_r) {
+                if ($update_desc_result) {
                     echo '<div id="alertBox" style="font-size: 12px" class="alert alert-success mb-2" role="alert"> Description Updated Successfully! </div>';
                 } else {
                     echo '<div id="alertBox" style="font-size: 12px" class="alert alert-danger mb-2" role="alert"> Failed to Update Description! </div>';
                 }
             }
+
+            // Always fetch the current value for the textarea
+            $desc_query = "SELECT ap_ph_desc FROM ap_phase WHERE ap_phase_id = '$ap_phase_id'";
+            $desc_result = mysqli_query($connection, $desc_query);
+            $ap_phase_desc = '';
+            if ($desc_result && mysqli_num_rows($desc_result) > 0) {
+                $row = mysqli_fetch_assoc($desc_result);
+                $ap_phase_desc = $row['ap_ph_desc'];
+            }
             ?>
+
             <form method="POST" class="card p-3">
                 <div class="mb-3">
                     <label style="font-size: 12px !important;" for="exampleFormControlInput1" class="form-label">Description</label>
                     <div class="WYSIWYG-editor">
-                        <textarea name="ap_ph_desc" id="editorNew"><?php echo $ap_phase_desc; ?></textarea>
+                        <textarea name="ap_ph_desc" id="editorNew"><?php echo htmlspecialchars($ap_phase_desc); ?></textarea>
                     </div>
                 </div>
                 <div class="d-flex justify-content-end">
@@ -62,6 +73,7 @@ if (isset($_GET['id'])) {
                 </div>
             </form>
         </div>
+
         <!-- ============ RIGHT SECTION ============ -->
         <div class="col-md-6">
             <!-- ============ ASSIGNMENT SECTION ============ -->
