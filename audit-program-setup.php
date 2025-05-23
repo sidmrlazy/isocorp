@@ -165,8 +165,8 @@ if (isset($_GET['program_id'])) {
                         <tr>
                             <th style="font-size: 12px !important;" scope="col">#</th>
                             <th style="font-size: 12px !important;" scope="col">Program</th>
-                            <th style="font-size: 12px !important;" scope="col">Phase</th>
                             <th style="font-size: 12px !important;" scope="col">Activity</th>
+                            <th style="font-size: 12px !important;" scope="col">Phase</th>
                             <th style="font-size: 12px !important;" scope="col">Delete</th>
                         </tr>
                     </thead>
