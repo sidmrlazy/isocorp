@@ -168,7 +168,24 @@ $risk = $result->fetch_assoc();
                         <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#assignPolicyModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Policy</button>
                         </div>
-                        <?php
+
+                          <?php
+                                if (isset($_POST['connect_risk'])) {
+                                    $risk_id = $_POST['risk_id'];  // You might need to capture the risk ID too if it's part of the form
+                                    $selected_policies = $_POST['assign_policies'];  // Policies assigned from the modal
+
+                                    foreach ($selected_policies as $policy) {
+                                        // Extract the policy type and ID from the format: "type:id"
+                                        list($type, $id) = explode(':', $policy);
+
+                                        // Insert the policy assignment into the risk_policies table
+                                        $query = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $id, '$type')";
+                                        mysqli_query($connection, $query);
+                                    }
+
+                                    echo "<div class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
+                                }
+
                         mysqli_data_seek($fetch_mappings_result, 0);
                         $policies = [];
 
@@ -248,24 +265,7 @@ $risk = $result->fetch_assoc();
                         <!-- =============== ADD POLICY MODAL =============== -->
                         <div class="modal fade" id="assignPolicyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-xl">
-                                <?php
-                                if (isset($_POST['connect_risk'])) {
-                                    $risk_id = $_POST['risk_id'];  // You might need to capture the risk ID too if it's part of the form
-                                    $selected_policies = $_POST['assign_policies'];  // Policies assigned from the modal
-
-                                    foreach ($selected_policies as $policy) {
-                                        // Extract the policy type and ID from the format: "type:id"
-                                        list($type, $id) = explode(':', $policy);
-
-                                        // Insert the policy assignment into the risk_policies table
-                                        $query = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $id, '$type')";
-                                        mysqli_query($connection, $query);
-                                    }
-
-                                    echo "<div class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
-                                }
-                                ?>
-
+                              
                                 <form method="POST" class="modal-content">
                                     <div class="modal-header">
                                         <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Policies</h1>
