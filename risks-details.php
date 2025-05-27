@@ -289,7 +289,7 @@ $risk = $result->fetch_assoc();
                                             }
                                         }
 
-                                        echo "<div class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
+                                        // echo "<div class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
                                     }
 
                                     // Fetch all available policies for assignment
