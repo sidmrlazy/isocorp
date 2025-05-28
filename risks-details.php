@@ -31,7 +31,7 @@ $risk = $result->fetch_assoc();
 
     <a href="risks-treatments.php" class="btn btn-sm btn-secondary mb-2">Back to Risks</a>
 
-    <div class="row">
+    <div class="row mb-5">
         <!-- ============== LEFT SECTION ============== -->
         <div class="col-md-6">
 
