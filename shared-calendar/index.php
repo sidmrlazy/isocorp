@@ -5,7 +5,7 @@ include 'includes/navbar.php';
 // Handle file upload
 $uploadMsg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['ics_file'])) {
-    $uploadDir = __DIR__ . '/shared-calendar/';
+    $uploadDir = realpath(__DIR__ . '/shared-calendar') . '/';
     $file = $_FILES['ics_file'];
 
     // Basic validation: check extension and upload errors
@@ -14,13 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['ics_file'])) {
         $uploadMsg = '<div class="alert alert-danger">Only .ics files are allowed.</div>';
     } elseif ($file['error'] !== UPLOAD_ERR_OK) {
         $uploadMsg = '<div class="alert alert-danger">Error uploading file.</div>';
+    } elseif (!is_writable($uploadDir)) {
+        $uploadMsg = '<div class="alert alert-danger">Upload folder is not writable.</div>';
     } else {
-        // Use basename to avoid directory traversal
         $safeName = basename($file['name']);
         $targetPath = $uploadDir . $safeName;
 
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            $uploadMsg = '<div class="alert alert-success">File uploaded successfully.</div>';
+            // Redirect with selected file to show uploaded calendar
+            header("Location: ?month=$month&year=$year&user=" . urlencode($safeName));
+            exit;
         } else {
             $uploadMsg = '<div class="alert alert-danger">Failed to move uploaded file.</div>';
         }
@@ -38,7 +41,6 @@ $firstDayOfWeek = date('w', strtotime("$year-$month-01"));
 
 // Load .ics events if user is selected
 $eventDates = [];
-
 if (!empty($selectedUser)) {
     $icsPath = __DIR__ . "/shared-calendar/" . basename($selectedUser);
     if (file_exists($icsPath)) {
@@ -61,6 +63,7 @@ $calendarFiles = glob(__DIR__ . "/shared-calendar/*.ics");
 
 <div class="container">
     <div class="row mt-5 m-1">
+        <!-- Calendar Selector -->
         <div class="card p-3 mb-3 col-md-6">
             <form method="GET" action="">
                 <input type="hidden" name="month" value="<?php echo $month; ?>">
@@ -79,21 +82,18 @@ $calendarFiles = glob(__DIR__ . "/shared-calendar/*.ics");
             </form>
         </div>
 
+        <!-- Upload Calendar -->
         <div class="card p-3 mb-3 col-md-6">
-            <form method="POST" action="" enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data">
                 <label for="icsFile" class="form-label">Upload Your Calendar (.ics)</label>
                 <input type="file" class="form-control" id="icsFile" name="ics_file" accept=".ics" required>
                 <button type="submit" class="btn btn-primary mt-2">Upload</button>
             </form>
-            <?php
-            // Show upload status message if any
-            if (!empty($uploadMsg)) {
-                echo $uploadMsg;
-            }
-            ?>
+            <?php if (!empty($uploadMsg)) echo $uploadMsg; ?>
         </div>
     </div>
 
+    <!-- Calendar Table -->
     <div class="mt-3 table-responsive card p-3">
         <div class="d-flex justify-content-start align-items-center">
             <h6 class="text-center mb-4"><?php echo date('F Y', strtotime("$year-$month-01")); ?></h6>
@@ -133,7 +133,7 @@ $calendarFiles = glob(__DIR__ . "/shared-calendar/*.ics");
             </tbody>
         </table>
 
-        <!-- Navigation Links -->
+        <!-- Navigation -->
         <div class="d-flex justify-content-center gap-3 mt-3">
             <?php
             $prevMonth = $month - 1;
