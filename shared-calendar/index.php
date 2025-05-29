@@ -10,7 +10,7 @@ $selectedUser = isset($_GET['user']) ? $_GET['user'] : '';
 // Handle file upload
 $uploadMsg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['ics_file'])) {
-    $uploadDir = realpath(__DIR__ . '/shared-calendar') . '/';
+    $uploadDir = realpath(__DIR__ . '/shared-calendar/uploads') . '/';
     $file = $_FILES['ics_file'];
 
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -41,7 +41,7 @@ $firstDayOfWeek = date('w', strtotime("$year-$month-01"));
 // Load .ics events if user is selected
 $eventDates = [];
 if (!empty($selectedUser)) {
-    $icsPath = __DIR__ . "/shared-calendar/" . basename($selectedUser);
+    $icsPath = __DIR__ . "/shared-calendar/uploads/" . basename($selectedUser);
     if (file_exists($icsPath)) {
         $icsContent = file_get_contents($icsPath);
         preg_match_all('/DTSTART(?:;VALUE=DATE)?:(\d{4})(\d{2})(\d{2})/', $icsContent, $matches, PREG_SET_ORDER);
@@ -150,7 +150,9 @@ $calendarFiles = glob(__DIR__ . "/shared-calendar/*.ics");
                 $nextYear++;
             }
 
-            $baseParams = "&user=" . urlencode($selectedUser);
+            // $baseParams = "&user=" . urlencode($selectedUser);
+            $baseParams = !empty($selectedUser) ? '&user=' . urlencode($selectedUser) : '';
+
             ?>
             <a href="?month=<?php echo $prevMonth; ?>&year=<?php echo $prevYear . $baseParams; ?>" class="btn btn-sm btn-warning">&laquo; Previous</a>
             <a href="?month=<?php echo $nextMonth; ?>&year=<?php echo $nextYear . $baseParams; ?>" class="btn btn-sm btn-warning">Next &raquo;</a>
