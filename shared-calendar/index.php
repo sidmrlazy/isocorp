@@ -2,34 +2,28 @@
 include 'includes/header.php';
 include 'includes/navbar.php';
 
-$uploadMessage = '';
-
-// Handle file upload if form submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['icsfile'])) {
+// Handle file upload
+$uploadMsg = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['ics_file'])) {
     $uploadDir = __DIR__ . '/shared-calendar/';
-    $file = $_FILES['icsfile'];
+    $file = $_FILES['ics_file'];
 
-    // Basic validations
-    if ($file['error'] === UPLOAD_ERR_OK) {
-        $tmpName = $file['tmp_name'];
-        $originalName = basename($file['name']);
-        $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-
-        if ($ext !== 'ics') {
-            $uploadMessage = '<div class="alert alert-danger">Only .ics files are allowed.</div>';
-        } else {
-            // Sanitize filename - remove dangerous characters
-            $safeName = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $originalName);
-            $destination = $uploadDir . $safeName;
-
-            if (move_uploaded_file($tmpName, $destination)) {
-                $uploadMessage = '<div class="alert alert-success">File uploaded successfully.</div>';
-            } else {
-                $uploadMessage = '<div class="alert alert-danger">Failed to move uploaded file.</div>';
-            }
-        }
+    // Basic validation: check extension and upload errors
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if ($ext !== 'ics') {
+        $uploadMsg = '<div class="alert alert-danger">Only .ics files are allowed.</div>';
+    } elseif ($file['error'] !== UPLOAD_ERR_OK) {
+        $uploadMsg = '<div class="alert alert-danger">Error uploading file.</div>';
     } else {
-        $uploadMessage = '<div class="alert alert-danger">Error uploading file.</div>';
+        // Use basename to avoid directory traversal
+        $safeName = basename($file['name']);
+        $targetPath = $uploadDir . $safeName;
+
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            $uploadMsg = '<div class="alert alert-success">File uploaded successfully.</div>';
+        } else {
+            $uploadMsg = '<div class="alert alert-danger">Failed to move uploaded file.</div>';
+        }
     }
 }
 
@@ -66,41 +60,40 @@ $calendarFiles = glob(__DIR__ . "/shared-calendar/*.ics");
 ?>
 
 <div class="container">
-    <?php echo $uploadMessage; ?>
+    <div class="row mt-5 m-1">
+        <div class="card p-3 mb-3 col-md-6">
+            <form method="GET" action="">
+                <input type="hidden" name="month" value="<?php echo $month; ?>">
+                <input type="hidden" name="year" value="<?php echo $year; ?>">
+                <label for="calendarSelect" class="form-label">Change Member</label>
+                <select class="form-select" id="calendarSelect" name="user" onchange="this.form.submit()">
+                    <option value="">-- Select a calendar --</option>
+                    <?php foreach ($calendarFiles as $filePath):
+                        $filename = basename($filePath);
+                    ?>
+                        <option value="<?php echo htmlspecialchars($filename); ?>" <?php echo ($selectedUser === $filename) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars(pathinfo($filename, PATHINFO_FILENAME)); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </form>
+        </div>
 
-    <div class="p-3 w-50">
-        <div class="row">
-            <!-- Calendar selector -->
-            <div class="card p-3 mb-3 col-md-6">
-                <form method="GET" action="">
-                    <input type="hidden" name="month" value="<?php echo $month; ?>">
-                    <input type="hidden" name="year" value="<?php echo $year; ?>">
-                    <label for="calendarSelect" class="form-label">Change Member</label>
-                    <select class="form-select" id="calendarSelect" name="user" onchange="this.form.submit()">
-                        <option value="">-- Select a calendar --</option>
-                        <?php foreach ($calendarFiles as $filePath):
-                            $filename = basename($filePath);
-                        ?>
-                            <option value="<?php echo htmlspecialchars($filename); ?>" <?php echo ($selectedUser === $filename) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars(pathinfo($filename, PATHINFO_FILENAME)); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </form>
-            </div>
-
-            <!-- File upload -->
-            <div class="card p-3 mb-3 col-md-6">
-                <form method="POST" action="" enctype="multipart/form-data">
-                    <label for="icsfile" class="form-label">Upload Your Calendar (.ics)</label>
-                    <input type="file" class="form-control" id="icsfile" name="icsfile" accept=".ics" required>
-                    <button type="submit" class="btn btn-primary mt-2">Upload</button>
-                </form>
-            </div>
+        <div class="card p-3 mb-3 col-md-6">
+            <form method="POST" action="" enctype="multipart/form-data">
+                <label for="icsFile" class="form-label">Upload Your Calendar (.ics)</label>
+                <input type="file" class="form-control" id="icsFile" name="ics_file" accept=".ics" required>
+                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+            </form>
+            <?php
+            // Show upload status message if any
+            if (!empty($uploadMsg)) {
+                echo $uploadMsg;
+            }
+            ?>
         </div>
     </div>
 
-    <!-- Calendar display -->
     <div class="mt-3 table-responsive card p-3">
         <div class="d-flex justify-content-start align-items-center">
             <h6 class="text-center mb-4"><?php echo date('F Y', strtotime("$year-$month-01")); ?></h6>
