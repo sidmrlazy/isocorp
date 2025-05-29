@@ -2,7 +2,7 @@
 include 'includes/header.php';
 include 'includes/navbar.php';
 
-// Month and year selection (must come early to use in upload redirect)
+// Month and year selection
 $month = isset($_GET['month']) ? (int)$_GET['month'] : date('n');
 $year = isset($_GET['year']) ? (int)$_GET['year'] : date('Y');
 $selectedUser = isset($_GET['user']) ? $_GET['user'] : '';
@@ -21,11 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['ics_file'])) {
     } elseif (!is_writable($uploadDir)) {
         $uploadMsg = '<div class="alert alert-danger">Upload folder is not writable.</div>';
     } else {
-        $safeName = basename($file['name']);
+        // Sanitize and safely name the file
+        $safeName = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', basename($file['name']));
         $targetPath = $uploadDir . $safeName;
 
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            // Redirect after successful upload
             header("Location: ?month=$month&year=$year&user=" . urlencode($safeName));
             exit;
         } else {
@@ -34,11 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['ics_file'])) {
     }
 }
 
-// Days and starting day
+// Days and first day logic
 $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 $firstDayOfWeek = date('w', strtotime("$year-$month-01"));
 
-// Load .ics events if user is selected
+// Load events from selected .ics file
 $eventDates = [];
 if (!empty($selectedUser)) {
     $icsPath = __DIR__ . "/shared-calendar/uploads/" . basename($selectedUser);
@@ -150,12 +150,10 @@ $calendarFiles = glob(__DIR__ . "/shared-calendar/uploads/*.ics");
                 $nextYear++;
             }
 
-            // $baseParams = "&user=" . urlencode($selectedUser);
-            $baseParams = !empty($selectedUser) ? '&user=' . urlencode($selectedUser) : '';
-
+            $userParam = !empty($selectedUser) ? '&user=' . urlencode($selectedUser) : '';
             ?>
-            <a href="?month=<?php echo $prevMonth; ?>&year=<?php echo $prevYear . $baseParams; ?>" class="btn btn-sm btn-warning">&laquo; Previous</a>
-            <a href="?month=<?php echo $nextMonth; ?>&year=<?php echo $nextYear . $baseParams; ?>" class="btn btn-sm btn-warning">Next &raquo;</a>
+            <a href="?month=<?php echo $prevMonth; ?>&year=<?php echo $prevYear . $userParam; ?>" class="btn btn-sm btn-warning">&laquo; Previous</a>
+            <a href="?month=<?php echo $nextMonth; ?>&year=<?php echo $nextYear . $userParam; ?>" class="btn btn-sm btn-warning">Next &raquo;</a>
         </div>
     </div>
 </div>
