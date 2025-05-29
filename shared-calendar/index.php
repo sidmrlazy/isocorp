@@ -57,7 +57,7 @@ if (!empty($selectedUser)) {
 }
 
 // Fetch .ics files
-$calendarFiles = glob(__DIR__ . "/shared-calendar/*.ics");
+$calendarFiles = glob(__DIR__ . "/shared-calendar/uploads/*.ics");
 ?>
 
 <div class="container">
