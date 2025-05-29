@@ -2,13 +2,17 @@
 include 'includes/header.php';
 include 'includes/navbar.php';
 
+// Month and year selection (must come early to use in upload redirect)
+$month = isset($_GET['month']) ? (int)$_GET['month'] : date('n');
+$year = isset($_GET['year']) ? (int)$_GET['year'] : date('Y');
+$selectedUser = isset($_GET['user']) ? $_GET['user'] : '';
+
 // Handle file upload
 $uploadMsg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['ics_file'])) {
     $uploadDir = realpath(__DIR__ . '/shared-calendar') . '/';
     $file = $_FILES['ics_file'];
 
-    // Basic validation: check extension and upload errors
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     if ($ext !== 'ics') {
         $uploadMsg = '<div class="alert alert-danger">Only .ics files are allowed.</div>';
@@ -21,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['ics_file'])) {
         $targetPath = $uploadDir . $safeName;
 
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            // Redirect with selected file to show uploaded calendar
+            // Redirect after successful upload
             header("Location: ?month=$month&year=$year&user=" . urlencode($safeName));
             exit;
         } else {
@@ -29,11 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['ics_file'])) {
         }
     }
 }
-
-// Month and year selection
-$month = isset($_GET['month']) ? (int)$_GET['month'] : date('n');
-$year = isset($_GET['year']) ? (int)$_GET['year'] : date('Y');
-$selectedUser = isset($_GET['user']) ? $_GET['user'] : '';
 
 // Days and starting day
 $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
@@ -48,7 +47,7 @@ if (!empty($selectedUser)) {
         preg_match_all('/DTSTART(?:;VALUE=DATE)?:(\d{4})(\d{2})(\d{2})/', $icsContent, $matches, PREG_SET_ORDER);
         foreach ($matches as $match) {
             $y = $match[1];
-            $m = ltrim($match[2], '0');
+            $m = (int)$match[2];
             $d = (int)$match[3];
             if ($y == $year && $m == $month) {
                 $eventDates[] = $d;
@@ -57,7 +56,7 @@ if (!empty($selectedUser)) {
     }
 }
 
-// Fetch list of .ics files in shared-calendar folder
+// Fetch .ics files
 $calendarFiles = glob(__DIR__ . "/shared-calendar/*.ics");
 ?>
 
@@ -66,15 +65,16 @@ $calendarFiles = glob(__DIR__ . "/shared-calendar/*.ics");
         <!-- Calendar Selector -->
         <div class="card p-3 mb-3 col-md-6">
             <form method="GET" action="">
-                <input type="hidden" name="month" value="<?php echo $month; ?>">
-                <input type="hidden" name="year" value="<?php echo $year; ?>">
+                <input type="hidden" name="month" value="<?php echo htmlspecialchars($month); ?>">
+                <input type="hidden" name="year" value="<?php echo htmlspecialchars($year); ?>">
                 <label for="calendarSelect" class="form-label">Change Member</label>
                 <select class="form-select" id="calendarSelect" name="user" onchange="this.form.submit()">
                     <option value="">-- Select a calendar --</option>
                     <?php foreach ($calendarFiles as $filePath):
                         $filename = basename($filePath);
+                        $isSelected = ($selectedUser === $filename) ? 'selected' : '';
                     ?>
-                        <option value="<?php echo htmlspecialchars($filename); ?>" <?php echo ($selectedUser === $filename) ? 'selected' : ''; ?>>
+                        <option value="<?php echo htmlspecialchars($filename); ?>" <?php echo $isSelected; ?>>
                             <?php echo htmlspecialchars(pathinfo($filename, PATHINFO_FILENAME)); ?>
                         </option>
                     <?php endforeach; ?>
@@ -142,12 +142,14 @@ $calendarFiles = glob(__DIR__ . "/shared-calendar/*.ics");
                 $prevMonth = 12;
                 $prevYear--;
             }
+
             $nextMonth = $month + 1;
             $nextYear = $year;
             if ($nextMonth > 12) {
                 $nextMonth = 1;
                 $nextYear++;
             }
+
             $baseParams = "&user=" . urlencode($selectedUser);
             ?>
             <a href="?month=<?php echo $prevMonth; ?>&year=<?php echo $prevYear . $baseParams; ?>" class="btn btn-sm btn-warning">&laquo; Previous</a>
