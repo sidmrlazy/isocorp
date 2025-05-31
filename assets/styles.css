@@ -313,14 +313,15 @@ h4 {
 }
 .WYSIWYG-editor-container {
   /* width: 50% !important; */
-  background-color: #fff;
-  padding: 20px;
-  margin-top: 10px;
-  border-radius: 10px;
+  background-color: #fff !important;
+  padding: 20px !important;
+  margin-top: 10px !important;
+  border-radius: 10px !important;
 }
 .WYSIWYG-editor textarea {
   width: 100% !important;
   height: 100px !important;
+  background-color: #fff !important;
 }
 .document-container {
   flex: 1;

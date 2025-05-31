@@ -4,6 +4,7 @@ include('includes/navbar.php');
 include 'includes/connection.php';
 include 'includes/config.php';
 ?>
+
 <div class="dashboard-container">
     <?php
     if (isset($_POST['save'])) {
@@ -190,6 +191,21 @@ include 'includes/config.php';
         <div class="col-md-6">
             <!-- ========== POLICY CONTENT SECTION ========== -->
             <div class="card p-3">
+                <style>
+                    .note-editor.note-frame.note-fullscreen {
+                        background: white !important;
+                        padding: 20px !important;
+                        box-sizing: border-box;
+                    }
+
+                    .note-editor.note-frame.note-fullscreen .note-editable {
+                        background: white !important;
+                        padding: 1rem;
+                        color: #000;
+                        min-height: 300px;
+                    }
+                </style>
+
                 <?php
                 $policy_content = "";
                 $valid_tables = ['policy', 'sub_control_policy', 'linked_control_policy', 'inner_linked_control_policy'];
@@ -357,12 +373,24 @@ include 'includes/config.php';
                     <button type="submit" name="update-details" class="btn btn-sm btn-success">Submit</button>
                 </form>
             </div>
-
-
         </div>
 
         <div class="col-md-6">
             <div class="mb-3">
+                <!-- ========== SOA ========== -->
+                <div class="card p-3 mb-3">
+                    <form action="" method="POST" class="d-flex justify-content-between align-items-center">
+                        <div class="form-check">
+                            <input type="hidden" name="policy_id" value="<?= htmlspecialchars($policy_id) ?>">
+                            <input type="hidden" name="policy_table" value="<?= htmlspecialchars($policy_table) ?>">
+                            <input class="form-check-input" type="checkbox" value="1" id="checkDefault">
+                            <label class="form-check-label" for="checkDefault">
+                                Statement of Applicability
+                            </label>
+                        </div>
+                        <button type="submit" name="add-soa" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Add</button>
+                    </form>
+                </div>
                 <!-- ========== HISTORY ========== -->
                 <div class="card p-3 mb-3">
                     <div style="display: flex !important; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -677,26 +705,26 @@ include 'includes/config.php';
                 </div>
                 <!-- ========== RISKS ========== -->
                 <div class="mb-3 card p-3">
-                     <?php
-                        if (isset($_POST['connect_risk'])) {
-                            $risk_ids = $_POST['risk_ids'];
-                            $clause_id = intval($_POST['clause_id']);
-                            $clause_type = mysqli_real_escape_string($connection, $_POST['clause_type']); // dynamic
+                    <?php
+                    if (isset($_POST['connect_risk'])) {
+                        $risk_ids = $_POST['risk_ids'];
+                        $clause_id = intval($_POST['clause_id']);
+                        $clause_type = mysqli_real_escape_string($connection, $_POST['clause_type']); // dynamic
 
-                            foreach ($risk_ids as $risk_id) {
-                                $risk_id = intval($risk_id);
-                                $check_exist = "SELECT * FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $clause_id AND clause_type = '$clause_type'";
-                                $result = mysqli_query($connection, $check_exist);
+                        foreach ($risk_ids as $risk_id) {
+                            $risk_id = intval($risk_id);
+                            $check_exist = "SELECT * FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $clause_id AND clause_type = '$clause_type'";
+                            $result = mysqli_query($connection, $check_exist);
 
-                                if (mysqli_num_rows($result) == 0) {
-                                    $insert = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $clause_id, '$clause_type')";
-                                    mysqli_query($connection, $insert);
-                                }
+                            if (mysqli_num_rows($result) == 0) {
+                                $insert = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $clause_id, '$clause_type')";
+                                mysqli_query($connection, $insert);
                             }
-                            echo "<div id='alertBox' style='font-size: 12px !important;' class='alert alert-success mt-2'>Risks successfully linked to the clause.</div>";
                         }
+                        echo "<div id='alertBox' style='font-size: 12px !important;' class='alert alert-success mt-2'>Risks successfully linked to the clause.</div>";
+                    }
 
-                        ?>
+                    ?>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Associated Risks & Treatments</h6>
                         <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#riskModal" style="font-size: 12px !important;">
@@ -705,7 +733,7 @@ include 'includes/config.php';
                     </div>
                     <!-- ======= ADD RISK MODAL ======= -->
                     <div class="modal fade" id="riskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                       
+
                         <div class="modal-dialog modal-dialog-centered modal-xl">
                             <form action="" method="POST" class="modal-content">
                                 <input type="hidden" name="clause_id" value="<?php echo htmlspecialchars($policy_id); ?>">
