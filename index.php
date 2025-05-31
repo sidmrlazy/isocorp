@@ -3,11 +3,21 @@ ob_start();
 include('includes/header.php');
 include('includes/connection.php');
 
+// Start a secure session that expires on browser close
+ini_set('session.cookie_lifetime', 0); // Session ends with browser close
+session_set_cookie_params([
+    'lifetime' => 0, // Ends on browser close
+    'path' => '/',
+    'secure' => isset($_SERVER['HTTPS']),
+    'httponly' => true,
+    'samesite' => 'Strict'
+]);
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Only check session (no cookie auto-login)
+// Redirect if already logged in
 if (isset($_SESSION['user_session'])) {
     header("Location: dashboard.php");
     exit();
@@ -40,10 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if (password_verify($password, $user['isms_user_password'])) {
                     session_regenerate_id(true); // Prevent session fixation
-                    $user_session = bin2hex(random_bytes(16));
-                    $_SESSION['user_session'] = $user_session;
 
-                    // Set user info in session
+                    $_SESSION['user_session'] = bin2hex(random_bytes(16));
                     $_SESSION['user_id'] = $user['isms_user_id'];
                     $_SESSION['user_name'] = $user['isms_user_name'];
                     $_SESSION['user_email'] = $user['isms_user_email'];
