@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_risk'])) {
     $assigned_to = $_POST['assigned_to'];
     $status = $_POST['status'];
 
+    // Update the risks table
     $stmt = $connection->prepare("UPDATE risks SET 
         risks_name = ?, 
         risks_description = ?, 
@@ -62,12 +63,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_risk'])) {
     );
 
     if ($stmt->execute()) {
+        // Insert into risk_versions to save history
+        $insert_version = $connection->prepare("INSERT INTO risk_versions 
+            (risk_id, risks_name, risks_likelihood, risks_impact, risks_status, risks_action, risks_review_date, risks_assigned_to)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+        $insert_version->bind_param(
+            "isssssss",
+            $risk_id,
+            $risk_name,
+            $likelihood,
+            $impact,
+            $status,
+            $action,
+            $review_date,
+            $assigned_to
+        );
+
+        $insert_version->execute();
+        $insert_version->close();
+
         header("Location: risks-treatments.php?edit=success");
         exit();
     } else {
         echo "<div class='alert alert-danger'>Error updating risk: " . $stmt->error . "</div>";
     }
 }
+
+
 ?>
 
 <div class="dashboard-container">

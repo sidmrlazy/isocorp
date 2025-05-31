@@ -39,22 +39,30 @@ $risk = $result->fetch_assoc();
             <div class="card p-3 mb-3">
                 <?php
                 if ($risk_id > 0) {
+                    // Fetch current risk data
                     $risk_query = $connection->query("SELECT * FROM risks WHERE risks_id = $risk_id");
                     $risk_data = $risk_query->fetch_assoc();
+
+                    // Fetch historical versions ordered by date
+                    $history_query = $connection->query("SELECT risks_likelihood, risks_impact, updated_at FROM risk_versions WHERE risk_id = $risk_id ORDER BY updated_at ASC");
+                    $history_data = [];
+                    while ($row = $history_query->fetch_assoc()) {
+                        $history_data[] = $row;
+                    }
+                    // Encode history data for JS
+                    $history_json = json_encode($history_data);
                 }
                 ?>
 
                 <?php if (!empty($risk_data)) : ?>
-
-                    <!-- <h5 class="mb-3">Risk Analysis Chart: <?= htmlspecialchars($risk_data['risks_name']) ?></h5> -->
-                    <h5 class="mb-3">Risk Analysis Chart</h5>
-                    <canvas id="riskChart" style="width: 100%; height: auto !important;"></canvas>
-
+                    <h5 class="mb-3">Risk Analysis Chart: <?= htmlspecialchars($risk_data['risks_name']) ?></h5>
+                    <canvas id="riskChart" style="width: 100%; height: 250px !important;"></canvas>
+                <?php else: ?>
+                    <p>No risk data available.</p>
                 <?php endif; ?>
+
                 <?php if (!empty($risk_data)) : ?>
                     <script>
-                        const ctx = document.getElementById('riskChart').getContext('2d');
-
                         const likelihood_map = {
                             'Very Low': 1,
                             'Low': 2,
@@ -70,37 +78,86 @@ $risk = $result->fetch_assoc();
                             'Severe': 5
                         };
 
-                        const likelihood = likelihood_map['<?= addslashes($risk_data['risks_likelihood']) ?>'] || 0;
-                        const impact = impact_map['<?= addslashes($risk_data['risks_impact']) ?>'] || 0;
+                        // History data from PHP
+                        const history = <?= $history_json ?>;
+
+                        // Prepare chart labels (dates) and datasets
+                        const labels = history.map(item => new Date(item.updated_at).toLocaleDateString());
+                        const likelihoodData = history.map(item => likelihood_map[item.risks_likelihood] || 0);
+                        const impactData = history.map(item => impact_map[item.risks_impact] || 0);
+
+                        const ctx = document.getElementById('riskChart').getContext('2d');
 
                         const riskChart = new Chart(ctx, {
-                            type: 'line', // Changed to line chart
+                            type: 'line',
                             data: {
-                                labels: ['Likelihood', 'Impact'],
+                                labels: labels,
                                 datasets: [{
-                                    label: 'Risk Level',
-                                    data: [likelihood, impact],
-                                    backgroundColor: ['#6a946d', '#b86a79'],
-                                    borderColor: ['#6a946d', '#b86a79'],
-                                    fill: false, // For line charts, this ensures no fill under the line
-                                    borderWidth: 2
-                                }]
+                                        label: 'Likelihood',
+                                        data: likelihoodData,
+                                        borderColor: '#6a946d',
+                                        backgroundColor: '#6a946d',
+                                        fill: false,
+                                        tension: 0.1,
+                                        pointRadius: 5,
+                                        pointHoverRadius: 7,
+                                    },
+                                    {
+                                        label: 'Impact',
+                                        data: impactData,
+                                        borderColor: '#b86a79',
+                                        backgroundColor: '#b86a79',
+                                        fill: false,
+                                        tension: 0.1,
+                                        pointRadius: 5,
+                                        pointHoverRadius: 7,
+                                    }
+                                ]
                             },
                             options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    tooltip: {
+                                        mode: 'index',
+                                        intersect: false,
+                                    }
+                                },
                                 scales: {
                                     y: {
-                                        beginAtZero: true,
+                                        beginAtZero: false,
+                                        min: 1,
                                         max: 5,
                                         ticks: {
-                                            stepSize: 1
+                                            stepSize: 1,
+                                            callback: function(value) {
+                                                return value;
+                                            }
+                                        },
+                                        title: {
+                                            display: true,
+                                        }
+                                    },
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Date'
                                         }
                                     }
+                                },
+                                interaction: {
+                                    mode: 'nearest',
+                                    axis: 'x',
+                                    intersect: true
                                 }
                             }
                         });
                     </script>
                 <?php endif; ?>
             </div>
+
 
 
             <!-- ============== RISK DETAILS SECTION ============== -->
@@ -140,9 +197,7 @@ $risk = $result->fetch_assoc();
         </div>
 
         <!-- ============== TABS FOR SIMs AND POLICIES ============== -->
-
         <div class="col-md-6">
-
             <?php
             $risks_id = intval($risk['risks_id']);
             $fetch_mappings_query = "SELECT * FROM risk_policies WHERE risks_id = $risks_id";
@@ -169,22 +224,22 @@ $risk = $result->fetch_assoc();
                             <button type="button" data-bs-toggle="modal" data-bs-target="#assignPolicyModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Policy</button>
                         </div>
 
-                          <?php
-                                if (isset($_POST['connect_risk'])) {
-                                    $risk_id = $_POST['risk_id'];  // You might need to capture the risk ID too if it's part of the form
-                                    $selected_policies = $_POST['assign_policies'];  // Policies assigned from the modal
+                        <?php
+                        if (isset($_POST['connect_risk'])) {
+                            $risk_id = $_POST['risk_id'];  // You might need to capture the risk ID too if it's part of the form
+                            $selected_policies = $_POST['assign_policies'];  // Policies assigned from the modal
 
-                                    foreach ($selected_policies as $policy) {
-                                        // Extract the policy type and ID from the format: "type:id"
-                                        list($type, $id) = explode(':', $policy);
+                            foreach ($selected_policies as $policy) {
+                                // Extract the policy type and ID from the format: "type:id"
+                                list($type, $id) = explode(':', $policy);
 
-                                        // Insert the policy assignment into the risk_policies table
-                                        $query = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $id, '$type')";
-                                        mysqli_query($connection, $query);
-                                    }
+                                // Insert the policy assignment into the risk_policies table
+                                $query = "INSERT INTO risk_policies (risks_id, clause_id, clause_type) VALUES ($risk_id, $id, '$type')";
+                                mysqli_query($connection, $query);
+                            }
 
-                                    echo "<div class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
-                                }
+                            echo "<div class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
+                        }
 
                         mysqli_data_seek($fetch_mappings_result, 0);
                         $policies = [];
@@ -265,7 +320,7 @@ $risk = $result->fetch_assoc();
                         <!-- =============== ADD POLICY MODAL =============== -->
                         <div class="modal fade" id="assignPolicyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-xl">
-                              
+
                                 <form method="POST" class="modal-content">
                                     <div class="modal-header">
                                         <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Policies</h1>
