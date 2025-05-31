@@ -53,7 +53,7 @@ $risk = $result->fetch_assoc();
                 ?>
 
                 <?php if (!empty($risk_data)) : ?>
-                    <h5 class="mb-3">Risk Analysis Chart</h5>
+                    <!-- <h5 class="mb-3">Risk Analysis Chart</h5> -->
                     <canvas id="riskChart" style="width: 100%; height: 250px !important;"></canvas>
                 <?php else: ?>
                     <p>No risk data available.</p>
