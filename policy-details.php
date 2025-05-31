@@ -357,12 +357,24 @@ include 'includes/config.php';
                     <button type="submit" name="update-details" class="btn btn-sm btn-success">Submit</button>
                 </form>
             </div>
-
-
         </div>
 
         <div class="col-md-6">
             <div class="mb-3">
+                <!-- ========== SOA ========== -->
+                <!-- <div class="card p-3 mb-3">
+                    <form action="" method="POST" class="d-flex justify-content-between align-items-center">
+                        <div class="form-check">
+                            <input type="hidden" name="policy_id" value="<?= htmlspecialchars($policy_id) ?>">
+                            <input type="hidden" name="policy_table" value="<?= htmlspecialchars($policy_table) ?>">
+                            <input class="form-check-input" type="checkbox" value="1" id="checkDefault">
+                            <label class="form-check-label" for="checkDefault">
+                                Statement of Applicability
+                            </label>
+                        </div>
+                        <button type="submit" name="add-soa" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Add</button>
+                    </form>
+                </div> -->
                 <!-- ========== HISTORY ========== -->
                 <div class="card p-3 mb-3">
                     <div style="display: flex !important; justify-content: space-between; align-items: center; margin-bottom: 10px;">
