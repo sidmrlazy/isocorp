@@ -7,7 +7,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (isset($_COOKIE['user_session']) || isset($_SESSION['user_session'])) {
+// Only check session (no cookie auto-login)
+if (isset($_SESSION['user_session'])) {
     header("Location: dashboard.php");
     exit();
 }
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Prepare SQL statement
         $stmt = $connection->prepare("SELECT isms_user_id, isms_user_name, isms_user_email, isms_user_password, isms_user_role FROM user WHERE isms_user_email = ?");
-        
+
         if ($stmt) {
             $stmt->bind_param("s", $email);
             $stmt->execute();
@@ -38,22 +39,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user = $result->fetch_assoc();
 
                 if (password_verify($password, $user['isms_user_password'])) {
-                    session_regenerate_id(true);
+                    session_regenerate_id(true); // Prevent session fixation
                     $user_session = bin2hex(random_bytes(16));
                     $_SESSION['user_session'] = $user_session;
 
+                    // Set user info in session
                     $_SESSION['user_id'] = $user['isms_user_id'];
                     $_SESSION['user_name'] = $user['isms_user_name'];
                     $_SESSION['user_email'] = $user['isms_user_email'];
                     $_SESSION['user_role'] = $user['isms_user_role'];
-
-                    // Set secure cookies correctly
-                    $expiry_time = time() + (86400 * 30); // 30 days
-                    setcookie('user_session', $user_session, $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
-                    setcookie('user_id', $user['isms_user_id'], $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
-                    setcookie('user_name', htmlspecialchars($user['isms_user_name']), $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
-                    setcookie('user_email', htmlspecialchars($user['isms_user_email']), $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
-                    setcookie('user_role', htmlspecialchars($user['isms_user_role']), $expiry_time, '/', '', isset($_SERVER['HTTPS']), true);
 
                     header("Location: dashboard.php");
                     exit();
@@ -94,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
-<?php 
-include('includes/footer.php'); 
+<?php
+include('includes/footer.php');
 ob_end_flush();
 ?>

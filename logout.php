@@ -19,5 +19,3 @@ if (isset($_COOKIE['user_email'])) {
 // Redirect to the login page
 header("Location: index.php");
 exit();
-?>
-
