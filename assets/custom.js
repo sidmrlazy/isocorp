@@ -4,6 +4,17 @@ $(document).ready(function () {
     minHeight: 150,
     maxHeight: 500,
     focus: true,
+    toolbar: [
+      ["style", ["style"]],
+      ["font", ["bold", "underline", "clear"]],
+      ["color", ["color"]],
+      ["para", ["ul", "ol", "paragraph"]],
+      ["table", ["table"]],
+      // ["insert", ["link", "picture", "video"]],
+      ["insert", ["link"]],
+      // ["view", ["fullscreen", "codeview", "help"]],
+      ["view", ["fullscreen"]],
+    ],
   });
 
   $("form").on("submit", function () {
