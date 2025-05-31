@@ -6,7 +6,7 @@ include 'includes/connection.php';
 ?>
 <nav class="navbar navbar-expand-lg bg-body-tertiary custom-navbar">
   <div class="container-fluid">
-    <a class="navbar-brand" href="index.php">
+    <a class="navbar-brand" href="dashboard.php">
       <img src="assets/logo/isocorp_logo_white.png" alt="">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -16,7 +16,7 @@ include 'includes/connection.php';
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="index.php">Home</a>
+          <a class="nav-link" aria-current="page" href="dashboard.php">Home</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,14 +58,10 @@ include 'includes/connection.php';
 
             <li>
               <a class="dropdown-item" href="#">
-                <ion-icon style="font-size: 20px !important;" name="megaphone-outline"></ion-icon> Applicable Legislations
+                <ion-icon style="font-size: 20px !important;" name="shield-half-outline"></ion-icon> Applicable Legislations
               </a>
             </li>
-            <li>
-              <a class="dropdown-item" href="#">
-                <ion-icon style="font-size: 20px !important;" name="megaphone-outline"></ion-icon> Interested Parties
-              </a>
-            </li>
+
           </ul>
         </li>
         <?php if ($user_role == '1') { ?>
