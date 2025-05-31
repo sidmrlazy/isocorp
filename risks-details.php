@@ -49,13 +49,11 @@ $risk = $result->fetch_assoc();
                     while ($row = $history_query->fetch_assoc()) {
                         $history_data[] = $row;
                     }
-                    // Encode history data for JS
-                    $history_json = json_encode($history_data);
                 }
                 ?>
 
                 <?php if (!empty($risk_data)) : ?>
-                    <!-- <h5 class="mb-3">Risk Analysis Chart: <?= htmlspecialchars($risk_data['risks_name']) ?></h5> -->
+                    <h5 class="mb-3">Risk Analysis Chart</h5>
                     <canvas id="riskChart" style="width: 100%; height: 250px !important;"></canvas>
                 <?php else: ?>
                     <p>No risk data available.</p>
@@ -78,19 +76,17 @@ $risk = $result->fetch_assoc();
                             'Severe': 5
                         };
 
-                        // History data from PHP
-                        const history = <?= $history_json ?>;
-
-                        // Prepare chart labels (dates) and datasets
-                        const labels = history.map(item => new Date(item.updated_at).toLocaleDateString());
-                        const likelihoodData = history.map(item => likelihood_map[item.risks_likelihood] || 0);
-                        const impactData = history.map(item => impact_map[item.risks_impact] || 0);
+                        // History data from PHP (encoded safely)
+                        const history = <?= json_encode($history_data) ?>;
 
                         const ctx = document.getElementById('riskChart').getContext('2d');
 
-                        const riskChart = new Chart(ctx, {
-                            type: 'line',
-                            data: {
+                        if (history.length > 0) {
+                            const labels = history.map(item => new Date(item.updated_at).toLocaleDateString());
+                            const likelihoodData = history.map(item => likelihood_map[item.risks_likelihood] || 0);
+                            const impactData = history.map(item => impact_map[item.risks_impact] || 0);
+
+                            const data = {
                                 labels: labels,
                                 datasets: [{
                                         label: 'Likelihood',
@@ -113,50 +109,125 @@ $risk = $result->fetch_assoc();
                                         pointHoverRadius: 7,
                                     }
                                 ]
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                    tooltip: {
-                                        mode: 'index',
-                                        intersect: false,
-                                    }
-                                },
-                                scales: {
-                                    y: {
-                                        beginAtZero: false,
-                                        min: 1,
-                                        max: 5,
-                                        ticks: {
-                                            stepSize: 1,
-                                            callback: function(value) {
-                                                return value;
+                            };
+
+                            const config = {
+                                type: 'line',
+                                data: data,
+                                options: {
+                                    plugins: {
+                                        legend: {
+                                            position: 'top',
+                                            labels: {
+                                                usePointStyle: true,
                                             }
                                         },
                                         title: {
                                             display: true,
+                                            text: 'Risk Analysis Chart'
+                                        },
+                                        tooltip: {
+                                            mode: 'index',
+                                            intersect: false,
                                         }
                                     },
-                                    x: {
+                                    scales: {
+                                        y: {
+                                            min: 1,
+                                            max: 5,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                            title: {
+                                                display: true,
+                                                text: 'Risk Level'
+                                            }
+                                        },
+                                        x: {
+                                            title: {
+                                                display: true,
+                                                text: 'Date'
+                                            }
+                                        }
+                                    },
+                                    interaction: {
+                                        mode: 'nearest',
+                                        axis: 'x',
+                                        intersect: true,
+                                    }
+                                }
+                            };
+
+                            new Chart(ctx, config);
+
+                        } else {
+                            const likelihood = likelihood_map['<?= addslashes($risk_data['risks_likelihood']) ?>'] || 0;
+                            const impact = impact_map['<?= addslashes($risk_data['risks_impact']) ?>'] || 0;
+
+                            const data = {
+                                labels: ['Likelihood', 'Impact'],
+                                datasets: [{
+                                    label: 'Risk Level',
+                                    data: [likelihood, impact],
+                                    borderColor: ['#6a946d', '#b86a79'],
+                                    backgroundColor: ['#6a946d', '#b86a79'],
+                                    fill: false,
+                                    borderWidth: 2,
+                                    tension: 0.4,
+                                    pointRadius: 6,
+                                    pointHoverRadius: 8,
+                                }]
+                            };
+
+                            const config = {
+                                type: 'line',
+                                data: data,
+                                options: {
+                                    plugins: {
+                                        legend: {
+                                            display: false,
+                                            labels: {
+                                                usePointStyle: true,
+                                            }
+                                        },
                                         title: {
                                             display: true,
-                                            text: 'Date'
+                                            text: 'Current Risk Level'
+                                        },
+                                        tooltip: {
+                                            mode: 'nearest',
+                                            intersect: true,
+                                        }
+                                    },
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 5,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                            title: {
+                                                display: true,
+                                                text: 'Risk Level'
+                                            }
+                                        },
+                                        x: {
+                                            title: {
+                                                display: true,
+                                                text: 'Category'
+                                            }
                                         }
                                     }
-                                },
-                                interaction: {
-                                    mode: 'nearest',
-                                    axis: 'x',
-                                    intersect: true
                                 }
-                            }
-                        });
+                            };
+
+                            new Chart(ctx, config);
+                        }
                     </script>
                 <?php endif; ?>
             </div>
+
+
 
 
 
