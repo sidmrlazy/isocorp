@@ -3,10 +3,10 @@ ob_start();
 include('includes/header.php');
 include('includes/connection.php');
 
-// Start a secure session that expires on browser close
-ini_set('session.cookie_lifetime', 0); // Session ends with browser close
+// Start a secure session that ends on browser close
+ini_set('session.cookie_lifetime', 0);
 session_set_cookie_params([
-    'lifetime' => 0, // Ends on browser close
+    'lifetime' => 0,
     'path' => '/',
     'secure' => isset($_SERVER['HTTPS']),
     'httponly' => true,
@@ -17,14 +17,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Redirect if already logged in
-if (isset($_SESSION['user_session'])) {
-    header("Location: dashboard.php");
-    exit();
-}
+// Always force login — do not redirect automatically to dashboard
+// Remove cookie-based login (NO $_COOKIE logic here)
 
+// Process login on POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize user input
     $email = isset($_POST['user_email']) ? trim($_POST['user_email']) : '';
     $password = isset($_POST['user_password']) ? trim($_POST['user_password']) : '';
 
@@ -37,9 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die("Database connection error: " . $connection->connect_error);
         }
 
-        // Prepare SQL statement
         $stmt = $connection->prepare("SELECT isms_user_id, isms_user_name, isms_user_email, isms_user_password, isms_user_role FROM user WHERE isms_user_email = ?");
-
         if ($stmt) {
             $stmt->bind_param("s", $email);
             $stmt->execute();
@@ -49,8 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user = $result->fetch_assoc();
 
                 if (password_verify($password, $user['isms_user_password'])) {
-                    session_regenerate_id(true); // Prevent session fixation
-
+                    session_regenerate_id(true);
                     $_SESSION['user_session'] = bin2hex(random_bytes(16));
                     $_SESSION['user_id'] = $user['isms_user_id'];
                     $_SESSION['user_name'] = $user['isms_user_name'];
@@ -69,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $error_message = "Database error. Please try again later.";
         }
+
         $connection->close();
     }
 }
