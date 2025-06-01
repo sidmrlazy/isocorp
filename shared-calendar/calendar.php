@@ -244,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 <input style="font-size: 12px !important;" type="file" name="icsfile_update" accept=".ics" required class="form-control">
             </div>
             <input type="hidden" name="action" value="update_calendar">
-            <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">Update Existing Calendar</button>
+            <button type="submit" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update Existing Calendar</button>
         </form>
 
 

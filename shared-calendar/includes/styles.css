@@ -26,3 +26,7 @@ table.calendar td {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+table.calendar td:hover {
+  background-color: #f5f5f5; /* Light gray, similar to Bootstrap .table-hover */
+  cursor: pointer;
+}
