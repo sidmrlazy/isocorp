@@ -4,7 +4,6 @@ $loggedInUser = $_SESSION['isms_user_name'] ?? 'unknown';  // fallback if not se
 include 'includes/connection.php';
 include 'includes/header.php';
 include 'includes/navbar.php';
-
 // Connect to DB with PDO
 $pdo = new PDO("mysql:host=$hostname;dbname=$database;charset=utf8mb4", $username, $password);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -100,12 +99,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['icsfile'])) {
         VALUES (:filename, :summary, :description, :location, :start, :end, :owner)");
             $stmt->execute([
                 ':filename' => $safeName,
-                ':summary' => $ev['SUMMARY'],
-                ':description' => $ev['DESCRIPTION'],
+                ':summary' => mb_convert_encoding($ev['SUMMARY'], 'UTF-8'),
+                ':description' => mb_convert_encoding($ev['DESCRIPTION'], 'UTF-8'),
                 ':location' => $ev['LOCATION'],
                 ':start' => $ev['DTSTART'],
                 ':end' => $ev['DTEND'],
-                ':owner' => $loggedInUser  // <-- Use logged-in user here
+                ':owner' => $loggedInUser
             ]);
         }
         header("Location: " . $_SERVER['PHP_SELF']);
@@ -158,12 +157,56 @@ if ($nextMonth > 12) {
     $nextMonth = 1;
     $nextYear++;
 }
+
+// --- Handle Calendar Update: Delete existing events and upload new ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_calendar' && isset($_FILES['icsfile_update'])) {
+    $file = $_FILES['icsfile_update'];
+    $uploadDir = __DIR__ . '/uploads/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
+    $safeName = basename($file['name']);
+    $targetPath = $uploadDir . $safeName;
+
+    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+        $icsData = file_get_contents($targetPath);
+        $icsData = unfold_ics_lines($icsData);
+        $events = parse_ics_events($icsData);
+
+        // DELETE existing events by the logged-in user
+        $deleteStmt = $pdo->prepare("DELETE FROM in3_calendar WHERE in3_c_owner = :owner");
+        $deleteStmt->execute([':owner' => $loggedInUser]);
+
+        // INSERT new events
+        foreach ($events as $ev) {
+            $stmt = $pdo->prepare("INSERT INTO in3_calendar 
+                (in3_c_filename, in3_c_summary, in3_c_description, in3_c_location, in3_c_start_datetime, in3_c_end_datetime, in3_c_owner) 
+                VALUES (:filename, :summary, :description, :location, :start, :end, :owner)");
+            $stmt->execute([
+                ':filename' => $safeName,
+                ':summary' => mb_convert_encoding($ev['SUMMARY'], 'UTF-8'),
+                ':description' => mb_convert_encoding($ev['DESCRIPTION'], 'UTF-8'),
+                ':location' => $ev['LOCATION'],
+                ':start' => $ev['DTSTART'],
+                ':end' => $ev['DTEND'],
+                ':owner' => $loggedInUser
+            ]);
+        }
+
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    } else {
+        echo "<p style='color:red;'>Failed to upload the updated file.</p>";
+    }
+}
+
 ?>
 
 <div class="container mb-5">
     <div class="row mt-5 mb-3">
         <!-- ========= CALENDAR .ICS FILE UPLOAD FORM ========= -->
-        <form method="post" enctype="multipart/form-data" class="card m-1 p-3 col-md-4">
+        <form method="post" enctype="multipart/form-data" class="card m-1 p-3 col-md-3">
             <div class="mb-3">
                 <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Upload Calendar File</label>
                 <input style="font-size: 12px !important;" type="file" name="icsfile" accept=".ics" required class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
@@ -180,7 +223,7 @@ if ($nextMonth > 12) {
         // Capture selected user from POST (or fallback to null)
         $selectedUser = $_POST['selected_owner'] ?? null;
         ?>
-        <form action="" method="POST" class="col-md-4 card m-1 p-3">
+        <form action="" method="POST" class="col-md-3 card m-1 p-3">
             <div class="mb-3">
                 <label style="font-size: 12px !important;" class="form-label">Select a leader to get calendar details</label>
                 <select name="selected_owner" style="font-size: 12px !important;" class="form-select" onchange="this.form.submit()">
@@ -194,6 +237,17 @@ if ($nextMonth > 12) {
             </div>
         </form>
 
+        <!-- ========= UPDATE EXISTING CALENDAR FORM ========= -->
+        <form method="post" enctype="multipart/form-data" class="card m-1 p-3 col-md-3" onsubmit="return confirm('This will delete your existing calendar events. Are you sure you want to proceed?');">
+            <div class="mb-3">
+                <label style="font-size: 12px !important;" class="form-label">Update Existing Calendar</label>
+                <input style="font-size: 12px !important;" type="file" name="icsfile_update" accept=".ics" required class="form-control">
+            </div>
+            <input type="hidden" name="action" value="update_calendar">
+            <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">Update Existing Calendar</button>
+        </form>
+
+
     </div>
 
     <!-- ========= SHOW PAGINATION ========= -->
@@ -203,7 +257,11 @@ if ($nextMonth > 12) {
         <a class="btn btn-sm btn-outline-success" href="?month=<?= $nextMonth ?>&year=<?= $nextYear ?><?= $selectedUser ? '&selected_owner=' . urlencode($selectedUser) : '' ?>">Next →</a>
     </div>
 
+
     <div class="table-responsive mt-5">
+        <div>
+            <!-- <p>Showing Calendar for: <strong><?php echo htmlspecialchars($owner) ?></strong></p> -->
+        </div>
         <!-- <h6>Calendar for <?php echo date('F Y', $firstDayTimestamp); ?></h6> -->
         <table class="calendar  table table-bordered">
             <thead>
