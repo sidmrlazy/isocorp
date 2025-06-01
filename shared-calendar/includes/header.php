@@ -13,6 +13,9 @@
 
   <!-- =========== CASCADING STYLESHEET =========== -->
   <link rel="stylesheet" href="includes/styles.css">
+
+  <!-- =========== FAVICON =========== -->
+  <link rel="shortcut icon" href="assets/in3sync-logo.png" type="image/x-icon">
 </head>
 
 <body>
