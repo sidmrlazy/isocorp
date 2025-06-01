@@ -29,4 +29,6 @@ table.calendar td {
 table.calendar td:hover {
   background-color: #f5f5f5; /* Light gray, similar to Bootstrap .table-hover */
   cursor: pointer;
+  border-color: #3b8b18 !important;
+  transition: 0.3s all ease-in-out !important;
 }
