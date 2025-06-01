@@ -1,0 +1,28 @@
+table.calendar {
+  table-layout: fixed;
+}
+
+table.calendar th,
+table.calendar td {
+  width: 14.28%;
+  vertical-align: top;
+  border: 1px solid #ccc;
+  padding: 5px;
+  height: 120px;
+  cursor: pointer;
+}
+
+.day-number {
+  font-weight: bold;
+}
+
+.event-summary {
+  margin-top: 4px;
+  font-size: 0.85em;
+  background-color: #d9edf7;
+  border-radius: 3px;
+  padding: 2px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
