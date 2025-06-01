@@ -7,10 +7,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="index.php">Home</a>
+          <a style="font-size: 24px; margin-right:25px !important" class="nav-link active" aria-current="page" href="index.php"><ion-icon name="home-outline"></ion-icon></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="logout.php">Logout</a>
+          <a style="font-size: 24px; margin-right:25px !important" class="nav-link" aria-current="page" href="logout.php"><ion-icon name="power-outline"></ion-icon></a>
         </li>
         <!-- <li class="nav-item">
           <a class="nav-link" href="#">Link</a>
