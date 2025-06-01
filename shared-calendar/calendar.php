@@ -365,7 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         <p><strong>Location:</strong> ${escapeHtml(ev.in3_c_location || 'N/A')}</p>
                         <p><strong>Start:</strong> ${escapeHtml(ev.in3_c_start_datetime || 'N/A')}</p>
                         <p><strong>End:</strong> ${escapeHtml(ev.in3_c_end_datetime || 'N/A')}</p>
-                        <p><strong>Organizer:</strong> ${escapeHtml(ev.in3_c_owner || 'N/A')}</p>
+                        
                     </div>`;
                 });
                 html += '</div>';
@@ -423,4 +423,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 </script>
 
+<!-- <p><strong>Organizer:</strong> ${escapeHtml(ev.in3_c_owner || 'N/A')}</p> -->
 <?php include 'includes/footer.php' ?>
