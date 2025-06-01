@@ -2,7 +2,14 @@ table.calendar {
   table-layout: fixed;
 }
 
-table.calendar th,
+table.calendar th {
+  width: 14.28%;
+  vertical-align: middle;
+  border: 1px solid #ccc;
+  padding: 5px;
+  height: 50px;
+  cursor: pointer;
+}
 table.calendar td {
   width: 14.28%;
   vertical-align: top;

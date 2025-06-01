@@ -8,6 +8,17 @@ include 'includes/navbar.php';
 $pdo = new PDO("mysql:host=$hostname;dbname=$database;charset=utf8mb4", $username, $password);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+// Handle delete calendar request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete-calendar-events'])) {
+    $deleteStmt = $pdo->prepare("DELETE FROM in3_calendar WHERE in3_c_owner = :owner");
+    $deleteStmt->execute([':owner' => $loggedInUser]);
+
+    // Optionally, redirect to the same page to avoid form resubmission
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+}
+
+
 // --- Functions for ICS parsing ---
 
 // Unfold ICS lines (concatenate folded lines)
@@ -204,15 +215,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 ?>
 
 <div class="container mb-5">
+    <!-- ========= TOP ROW ========= -->
     <div class="row mt-5 mb-3">
         <!-- ========= CALENDAR .ICS FILE UPLOAD FORM ========= -->
-        <form method="post" enctype="multipart/form-data" class="card m-1 p-3 col-md-3">
+        <!-- <form method="post" enctype="multipart/form-data" class="card m-1 p-3 col-md-3">
             <div class="mb-3">
                 <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Upload Calendar File</label>
                 <input style="font-size: 12px !important;" type="file" name="icsfile" accept=".ics" required class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
             </div>
             <button type="submit" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Upload</button>
-        </form>
+        </form> -->
 
         <!-- ========= DROPDOWN TO SHOW SELECTED USERS CALENDAR ========= -->
         <?php
@@ -238,13 +250,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         </form>
 
         <!-- ========= UPDATE EXISTING CALENDAR FORM ========= -->
-        <form method="post" enctype="multipart/form-data" class="card m-1 p-3 col-md-3" onsubmit="return confirm('This will delete your existing calendar events. Are you sure you want to proceed?');">
+        <form method="post" enctype="multipart/form-data" class="card m-1 p-3 col-md-3" onsubmit="return confirm('Are you sure you want to proceed with this action?');">
             <div class="mb-3">
-                <label style="font-size: 12px !important;" class="form-label">Update Existing Calendar</label>
+                <label style="font-size: 12px !important;" class="form-label">Upload Calendar</label>
                 <input style="font-size: 12px !important;" type="file" name="icsfile_update" accept=".ics" required class="form-control">
             </div>
             <input type="hidden" name="action" value="update_calendar">
-            <button type="submit" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update Existing Calendar</button>
+            <button type="submit" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
         </form>
 
 
@@ -257,14 +269,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         <a class="btn btn-sm btn-outline-success" href="?month=<?= $nextMonth ?>&year=<?= $nextYear ?><?= $selectedUser ? '&selected_owner=' . urlencode($selectedUser) : '' ?>">Next →</a>
     </div>
 
-
+    <!-- ========= MAIN CALENDAR ========= -->
     <div class="table-responsive mt-5">
         <div>
             <!-- <p>Showing Calendar for: <strong><?php echo htmlspecialchars($owner) ?></strong></p> -->
         </div>
         <!-- <h6>Calendar for <?php echo date('F Y', $firstDayTimestamp); ?></h6> -->
-        <table class="calendar  table table-bordered">
-            <thead>
+        <table class="calendar table table-bordered table-colored">
+            <thead class="table-dark">
                 <tr>
                     <th>Mon</th>
                     <th>Tue</th>
@@ -320,10 +332,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 ?>
             </tbody>
         </table>
+
+        <form action="" method="POST">
+            <button type="submit" name="delete-calendar-events" class="btn btn-sm btn-outline-danger">Delete your calendar</button>
+        </form>
     </div>
 </div>
 
-<!-- Bootstrap Modal -->
+<!-- ========= EVENT MODAL ========= -->
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -341,7 +357,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- ========= SCRIPTS ========= -->
 <script>
     // Show modal with event details on clicking a date cell
     document.querySelectorAll('.date-cell').forEach(cell => {
