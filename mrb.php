@@ -77,7 +77,7 @@ include('includes/connection.php');
                                 </form>
                             </td>
                             <td style="font-size: 12px" class="text-center">
-                                <form action="" method="post">
+                                <form action="" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                     <input type="text" name="training_id" value="<?php echo $training_id; ?>" hidden>
                                     <button type="submit" name="delete-topic" style="font-size: 12px;" class="btn btn-sm btn-danger">
                                         <ion-icon name="trash-outline"></ion-icon>

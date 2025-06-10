@@ -117,7 +117,7 @@ include 'includes/connection.php';
                                 </form>
                             </td>
                             <td style="font-size: 12px !important;">
-                                <form action="" method="POST">
+                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                     <input type="text" value="<?php echo $comm_id ?>" name="comm_id" hidden>
                                     <button style="font-size: 12px !important;" type="submit" name="delete-comm" class="btn btn-sm btn-outline-danger">Delete</button>
                                 </form>
