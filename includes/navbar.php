@@ -55,34 +55,18 @@ include 'includes/connection.php';
                 <ion-icon style="font-size: 20px !important;" name="glasses-outline"></ion-icon> Audit Programme
               </a>
             </li>
-
             <li>
-              <a class="dropdown-item" href="#">
+              <a class="dropdown-item" href="applicable-legislations.php">
                 <ion-icon style="font-size: 20px !important;" name="shield-half-outline"></ion-icon> Applicable Legislations
               </a>
             </li>
-
+            <li>
+              <a class="dropdown-item" href="code-of-conduct.php">
+                <ion-icon style="font-size: 20px !important;" name="document-text-outline"></ion-icon> Code of conduct
+              </a>
+            </li>
           </ul>
         </li>
-        <?php if ($user_role == '1') { ?>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Settings
-            </a>
-            <ul class="dropdown-menu">
-              <!-- <li><a class="dropdown-item" href="main-controls.php">Add Control</a></li>
-              <li><a class="dropdown-item" href="sub-controls.php">Add Sub-Control</a></li>
-              <li><a class="dropdown-item" href="linked-sub-controls.php">Add linked Sub-Control</a></li>
-              <li><a class="dropdown-item" href="inner-linked-control-policy-form.php">Add Inner linked Sub-Control</a></li>
-              <hr> -->
-              <li><a class="dropdown-item" href="audit-program-setup.php">Audit Programme Setup</a></li>
-              <hr>
-              <li><a class="dropdown-item" href="user-setup.php">User Setup</a></li>
-              <hr>
-              <li><a class="dropdown-item" href="policy-setup.php">Policy Section Setup</a></li>
-            </ul>
-          </li>
-        <?php } ?>
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item dropdown">
@@ -91,6 +75,8 @@ include 'includes/connection.php';
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
             <li><a class="dropdown-item" href="#"><ion-icon name="person-outline"></ion-icon> Profile</a></li>
+            <li><a class="dropdown-item" href="audit-program-setup.php"><ion-icon name="construct-outline"></ion-icon> Audit Programme Setup</a></li>
+            <li><a class="dropdown-item" href="user-setup.php"><ion-icon name="person-add-outline"></ion-icon>User Setup</a></li>
             <li><a class="dropdown-item" href="logout.php"><ion-icon name="log-out-outline"></ion-icon> Logout</a></li>
           </ul>
         </li>
