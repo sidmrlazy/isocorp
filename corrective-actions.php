@@ -131,7 +131,7 @@ include 'includes/config.php';
                                     </form>
                                 </td> -->
                                 <td style="font-size: 12px !important;" class="text-center">
-                                    <form action="" method="POST">
+                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                         <input type="text" name="ca_id" value="<?php echo $ca_id ?>" hidden>
                                         <button type="submit" name="delete" class="btn btn-sm btn-outline-danger" style="font-size: 12px;">
                                             Remove
