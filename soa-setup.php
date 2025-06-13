@@ -1,0 +1,94 @@
+<?php
+include 'includes/header.php';
+include 'includes/navbar.php';
+include 'includes/connection.php';
+?>
+<div class="dashboard-container mb-5">
+    <?php
+    $clause_options = [];
+    $clause_query = "SELECT 'policy' AS type, policy_id AS id, CONCAT(policy_clause, ' ', policy_name) AS name FROM policy
+                        UNION SELECT 'sub_control_policy', sub_control_policy_id, CONCAT(p.policy_clause, ' ', p.policy_name, ' > ', s.sub_control_policy_number, ' ', s.sub_control_policy_heading)
+                        FROM sub_control_policy s JOIN policy p ON p.policy_id = s.main_control_policy_id
+                        UNION SELECT 'linked_control_policy', l.linked_control_policy_id, CONCAT(p.policy_clause, ' ', p.policy_name, ' > ', s.sub_control_policy_number, ' ', s.sub_control_policy_heading, ' > ', l.linked_control_policy_number, ' ', l.linked_control_policy_heading) FROM linked_control_policy l
+                        JOIN sub_control_policy s ON s.sub_control_policy_id = l.sub_control_policy_id
+                        JOIN policy p ON p.policy_id = s.main_control_policy_id
+                    ";
+
+    $res = mysqli_query($connection, $clause_query);
+    while ($row = mysqli_fetch_assoc($res)) {
+        $clause_options[] = $row;
+    }
+    ?>
+    <form method="POST" action="download_policies_excel.php" id="policyForm">
+        <div class="text-end mt-3">
+            <button type="submit" name="download_excel" class="btn btn-sm btn-outline-success mb-3" style="font-size: 12px !important;">Download Statement of Applicability</button>
+        </div>
+        <div class="card p-3 table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="font-size: 12px !important;">Policy</th>
+                        <th style="font-size: 12px !important;">Applicable</th>
+                        <th style="font-size: 12px !important;">Not Applicable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($clause_options as $index => $clause): ?>
+                        <tr>
+                            <td style="font-size: 12px !important;"><?= htmlspecialchars($clause['name']) ?></td>
+                            <td style="font-size: 12px !important;">
+                                <input type="checkbox" name="applicable_status[<?= $index ?>]" value="1">
+                            </td>
+                            <td style="font-size: 12px !important;">
+                                <input type="checkbox" name="applicable_status[<?= $index ?>]" value="0" onclick="openModal(<?= $index ?>)">
+                            </td>
+                            <!-- Hidden inputs -->
+                            <input type="hidden" name="policy_name[<?= $index ?>]" value="<?= htmlspecialchars($clause['name']) ?>">
+                            <input type="hidden" name="policy_type[<?= $index ?>]" value="<?= $clause['type'] ?>">
+                            <input type="hidden" name="policy_id[<?= $index ?>]" value="<?= $clause['id'] ?>">
+                            <input type="hidden" id="justification_<?= $index ?>" name="justification[<?= $index ?>]" value="">
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+
+    </form>
+
+</div>
+<script>
+    function openModal(index) {
+        document.getElementById('currentIndex').value = index;
+        document.getElementById('modalJustification').value = document.getElementById('justification_' + index).value;
+        new bootstrap.Modal(document.getElementById('justificationModal')).show();
+    }
+
+    function saveJustification() {
+        const index = document.getElementById('currentIndex').value;
+        const justification = document.getElementById('modalJustification').value;
+        document.getElementById('justification_' + index).value = justification;
+        bootstrap.Modal.getInstance(document.getElementById('justificationModal')).hide();
+    }
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="justificationModal" tabindex="-1" aria-labelledby="justificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Justification Required</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="modalJustification" class="form-control" rows="4"></textarea>
+                <input type="hidden" id="currentIndex">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveJustification()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include 'includes/footer.php' ?>

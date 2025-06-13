@@ -64,7 +64,7 @@ include 'includes/connection.php';
               <a class="dropdown-item" href="code-of-conduct.php">
                 <ion-icon style="font-size: 20px !important;" name="document-text-outline"></ion-icon> Code of conduct
               </a>
-            </li>
+            </li>            
           </ul>
         </li>
       </ul>
@@ -77,6 +77,7 @@ include 'includes/connection.php';
             <li><a class="dropdown-item" href="#"><ion-icon name="person-outline"></ion-icon> Profile</a></li>
             <li><a class="dropdown-item" href="audit-program-setup.php"><ion-icon name="construct-outline"></ion-icon> Audit Programme Setup</a></li>
             <li><a class="dropdown-item" href="user-setup.php"><ion-icon name="person-add-outline"></ion-icon>User Setup</a></li>
+            <li><a class="dropdown-item" href="soa-setup.php"><ion-icon name="document-outline"></ion-icon>Statement of Applicability</a></li>
             <li><a class="dropdown-item" href="logout.php"><ion-icon name="log-out-outline"></ion-icon> Logout</a></li>
           </ul>
         </li>
