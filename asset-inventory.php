@@ -109,7 +109,7 @@ include 'includes/config.php';
                             <!-- <td class="asset-data"><?php echo $asset_created_by ?></td> -->
                             <td class="asset-data"><?php echo $asset_review_date ?></td>
                             <td class="text-center">
-                                <form action="" method="POST">
+                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                     <input type="text" name="asset_id" value="<?php echo $asset_id ?>" hidden>
                                     <button type="submit" name="delete-asset" class="btn btn-sm btn-outline-dark">
                                         <ion-icon name="close-circle-outline"></ion-icon>
