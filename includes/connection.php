@@ -1,7 +1,7 @@
 <?php
 // PRODUCTION
 $hostname = "localhost";
-$username = "u998582784_isocorp"; 
+$username = "u998582784_isocorp";
 $database = "u998582784_isocorp";
 $password = "Darthvader@order66";
 
