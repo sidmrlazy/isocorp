@@ -156,7 +156,13 @@ $color_map = [
                             <td><?= $row['risks_likelihood'] ?></td>
                             <td><?= $row['risks_impact'] ?></td>
                             <td><?= $row['risks_action'] ?></td>
-                            <td><?= date('M-d-Y', strtotime($row['risks_review_date'])) ?></td>
+                            <!-- <td><?= date('M-d-Y', strtotime($row['risks_review_date'])) ?></td> -->
+                            <td>
+                                <?= (!empty($row['risks_review_date']) && $row['risks_review_date'] !== '0000-00-00')
+                                    ? date('M-d-Y', strtotime($row['risks_review_date']))
+                                    : '' ?>
+                            </td>
+
                             <td><?= $row['risks_assigned_to'] ?></td>
                             <td><?= $row['risks_status'] ?></td>
                             <!-- <td><?= $row['risks_created_at'] ?></td>
