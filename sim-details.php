@@ -191,7 +191,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                             </a>
                                         </td>
                                         <td>
-                                            <form action="" method="POST">
+                                            <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                                 <input type="text" name="risk_id" value="<?php echo $risk['risks_id']; ?>" hidden>
                                                 <button type="submit" name="del-risk" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Remove</button>
                                             </form>

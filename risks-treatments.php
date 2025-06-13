@@ -92,7 +92,12 @@ $color_map = [
                                 $count = $heatmap[$impact][$likelihood];
                                 $color = $color_map[$likelihood][$impact];
                             ?>
-                                <td style="background-color: <?= $color ?>; color: black; text-align: center; vertical-align: middle;">
+                                <td
+                                    style="background-color: <?= $color ?>; color: black; text-align: center; vertical-align: middle; cursor: pointer;"
+                                    class="heatmap-cell"
+                                    data-likelihood="<?= $likelihood ?>"
+                                    data-impact="<?= $impact ?>">
+
                                     <?php if ($count > 0) : ?>
                                         <div style="display: inline-flex; align-items: center; justify-content: center; 
                     width: 30px; height: 30px; border-radius: 50%; background-color: #fff;">
@@ -119,6 +124,9 @@ $color_map = [
                 <input type="text" class="form-control" style="font-size: 12px;" id="searchRiskInput" placeholder="name@example.com">
                 <label style="font-size: 12px;" for="floatingInput">Search Risks & Treatments</label>
             </div>
+
+            <button id="resetFilterBtn" class="btn btn-sm btn-secondary mb-3">Reset Filter</button>
+
 
             <table class="table table-bordered table-striped table-hover">
                 <thead>
@@ -156,7 +164,13 @@ $color_map = [
                             <td><?= $row['risks_likelihood'] ?></td>
                             <td><?= $row['risks_impact'] ?></td>
                             <td><?= $row['risks_action'] ?></td>
-                            <td><?= date('M-d-Y', strtotime($row['risks_review_date'])) ?></td>
+                            <!-- <td><?= date('M-d-Y', strtotime($row['risks_review_date'])) ?></td> -->
+                            <td>
+                                <?= (!empty($row['risks_review_date']) && $row['risks_review_date'] !== '0000-00-00')
+                                    ? date('M-d-Y', strtotime($row['risks_review_date']))
+                                    : '' ?>
+                            </td>
+
                             <td><?= $row['risks_assigned_to'] ?></td>
                             <td><?= $row['risks_status'] ?></td>
                             <!-- <td><?= $row['risks_created_at'] ?></td>
@@ -281,6 +295,42 @@ $color_map = [
             });
         });
     });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Existing search functionality remains
+
+        const heatmapCells = document.querySelectorAll(".heatmap-cell");
+        const tableRows = document.querySelectorAll(".risk-details-content");
+
+        heatmapCells.forEach(cell => {
+            cell.addEventListener("click", () => {
+                const selectedLikelihood = cell.getAttribute("data-likelihood");
+                const selectedImpact = cell.getAttribute("data-impact");
+
+                tableRows.forEach(row => {
+                    const rowLikelihood = row.children[2].textContent.trim();
+                    const rowImpact = row.children[3].textContent.trim();
+
+                    if (rowLikelihood === selectedLikelihood && rowImpact === selectedImpact) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const resetButton = document.getElementById("resetFilterBtn");
+
+        resetButton.addEventListener("click", () => {
+            document.querySelectorAll(".risk-details-content").forEach(row => {
+                row.style.display = "";
+            });
+        });
+    });
 </script>
+
 
 <?php include 'includes/footer.php' ?>

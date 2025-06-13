@@ -48,6 +48,7 @@ include('includes/auth_check.php');
     <div class="modal fade" id="cocModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <form method="POST" class="modal-content">
+                <input type="hidden" id="form_mode" value="add">
 
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Add / Edit Code of Conduct</h1>
@@ -72,13 +73,16 @@ include('includes/auth_check.php');
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" name="add-coc" class="btn btn-dark">Add</button>
+                    <button type="submit" name="add-coc" class="btn btn-dark" id="submitBtn">Add</button>
                 </div>
+
             </form>
         </div>
     </div>
 
-    <?php if ($count > 0) { ?>
+    <?php if ($count == 0) {
+        echo "<div class='alert alert-warning' style='font-size: 12px !important'>No Code of Conduct found.</div>";
+    } else { ?>
         <!-- ================ DISPLAY CODE OF CONDUCT ================ -->
         <div class="card table-responsive p-3">
             <table class="table table-striped table-bordered table-hover">
@@ -116,7 +120,7 @@ include('includes/auth_check.php');
 
                             </td>
                             <td>
-                                <form method="POST">
+                                <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                     <input type="text" name="coc_id" value="<?php echo $coc_id; ?>" hidden>
                                     <button style="font-size: 12px !important;" type="submit" name="delete-coc" class="btn btn-sm btn-outline-danger">Delete</button>
                                 </form>
@@ -127,83 +131,46 @@ include('includes/auth_check.php');
             </table>
         </div>
 
-        <!-- ================ VIEW CODE OF CONDUCT MODAL ================ -->
-        <div class="modal fade" id="cocModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <form method="POST" class="modal-content">
 
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Add / Edit Code of Conduct</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <input type="hidden" name="coc_id" id="edit_coc_id">
-                        <div class="mb-3">
-                            <label class="form-label">Code of Conduct Topic</label>
-                            <input required name="coc_topic" type="text" class="form-control" id="edit_coc_topic">
-                        </div>
-                        <div class="WYSIWYG-editor mb-3">
-                            <label class="form-label">Details</label>
-                            <textarea name="coc_details" id="editorNew" class="form-control"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Review Date</label>
-                            <input name="coc_review_date" type="date" class="form-control" id="edit_coc_review_date">
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" name="add-coc" class="btn btn-dark">Add</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    <?php } else {
-        echo "<div class='alert alert-warning' style='font-size: 12px !important'>No Code of Conduct found.</div>";
-    }
+    <?php }
     ?>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const viewButtons = document.querySelectorAll('.viewBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const modal = document.getElementById('cocModal');
 
         viewButtons.forEach(button => {
             button.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const topic = this.getAttribute('data-topic');
-                const details = this.getAttribute('data-details');
-                const reviewDate = this.getAttribute('data-reviewdate');
+                // Populate modal fields
+                document.getElementById('edit_coc_id').value = this.dataset.id;
+                document.getElementById('edit_coc_topic').value = this.dataset.topic;
+                $('#editorNew').summernote('code', this.dataset.details);
+                document.getElementById('edit_coc_review_date').value = this.dataset.reviewdate;
 
-                // Fill modal fields
-                document.getElementById('edit_coc_id').value = id;
-                document.getElementById('edit_coc_topic').value = topic;
-                document.getElementById('editorNew').value = details;
-                document.getElementById('edit_coc_review_date').value = reviewDate;
-
-                // Make fields read-only
+                // Disable fields
                 document.getElementById('edit_coc_topic').readOnly = true;
-                document.getElementById('editorNew').readOnly = true;
+                $('#editorNew').summernote('disable');
                 document.getElementById('edit_coc_review_date').readOnly = true;
 
-                // Hide Add button
-                document.querySelector('button[name="add-coc"]').style.display = 'none';
+                // Hide submit button
+                submitBtn.style.display = 'none';
             });
         });
 
-        const modal = document.getElementById('cocModal');
+        // When modal is closed, reset everything
         modal.addEventListener('hidden.bs.modal', function() {
             document.getElementById('edit_coc_id').value = '';
             document.getElementById('edit_coc_topic').value = '';
-            document.getElementById('editorNew').value = '';
+            $('#editorNew').summernote('code', '');
             document.getElementById('edit_coc_review_date').value = '';
 
             document.getElementById('edit_coc_topic').readOnly = false;
-            document.getElementById('editorNew').readOnly = false;
+            $('#editorNew').summernote('enable');
             document.getElementById('edit_coc_review_date').readOnly = false;
 
-            document.querySelector('button[name="add-coc"]').style.display = 'inline-block';
+            submitBtn.style.display = 'inline-block'; // show for Add
         });
     });
 </script>

@@ -11,12 +11,13 @@ include 'includes/connection.php';
 
 
     if (isset($_POST['del-comm'])) {
-        $sf_comment_parent_id = mysqli_real_escape_string($connection, $_POST['sf_comment_parent_id']);
-        $delete_comment = mysqli_query($connection, "DELETE FROM sf_comments WHERE sf_comment_parent_id='$sf_comment_parent_id'") or die(mysqli_error($connection));
+        $sf_comment_id = intval($_POST['sf_comment_id']); // safe conversion
+        $delete_comment = mysqli_query($connection, "DELETE FROM sf_comments WHERE sf_comment_id='$sf_comment_id'") or die(mysqli_error($connection));
         if ($delete_comment) {
             echo "<p id='alertBox' class='alert alert-danger'>Comment deleted successfully!</p>";
         }
     }
+
 
     // Fetch main communication data
     $query = mysqli_query($connection, "SELECT * FROM staff_comm WHERE comm_id = $id") or die(mysqli_error($connection));
@@ -69,7 +70,7 @@ include 'includes/connection.php';
                             <div style="display: flex; justify-content: space-between;">
                                 <p style="font-size: 12px !important; margin: 0;"><strong><?php echo htmlspecialchars($sf_comment_by); ?></strong> - <?php echo $sf_comment_date; ?></p>
                                 <form action="" method="POST">
-                                    <input type="hidden" name="sf_comment_parent_id" value="<?php echo $id; ?>">
+                                    <input type="hidden" name="sf_comment_id" value="<?php echo $row['sf_comment_id']; ?>">
                                     <button type="submit" style="font-size: 12px;" name="del-comm" class="btn btn-sm btn-outline-danger"><ion-icon name="close-outline"></ion-icon></button>
                                 </form>
                             </div>

@@ -13,9 +13,9 @@ include 'includes/connection.php';
 
     <div style="border-bottom: 1px solid #c5c5c5c5; margin-bottom: 20px; margin-top: 40px">
         <h1 style="font-size: 20px !important; margin: 0">Overview</h1>
-        <p style="font-size: 12px; margin: 0; padding-bottom: 20px">A communication group for our staff and truisted associates to discuss, task and
+        <p style="font-size: 12px; margin: 0; padding-bottom: 20px">A communication group for our staff and trusted associates to discuss, task and
             develop greater understanding of this platform, Information Security Management System,
-            policies processes & controls, including thos relating to data protection for GDPR</p>
+            policies processes & controls, including those relating to data protection for GDPR</p>
     </div>
 
     <?php
