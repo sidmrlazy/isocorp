@@ -296,6 +296,18 @@ $risk = $result->fetch_assoc();
                         </div>
 
                         <?php
+                        if (isset($_POST['remove_policy'])) {
+                            $risk_id = intval($_POST['risk_id']);
+                            $clause_id = intval($_POST['clause_id']);
+                            $clause_type = mysqli_real_escape_string($connection, $_POST['clause_type']);
+
+                            $delete_query = "DELETE FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $clause_id AND clause_type = '$clause_type'";
+                            mysqli_query($connection, $delete_query);
+
+                            echo "<div class='alert alert-warning mt-2'>Policy unlinked from the risk.</div>";
+                        }
+
+
                         if (isset($_POST['connect_risk'])) {
                             $risk_id = $_POST['risk_id'];  // You might need to capture the risk ID too if it's part of the form
                             $selected_policies = $_POST['assign_policies'];  // Policies assigned from the modal
@@ -375,12 +387,25 @@ $risk = $result->fetch_assoc();
                                     }
                                     $url = "policy-details.php?$param=" . $policy['id'];
                                     ?>
-                                    <li style="margin-bottom: 5px;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                                            <span><?= $policy['text'] ?></span>
-                                            <a href="<?= $url ?>" class="btn btn-sm btn-outline-success" style="font-size: 10px;">View</a>
-                                        </div>
-                                    </li>
+                                    <div style="margin-bottom: 5px; padding: 5px; border-bottom: 1px solid #e7e7e7;">
+                                        <li style="margin-bottom: 5px;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                <span><?= $policy['text'] ?></span>
+                                                <div class="d-flex justify-content-end align-items-center">
+                                                    <a href="<?= $url ?>" class="btn btn-sm btn-outline-success" style="font-size: 10px;">View</a>
+                                                    <!-- <a href="<?= $url ?>" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">Remove</a> -->
+
+                                                    <form method="POST" style="display:inline-block; margin-left: 5px;" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                        <input type="hidden" name="remove_policy" value="1">
+                                                        <input type="hidden" name="clause_id" value="<?= $policy['id'] ?>">
+                                                        <input type="hidden" name="clause_type" value="<?= $policy['type'] ?>">
+                                                        <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">Remove</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </div>
                                 <?php endforeach; ?>
                             </ul>
 
@@ -490,9 +515,22 @@ $risk = $result->fetch_assoc();
                                     if ($r = mysqli_fetch_assoc($q)) {
                                         $has_sims = true;
                             ?>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                                            <li><?php echo htmlspecialchars($r['sim_id']) . ". " . htmlspecialchars($r['sim_topic']) ?></li>
-                                            <a style="font-size: 10px" class="btn btn-sm btn-outline-success" href="sim-details.php?id=<?php echo $r['sim_id'] ?>">View</a>
+
+
+                                        <div style="margin-bottom: 5px; padding: 5px; border-bottom: 1px solid #e7e7e7;">
+                                            <li style="margin-bottom: 5px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                    <span><?php echo htmlspecialchars($r['sim_id']) . ". " . htmlspecialchars($r['sim_topic']) ?></span>
+                                                    <div class="d-flex justify-content-end align-items-center">
+                                                        <a style="font-size: 10px" class="btn btn-sm btn-outline-success" href="sim-details.php?id=<?php echo $r['sim_id'] ?>">View</a>
+                                                        <form method="POST" action="" style="display:inline-block; margin-left: 5px;" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                            <input type="hidden" name="remove_sim_id" value="<?= $r['sim_id'] ?>">
+                                                            <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
+                                                            <button type="submit" name="remove_sim" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">Remove</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </li>
                                         </div>
                             <?php
                                     }
@@ -518,6 +556,13 @@ $risk = $result->fetch_assoc();
                             }
 
                             echo "<div style='font-size: 12px;' id='alertBox' class='alert alert-success mt-2'>SIMs successfully linked to the risk.</div>";
+                        }
+
+                        if (isset($_POST['remove_sim'])) {
+                            $risk_id = intval($_POST['risk_id']);
+                            $sim_id = intval($_POST['remove_sim_id']);
+                            mysqli_query($connection, "DELETE FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $sim_id AND clause_type = 'sim'");
+                            echo "<div style='font-size: 12px;' id='alertBox' class='alert alert-warning mt-2'>SIM unlinked from this risk.</div>";
                         }
                         ?>
 
