@@ -429,7 +429,7 @@ include 'includes/config.php';
                                                     </button>
                                                 </td>
                                                 <td>
-                                                    <form method="POST">
+                                                    <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                                         <input type="hidden" name="history_id" value="<?php echo $history['history_id']; ?>">
                                                         <button type="submit" name="history_remove" style="font-size: 12px;" class="btn btn-sm btn-outline-danger">
                                                             Remove
@@ -657,7 +657,7 @@ include 'includes/config.php';
                                                 </form>
                                             </td>
                                             <td>
-                                                <form action="" method="POST">
+                                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                                     <input type="text" name="document_id" value="<?= $document_id ?>" hidden>
                                                     <button type="submit" name="delete-doc" class="btn btn-sm btn-outline-danger" style="font-size: 12px;">Delete</button>
                                                 </form>
@@ -793,7 +793,7 @@ include 'includes/config.php';
                                                 </a>
                                             </td>
                                             <td>
-                                                <form action="" method="POST">
+                                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                                     <input type="hidden" name="risk_id" value="<?php echo $risk['risks_id']; ?>">
                                                     <input type="hidden" name="clause_id" value="<?php echo htmlspecialchars($policy_id); ?>">
                                                     <input type="hidden" name="clause_type" value="<?php echo htmlspecialchars($policy_table); ?>">
