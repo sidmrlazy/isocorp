@@ -62,12 +62,19 @@ include 'includes/navbar.php';
                             <tr>
                                 <td style="font-size: 12px;"><?php echo $serial++; ?></td>
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($program); ?></td>
-                                
+
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($activity); ?></td>
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($phase); ?></td>
-                                
+
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($assigned_to); ?></td>
-                                <td style="font-size: 12px;"><?php echo date('m-d-Y', strtotime(htmlspecialchars($due_date))); ?></td>
+                                <td style="font-size: 12px;">
+                                    <?php
+                                    echo (!empty($due_date) && $due_date !== '0000-00-00')
+                                        ? date('m-d-Y', strtotime($due_date))
+                                        : '';
+                                    ?>
+                                </td>
+
                                 <td style="font-size: 12px;"><?php echo htmlspecialchars($status); ?></td>
                                 <td>
                                     <a href="audit-program-details.php?id=<?php echo $ph_id ?>" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">View Details</a>
