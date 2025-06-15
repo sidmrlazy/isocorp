@@ -7,12 +7,12 @@ include 'includes/connection.php';
     <a href="add-user.php" class="btn btn-success mb-3 mt-3">Add User</a>
 
     <?php
-    if(isset($_POST['del-user'])) {
+    if (isset($_POST['del-user'])) {
         $isms_user_id = $_POST['isms_user_id'];
-        
+
         $del_query = "DELETE FROM `user` WHERE isms_user_id = $isms_user_id";
         $del_query_r = mysqli_query($connection, $del_query);
-        if($del_query_r) { ?>
+        if ($del_query_r) { ?>
             <div id="alertBox" class="alert alert-success mb-3 mt-3" role="alert">
                 User deleted!
             </div>
@@ -52,18 +52,18 @@ include 'includes/connection.php';
     $get_user_count = mysqli_num_rows($get_users_result);
 
     if ($get_user_count > 0) { ?>
-        <div class="table-responsive table-container table-bordered">
-            <table class="table">
-                <thead>
+        <div class="table-responsive table-container ">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="table-dark">
                     <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">NAME</th>
-                        <th scope="col">EMAIL</th>
-                        <th scope="col">USER ROLE</th>
-                        <th scope="col">CREATED ON</th>
-                        <th scope="col" class="text-center">ROLE</th>
-                        <th scope="col" class="text-center">DELETE</th>
-                        <th scope="col" class="text-center">UPDATE</th>
+                        <th style="font-size: 12px !important;" scope="col">ID</th>
+                        <th style="font-size: 12px !important;" scope="col">NAME</th>
+                        <th style="font-size: 12px !important;" scope="col">EMAIL</th>
+                        <th style="font-size: 12px !important;" scope="col">USER ROLE</th>
+                        <th style="font-size: 12px !important;" scope="col">CREATED ON</th>
+                        <th style="font-size: 12px !important;" scope="col" class="text-center">ROLE</th>
+                        <th style="font-size: 12px !important;" scope="col" class="text-center">DELETE</th>
+                        <th style="font-size: 12px !important;" scope="col" class="text-center">UPDATE</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,31 +76,31 @@ include 'includes/connection.php';
                         $isms_user_creation_dt = $row['isms_user_creation_dt'];
                     ?>
                         <tr>
-                            <th scope="row"><?php echo $isms_user_id ?></th>
-                            <td><?php echo $isms_user_name ?></td>
-                            <td><?php echo $isms_user_email ?></td>
-                            <td><?php echo ($isms_user_role == '1') ? "Admin" : "Read Only"; ?></td>
-                            <td><?php echo $isms_user_creation_dt ?></td>
-                            <td class="text-center">
+                            <td style="font-size: 12px !important;" scope="row"><?php echo $isms_user_id ?></td>
+                            <td style="font-size: 12px !important;"><?php echo $isms_user_name ?></td>
+                            <td style="font-size: 12px !important;"><?php echo $isms_user_email ?></td>
+                            <td style="font-size: 12px !important;"><?php echo ($isms_user_role == '1') ? "Admin" : "Read Only"; ?></td>
+                            <td style="font-size: 12px !important;"><?php echo $isms_user_creation_dt ?></td>
+                            <td style="font-size: 12px !important;" class="text-center">
                                 <form action="edit-user-role.php" method="POST">
                                     <input type="hidden" name="isms_user_id" value="<?php echo $isms_user_id ?>">
-                                    <button type="submit" name="edit_user_role" class="btn btn-sm btn-outline-primary">
+                                    <button style="font-size: 12px !important;" type="submit" name="edit_user_role" class="btn btn-sm btn-outline-primary">
                                         <ion-icon name="build-outline"></ion-icon>
                                     </button>
                                 </form>
                             </td>
-                            <td class="text-center">
+                            <td style="font-size: 12px !important;" class="text-center">
                                 <form action="" method="POST">
                                     <input type="hidden" name="isms_user_id" value="<?php echo $isms_user_id ?>">
-                                    <button type="submit" name="del-user" class="btn btn-sm btn-outline-danger">
+                                    <button style="font-size: 12px !important;" type="submit" name="del-user" class="btn btn-sm btn-outline-danger">
                                         <ion-icon name="trash-outline"></ion-icon>
                                     </button>
                                 </form>
                             </td>
-                            <td class="text-center">
+                            <td style="font-size: 12px !important;" class="text-center">
                                 <form action="" method="POST">
                                     <input type="hidden" name="isms_user_id" value="<?php echo $isms_user_id ?>">
-                                    <button class="btn btn-sm btn-outline-warning">
+                                    <button style="font-size: 12px !important;" class="btn btn-sm btn-outline-warning">
                                         <ion-icon name="create-outline"></ion-icon>
                                     </button>
                                 </form>
