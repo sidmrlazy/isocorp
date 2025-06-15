@@ -52,8 +52,8 @@ include 'includes/connection.php';
 
         <!-- Save Button -->
         <div class="text-end mb-3">
-            <button type="submit" name="save_only" class="btn btn-sm btn-outline-primary" style="font-size: 12px;">Save Applicability</button>
-            <button type="submit" name="download_excel" class="btn btn-sm btn-outline-success" style="font-size: 12px;">Download Statement of Applicability</button>
+            <button type="submit" name="save_only" formaction="save_soa.php" class="btn btn-sm btn-outline-primary" style="font-size: 12px;">Save Applicability</button>
+            <button type="submit" name="download_excel" formaction="download_policies_excel.php" class="btn btn-sm btn-outline-success" style="font-size: 12px;">Download Statement of Applicability</button>
         </div>
         <div class="card p-3 table-responsive">
             <table class="table table-bordered table-striped table-hover">
@@ -149,6 +149,47 @@ include 'includes/connection.php';
             }
         }
     });
+
+    function submitForDownload() {
+        const form = document.getElementById("policyForm");
+        const formData = new FormData(form);
+        let justificationMissing = false;
+
+        // Check justification for non-applicable policies
+        const radios = form.querySelectorAll("input[type='radio']:checked");
+        for (let radio of radios) {
+            if (radio.value === "0") {
+                const index = radio.name.match(/\[(\d+)\]/)[1];
+                const justification = document.getElementById("justification_" + index).value.trim();
+                if (!justification) {
+                    alert("Justification required for non-applicable policies.");
+                    justificationMissing = true;
+                    break;
+                }
+            }
+        }
+
+        if (justificationMissing) return;
+
+        // Submit data to download script via POST
+        const downloadForm = document.createElement('form');
+        downloadForm.method = 'POST';
+        downloadForm.action = 'download_policies_excel.php';
+        downloadForm.style.display = 'none';
+
+        for (let [key, value] of formData.entries()) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            downloadForm.appendChild(input);
+        }
+
+        document.body.appendChild(downloadForm);
+        downloadForm.submit();
+        document.body.removeChild(downloadForm);
+    }
 </script>
+
 
 <?php include 'includes/footer.php'; ?>

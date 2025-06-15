@@ -33,7 +33,7 @@ $rowNum = 2;
 while ($row = mysqli_fetch_assoc($result)) {
     $sheet->setCellValue("A{$rowNum}", $row['soa_policy_name']);
     $sheet->setCellValue("B{$rowNum}", is_null($row['soa_applicable']) ? 'Not Selected' : ($row['soa_applicable'] ? 'Yes' : 'No'));
-    $sheet->setCellValue("C{$rowNum}", $row['soa_justification']);
+    $sheet->setCellValueExplicit("C{$rowNum}", $row['soa_justification'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
     $rowNum++;
 }
 
