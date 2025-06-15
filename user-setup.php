@@ -90,7 +90,7 @@ include 'includes/connection.php';
                                 </form>
                             </td>
                             <td style="font-size: 12px !important;" class="text-center">
-                                <form action="" method="POST">
+                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                     <input type="hidden" name="isms_user_id" value="<?php echo $isms_user_id ?>">
                                     <button style="font-size: 12px !important;" type="submit" name="del-user" class="btn btn-sm btn-outline-danger">
                                         <ion-icon name="trash-outline"></ion-icon>
