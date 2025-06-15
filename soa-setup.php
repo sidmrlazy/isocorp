@@ -62,7 +62,6 @@ include 'includes/connection.php';
                         <th style="font-size: 12px;">Policy</th>
                         <th style="font-size: 12px;">Applicable</th>
                         <th style="font-size: 12px;">Not Applicable</th>
-                        <th style="font-size: 12px;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,13 +85,7 @@ include 'includes/connection.php';
                             <td style="text-align: center;" class="<?= $saved_applicable === '0' ? 'table-danger' : '' ?>">
                                 <input type="checkbox" class="form-check-input applicable-checkbox" data-index="<?= $index ?>" data-type="not_applicable" name="applicable_status[<?= $index ?>]" value="0" onclick="openModal(<?= $index ?>)" <?= $saved_applicable === '0' ? 'checked' : '' ?>>
                             </td>
-                            <td>
-                                <a href="policy-details.php?policy_id=<?= $clause['id'] ?>"
-                                    class="btn btn-sm btn-outline-success"
-                                    style="font-size: 12px !important">
-                                    Details
-                                </a>
-                            </td>
+
                         </tr>
                     <?php endforeach; ?>
 
