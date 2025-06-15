@@ -79,12 +79,13 @@ include 'includes/connection.php';
                                 <input type="hidden" name="policy_id[<?= $index ?>]" value="<?= $clause['id'] ?>">
                                 <input type="hidden" id="justification_<?= $index ?>" name="justification[<?= $index ?>]" value="<?= htmlspecialchars($saved_justification) ?>">
                             </td>
-                            <td style="text-align: center;">
-                                <input type="radio" name="applicable_status[<?= $index ?>]" value="1" <?= $saved_applicable === '1' ? 'checked' : '' ?>>
+                            <td style="text-align: center;" class="<?= $saved_applicable === '1' ? 'table-success' : '' ?>">
+                                <input type="checkbox" class="form-check-input applicable-checkbox" data-index="<?= $index ?>" data-type="applicable" name="applicable_status[<?= $index ?>]" value="1" <?= $saved_applicable === '1' ? 'checked' : '' ?>>
                             </td>
-                            <td style="text-align: center;">
-                                <input type="radio" name="applicable_status[<?= $index ?>]" value="0" onclick="openModal(<?= $index ?>)" <?= $saved_applicable === '0' ? 'checked' : '' ?>>
+                            <td style="text-align: center;" class="<?= $saved_applicable === '0' ? 'table-danger' : '' ?>">
+                                <input type="checkbox" class="form-check-input applicable-checkbox" data-index="<?= $index ?>" data-type="not_applicable" name="applicable_status[<?= $index ?>]" value="0" onclick="openModal(<?= $index ?>)" <?= $saved_applicable === '0' ? 'checked' : '' ?>>
                             </td>
+
                         </tr>
                     <?php endforeach; ?>
 
@@ -189,6 +190,34 @@ include 'includes/connection.php';
         downloadForm.submit();
         document.body.removeChild(downloadForm);
     }
+
+    document.querySelectorAll('.applicable-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const index = this.dataset.index;
+            const type = this.dataset.type;
+
+            const applicableCheckbox = document.querySelector(`input[data-index="${index}"][data-type="applicable"]`);
+            const notApplicableCheckbox = document.querySelector(`input[data-index="${index}"][data-type="not_applicable"]`);
+
+            if (this.checked) {
+                if (type === 'applicable') {
+                    notApplicableCheckbox.checked = false;
+                    // Add success style
+                    applicableCheckbox.closest('td').classList.add('table-success');
+                    notApplicableCheckbox.closest('td').classList.remove('table-danger');
+                } else {
+                    applicableCheckbox.checked = false;
+                    // Add danger style
+                    notApplicableCheckbox.closest('td').classList.add('table-danger');
+                    applicableCheckbox.closest('td').classList.remove('table-success');
+                }
+            } else {
+                // Remove both styles if neither is selected
+                applicableCheckbox.closest('td').classList.remove('table-success');
+                notApplicableCheckbox.closest('td').classList.remove('table-danger');
+            }
+        });
+    });
 </script>
 
 
