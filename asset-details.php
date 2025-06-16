@@ -164,7 +164,7 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
                 <div class="mb-3">
                     <label style="font-size: 12px !important;" class="form-label">Assigned To</label>
                     <!-- <input type="text" name="asset_assigned_to" class="form-control" value="<?php echo htmlspecialchars($asset_assigned_to); ?>"> -->
-                    <select class="form-select" style="font-size: 12px !important;" aria-label="Default select example">
+                    <select class="form-select" name="asset_assigned_to" style="font-size: 12px !important;" aria-label="Default select example">
                         <option selected>Open this select menu</option>
                         <?php 
                         $get_user = "SELECT * FROM user";
