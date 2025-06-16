@@ -1,4 +1,9 @@
 <?php
+if (!isset($_SESSION['user_session']) && !isset($_COOKIE['user_session'])) {
+    // Send a 404 Not Found response
+    http_response_code(404);
+    exit();
+}
 include('includes/header.php');
 include('includes/navbar.php');
 include 'includes/config.php';
