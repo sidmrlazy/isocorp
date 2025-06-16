@@ -64,7 +64,7 @@ include 'includes/connection.php';
               <a class="dropdown-item" href="code-of-conduct.php">
                 <ion-icon style="font-size: 20px !important;" name="document-text-outline"></ion-icon> Code of conduct
               </a>
-            </li>            
+            </li>
           </ul>
         </li>
       </ul>
@@ -74,7 +74,7 @@ include 'includes/connection.php';
             <ion-icon name="person-circle-outline"></ion-icon> <?php echo htmlspecialchars($user_name); ?>
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" href="#"><ion-icon name="person-outline"></ion-icon> Profile</a></li>
+            <!-- <li><a class="dropdown-item" href="#"><ion-icon name="person-outline"></ion-icon> Profile</a></li> -->
             <li><a class="dropdown-item" href="audit-program-setup.php"><ion-icon name="construct-outline"></ion-icon> Audit Programme Setup</a></li>
             <li><a class="dropdown-item" href="user-setup.php"><ion-icon name="person-add-outline"></ion-icon>User Setup</a></li>
             <li><a class="dropdown-item" href="soa-setup.php"><ion-icon name="document-outline"></ion-icon>Statement of Applicability</a></li>

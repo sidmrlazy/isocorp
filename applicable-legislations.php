@@ -255,7 +255,7 @@ include('includes/auth_check.php');
 
                             </td>
                             <td style="font-size: 12px !important;">
-                                <form action="" method="POST">
+                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                     <input type="text" name="al_id" value="<?php echo $al_id; ?>" hidden>
                                     <button type="submit" name="del-al" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Delete</button>
                                 </form>

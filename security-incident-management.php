@@ -325,9 +325,7 @@ include 'includes/connection.php'; ?>
                                 <td class="text-center">
                                     <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this incident?');">
                                         <input type="hidden" name="sim_id" value="<?php echo $sim_id ?>">
-                                        <button type="submit" style="font-size: 12px;" name="delete" class="btn btn-sm btn-outline-danger">
-                                            <ion-icon name="trash-outline"></ion-icon>
-                                        </button>
+                                        <button type="submit" name="delete" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
                                     </form>
                                 </td>
                             </form>
@@ -360,4 +358,10 @@ include 'includes/connection.php'; ?>
         <div class="alert alert-danger mt-5" role="alert">No security incidents recorded!</div>
     <?php } ?>
 </div>
+<script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this incident?");
+    }
+</script>
+
 <?php include('includes/footer.php');
