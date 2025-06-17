@@ -24,36 +24,37 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `audit_program`
+-- Table structure for table `audit_program_doc`
 --
 
-CREATE TABLE `audit_program` (
-  `ap_id` int(11) NOT NULL,
-  `ap_name` varchar(255) DEFAULT NULL,
-  `ap_details` blob DEFAULT NULL,
-  `ap_assigned` varchar(100) DEFAULT NULL,
-  `ap_created_date` varchar(100) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+CREATE TABLE `audit_program_doc` (
+  `ap_d_id` int(11) NOT NULL,
+  `ap_d_main_id` varchar(100) DEFAULT NULL,
+  `ap_d_doc_name` varchar(100) DEFAULT NULL,
+  `ap_d_ver` varchar(100) DEFAULT NULL,
+  `ap_d_upload_date` varchar(100) DEFAULT NULL,
+  `ap_d_update_date` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `audit_program`
+-- Indexes for table `audit_program_doc`
 --
-ALTER TABLE `audit_program`
-  ADD PRIMARY KEY (`ap_id`);
+ALTER TABLE `audit_program_doc`
+  ADD PRIMARY KEY (`ap_d_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `audit_program`
+-- AUTO_INCREMENT for table `audit_program_doc`
 --
-ALTER TABLE `audit_program`
-  MODIFY `ap_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `audit_program_doc`
+  MODIFY `ap_d_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

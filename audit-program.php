@@ -16,7 +16,7 @@ include 'includes/navbar.php';
     </div>
 
     <?php
-    
+
 
     if (isset($_POST['add-ap'])) {
         $ap_name = mysqli_real_escape_string($connection, $_POST['ap_name']);
@@ -96,51 +96,51 @@ include 'includes/navbar.php';
     $result = mysqli_query($connection, $query);
     $count = mysqli_num_rows($result);
 
-    
+
     ?>
     <!-- ============ AUDIT TABLE ============ -->
-     <?php if ($count == 0) { ?>
+    <?php if ($count == 0) { ?>
         <div class="alert alert-info" style="font-size: 12px !important;">No audit programmes found.</div>
     <?php } else { ?>
-    <div class="table-responsive card p-3 mb-5">
-        <table class="table table-hover table-striped table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th style="font-size: 12px !important;">ID</th>
-                    <th style="font-size: 12px !important;">Topic</th>
-                    <th style="font-size: 12px !important;">Assigned to</th>
-                    <th style="font-size: 12px !important;">Review Date</th>
-                    <th style="font-size: 12px !important;">View Details</th>
-                    <th style="font-size: 12px !important;">Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $ap_id = htmlspecialchars($row['ap_id']);
-                    $ap_name = htmlspecialchars($row['ap_name']);
-                    $ap_assigned = htmlspecialchars($row['ap_assigned']);
-                    $ap_created_date = htmlspecialchars($row['ap_created_date']);
-                ?>
+        <div class="table-responsive card p-3 mb-5">
+            <table class="table table-hover table-striped table-bordered">
+                <thead class="table-dark">
                     <tr>
-                        <td style="font-size: 12px !important;"><?php echo $ap_id ?></td>
-                        <td style="font-size: 12px !important;"><?php echo $ap_name ?></td>
-                        <td style="font-size: 12px !important;"><?php echo $ap_assigned ?></td>
-                        <td style="font-size: 12px !important;"><?php echo $ap_created_date ?></td>
-                        <td style="font-size: 12px !important;">
-                            <button style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">View</button>
-                        </td>
-                        <td style="font-size: 12px !important;">
-                            <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                <input type="text" name="ap_id" value="<?php echo $ap_id ?>" hidden>
-                                <button type="submit" name="delete" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Delete</button>
-                            </form>
-                        </td>
+                        <th style="font-size: 12px !important;">ID</th>
+                        <th style="font-size: 12px !important;">Topic</th>
+                        <th style="font-size: 12px !important;">Assigned to</th>
+                        <th style="font-size: 12px !important;">Review Date</th>
+                        <th style="font-size: 12px !important;">View Details</th>
+                        <th style="font-size: 12px !important;">Delete</th>
                     </tr>
-                <?php } ?>
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    <?php
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $ap_id = htmlspecialchars($row['ap_id']);
+                        $ap_name = htmlspecialchars($row['ap_name']);
+                        $ap_assigned = htmlspecialchars($row['ap_assigned']);
+                        $ap_created_date = htmlspecialchars($row['ap_created_date']);
+                    ?>
+                        <tr>
+                            <td style="font-size: 12px !important;"><?php echo $ap_id ?></td>
+                            <td style="font-size: 12px !important;"><?php echo $ap_name ?></td>
+                            <td style="font-size: 12px !important;"><?php echo $ap_assigned ?></td>
+                            <td style="font-size: 12px !important;"><?php echo $ap_created_date ?></td>
+                            <td style="font-size: 12px !important;">
+                                <a href="audit-program-display.php?id=<?php echo $ap_id; ?>" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">View</a>
+                            </td>
+                            <td style="font-size: 12px !important;">
+                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                    <input type="text" name="ap_id" value="<?php echo $ap_id ?>" hidden>
+                                    <button type="submit" name="delete" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
     <?php } ?>
 </div>
 
