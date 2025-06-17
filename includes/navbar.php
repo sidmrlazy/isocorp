@@ -65,6 +65,11 @@ include 'includes/connection.php';
                 <ion-icon style="font-size: 20px !important;" name="document-text-outline"></ion-icon> Code of conduct
               </a>
             </li>
+            <li>
+              <a class="dropdown-item" href="trainings.php">
+                <ion-icon style="font-size: 20px !important;" name="barbell-outline"></ion-icon> Trainings
+              </a>
+            </li>
           </ul>
         </li>
       </ul>
