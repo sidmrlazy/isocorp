@@ -79,7 +79,7 @@ include 'includes/config.php';
     $get_count = mysqli_num_rows($get_res);
     if ($get_count > 0) {
     ?>
-        <div class="card p-3">
+        <div class="card p-3 mb-5">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover">
                     <thead class="table-dark">
