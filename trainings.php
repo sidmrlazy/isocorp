@@ -179,13 +179,14 @@ $jsonDates = json_encode($trainingDates);
         </div>
 
         <!-- RIGHT CALENDAR -->
-        <div class="col-md-6">
+        <div class="col-md-6 mb-5">
             <div class="card p-3">
                 <div id="calendar"></div>
             </div>
         </div>
     </div>
 </div>
+
 <script>
     const trainingDates = <?= $jsonDates ?>;
 
@@ -268,7 +269,4 @@ $jsonDates = json_encode($trainingDates);
 
     renderCalendar();
 </script>
-
-
-
 <?php include('includes/footer.php'); ?>
