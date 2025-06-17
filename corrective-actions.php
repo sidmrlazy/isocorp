@@ -4,7 +4,7 @@ include 'includes/navbar.php';
 include 'includes/connection.php';
 include 'includes/config.php';
 ?>
-<div class="dashboard-container">
+<div class="dashboard-container mb-5">
     <div class="screen-name-container">
         <h1>CORRECTIVE ACTIONS & IMPROVEMENTS</h1>
         <h2><a href="dashboard.php">Dashboard</a> > Corrective Actions & Improvements</h2>
