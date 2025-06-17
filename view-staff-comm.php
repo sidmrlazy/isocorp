@@ -2,19 +2,28 @@
 include 'includes/header.php';
 include 'includes/navbar.php';
 include 'includes/connection.php';
-
 ?>
 
 <div class="dashboard-container mb-5">
     <?php
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-
     if (isset($_POST['del-comm'])) {
         $sf_comment_id = intval($_POST['sf_comment_id']); // safe conversion
         $delete_comment = mysqli_query($connection, "DELETE FROM sf_comments WHERE sf_comment_id='$sf_comment_id'") or die(mysqli_error($connection));
         if ($delete_comment) {
-            echo "<p id='alertBox' class='alert alert-danger'>Comment deleted successfully!</p>";
+            echo "<p id='alertBox' style='font-size: 12px !important' class='alert alert-danger'>Comment deleted successfully!</p>";
+        }
+    }
+
+    if(isset($_POST['save-det'])) {
+        $comm_details = mysqli_real_escape_string($connection, $_POST['comm_details']);
+        $update_query = "UPDATE staff_comm SET comm_details='$comm_details' WHERE comm_id=$id";
+        $update_result = mysqli_query($connection, $update_query) or die(mysqli_error($connection));
+        if ($update_result) {
+            echo "<p id='alertBox' style='font-size: 12px !important' class='alert alert-success'>Details updated successfully!</p>";
+        } else {
+            echo "<p id='alertBox' style='font-size: 12px !important' class='alert alert-danger'>Failed to update details.</p>";
         }
     }
 
@@ -26,11 +35,19 @@ include 'includes/connection.php';
     <div class="row">
         <!-- ============ LEFT SECTION ============ -->
         <div class="col-md-6">
-            <div class="card p-3">
+            <form action="" method="POST" class="card p-3">
                 <p style="margin: 0; font-size: 12px !important;"><strong><?php echo $data['comm_by']; ?> -</strong> <?php echo $data['comm_date']; ?></p>
                 <p style="margin: 0; font-size: 16px !important;"><strong>Topic:</strong> <?php echo $data['comm_data']; ?></p>
-                <p style="margin: 0; font-size: 12px !important;"><?php echo nl2br($data['comm_details']); ?></p>
-            </div>
+
+                <div class="mb-3 mt-3">
+                    <label style="font-size: 12px;" for="edit">Details</label>
+                    <div class="WYSIWYG-editor">
+                        <textarea id="editorNew" name="comm_details"><?php echo nl2br($data['comm_details']); ?></textarea>
+                    </div>
+                </div>
+                <!-- <p style="margin: 0; font-size: 12px !important;"><?php echo nl2br($data['comm_details']); ?></p> -->
+            <button type="submit" name="save-det" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
+            </form>
         </div>
 
         <!-- ============ RIGHT SECTION ============ -->
@@ -46,7 +63,7 @@ include 'includes/connection.php';
 
                     $insert_comment = mysqli_query($connection, "INSERT INTO sf_comments (sf_comment_parent_id, sf_comment_by, sf_comment_details, sf_comment_date) VALUES ('$sf_comment_parent_id', '$sf_comment_by', '$sf_comment_details', '$sf_comment_date')") or die(mysqli_error($connection));
                     if ($insert_comment) {
-                        echo "<p id='alertBox' style='font-size: 12px !important;' class='alert alert-success'>Comment added successfully!</p>";
+                        echo "<p id='alertBox' style='font-size: 12px !important' style='font-size: 12px !important;' class='alert alert-success'>Comment added successfully!</p>";
                     }
                 }
                 ?>
