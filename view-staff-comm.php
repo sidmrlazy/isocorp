@@ -45,7 +45,6 @@ include 'includes/connection.php';
                         <textarea id="editorNew" name="comm_details"><?php echo nl2br($data['comm_details']); ?></textarea>
                     </div>
                 </div>
-                <!-- <p style="margin: 0; font-size: 12px !important;"><?php echo nl2br($data['comm_details']); ?></p> -->
             <button type="submit" name="save-det" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
             </form>
         </div>
