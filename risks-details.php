@@ -304,7 +304,7 @@ $risk = $result->fetch_assoc();
                             $delete_query = "DELETE FROM risk_policies WHERE risks_id = $risk_id AND clause_id = $clause_id AND clause_type = '$clause_type'";
                             mysqli_query($connection, $delete_query);
 
-                            echo "<div class='alert alert-warning mt-2'>Policy unlinked from the risk.</div>";
+                            echo "<div id='alertBox' style='font-size: 12px !important' class='alert alert-warning mt-2'>Policy unlinked from the risk.</div>";
                         }
 
 
@@ -321,7 +321,7 @@ $risk = $result->fetch_assoc();
                                 mysqli_query($connection, $query);
                             }
 
-                            echo "<div class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
+                            echo "<div id='alertBox' style='font-size: 12px !important' class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
                         }
 
                         mysqli_data_seek($fetch_mappings_result, 0);
@@ -440,7 +440,7 @@ $risk = $result->fetch_assoc();
                                             }
                                         }
 
-                                        // echo "<div class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
+                                        // echo "<div id='alertBox' style='font-size: 12px !important' class='alert alert-success mt-2'>Policies successfully linked to the risk.</div>";
                                     }
 
                                     // Fetch all available policies for assignment
