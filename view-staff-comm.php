@@ -42,7 +42,7 @@ include 'includes/connection.php';
                 <div class="mb-3 mt-3">
                     <label style="font-size: 12px;" for="edit">Details</label>
                     <div class="WYSIWYG-editor">
-                        <textarea id="editorNew" name="comm_details"><?php echo nl2br($data['comm_details']); ?></textarea>
+                        <textarea id="editorNew" name="comm_details"><?php echo $data['comm_details']; ?></textarea>
                     </div>
                 </div>
             <button type="submit" name="save-det" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
