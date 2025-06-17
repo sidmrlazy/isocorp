@@ -34,7 +34,7 @@ function getRiskCount($connection, $clause_type, $clause_id)
                 <th style="font-size: 12px !important;">Sub Policy</th>
                 <th style="font-size: 12px !important;">Linked Policy</th>
                 <th style="font-size: 12px !important;">Inner Linked Policy</th>
-                <th style="font-size: 12px !important;">Risks</th>
+                <th style="font-size: 12px !important;">Risks Assigned</th>
                 <th style="font-size: 12px !important;">Details</th>
             </tr>
         </thead>
