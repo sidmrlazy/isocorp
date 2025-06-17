@@ -1,7 +1,5 @@
 <?php
 include 'includes/connection.php';
-
-
 function getVersionControlInfo($connection, $data_id)
 {
     $query = "SELECT vc_assigned_to, vc_status FROM version_control 
