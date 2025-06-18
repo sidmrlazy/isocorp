@@ -74,13 +74,15 @@ if (!empty($training_id)) {
 
 <div class="dashboard-container">
     <div class="row">
-        <!-- LEFT SECTION -->
+        <!-- =============== LEFT SECTION =============== -->
         <div class="col-md-6">
+            <!-- =============== DETAILS =============== -->
             <div class="card p-3 mb-3">
                 <p style="margin: 0">Details:</p>
                 <h5><?php echo htmlspecialchars($training_topic); ?></h5>
             </div>
 
+            <!-- =============== CONTENT =============== -->
             <div class="card p-3">
                 <form action="" method="POST">
                     <input type="hidden" name="training_parent_id" value="<?php echo htmlspecialchars($training_id); ?>">
@@ -101,12 +103,101 @@ if (!empty($training_id)) {
             </div>
         </div>
 
-        <!-- RIGHT SECTION -->
+        <!-- =============== RIGHT SECTION =============== -->
         <div class="col-md-6">
+            <div class="card p-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="">Document</label>
+                    <button style="font-size: 12px !important;" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#documentModal">Add</button>
+                </div>
+                <?php
+                if (isset($_POST['upload_document']) && isset($_FILES['training_file'])) {
+                    $training_id = mysqli_real_escape_string($connection, $_POST['training_id']);
+                    $upload_dir = 'uploads/training_docs/';
+                    $file_name = basename($_FILES['training_file']['name']);
+                    $file_path = $upload_dir . time() . '_' . $file_name;
+
+                    if (!file_exists($upload_dir)) {
+                        mkdir($upload_dir, 0777, true);
+                    }
+
+                    if (move_uploaded_file($_FILES['training_file']['tmp_name'], $file_path)) {
+                        $insert_doc = "INSERT INTO training_document (training_id, file_name, file_path) 
+                       VALUES ('$training_id', '$file_name', '$file_path')";
+                        mysqli_query($connection, $insert_doc);
+                    }
+                }
+                ?>
+
+                <!-- =============== DOCUMENT MODAL =============== -->
+                <div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <form action="" method="POST" enctype="multipart/form-data" class="modal-dialog modal-dialog-centered modal-lg">
+                        <input type="hidden" name="training_id" value="<?php echo $training_id; ?>">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Upload Document (if any)</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Select Document</label>
+                                    <input style="font-size: 12px !important;" type="file" name="training_file" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button style="font-size: 12px !important;" type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                <button style="font-size: 12px !important;" name="upload_document" type="submit" class="btn btn-sm btn-outline-success">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th style="font-size: 12px !important;" scope="col">Document Name</th>
+                                <th style="font-size: 12px !important;" scope="col">Download</th>
+                                <th style="font-size: 12px !important;" scope="col">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $doc_query = "SELECT * FROM training_document WHERE training_id = '$training_id' ORDER BY uploaded_on DESC";
+                            $doc_result = mysqli_query($connection, $doc_query);
+
+                            if ($doc_result && mysqli_num_rows($doc_result) > 0) {
+                                while ($doc = mysqli_fetch_assoc($doc_result)) {
+                                    $doc_id = $doc['training_document_id'];
+                                    $doc_name = htmlspecialchars($doc['file_name']);
+                                    $doc_path = $doc['file_path'];
+                                    echo "<tr>";
+                                    echo "<td style='font-size: 12px !important'>$doc_name</td>";
+                                    echo "<td style='font-size: 12px !important'><a href='$doc_path' style='font-size: 12px !important' class='btn btn-sm btn-outline-primary' download>Download</a></td>";
+                                    echo "<td style='font-size: 12px !important'>
+                            <form method='POST' style='display:inline;'>
+                                <input type='hidden' name='delete_doc_id' value='$doc_id'>
+                                <button type='submit' style='font-size: 12px !important' name='delete_document' class='btn btn-sm btn-outline-danger' onclick='return confirm(\"Delete this document?\")'>Delete</button>
+                            </form>
+                          </td>";
+                                    echo "</tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='3' style='font-size: 12px !important' class='text-muted'>No documents uploaded.</td></tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+            <!-- =============== COMMENT SECTION =============== -->
             <div class="card p-3">
                 <div class="heading-row d-flex justify-content-between">
                     <p style="font-size: 18px;">Comments</p>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#commentModal" class="btn btn-sm btn-outline-dark">Add Note</button>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#commentModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Add Note</button>
                 </div>
 
                 <?php
@@ -163,10 +254,11 @@ if (!empty($training_id)) {
                         </div>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ob_end_flush(); ?>
+
+<?php include 'includes/footer.php';
+ob_end_flush(); ?>
