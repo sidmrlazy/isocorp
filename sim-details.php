@@ -72,12 +72,8 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                     <p style="margin: 0;"><strong>Topic:</strong> <?php echo $sim_id . " " . $sim_topic ?? "N/A"; ?></p>
                 </div>
                 <form action="" method="POST">
-                    <!-- <div class="WYSIWYG-editor">
-                        <textarea id="editorNew"><?php echo htmlspecialchars_decode($sim_details); ?></textarea>
-                    </div> -->
                     <div class="WYSIWYG-editor">
                         <?php if ($sim_final == '2') { ?>
-                            <!-- <p></p> -->
                             <textarea id="simEditor" name="sim_details"><?php echo !empty($sim_details) ? htmlspecialchars_decode($sim_details) : 'No details available.'; ?></textarea>
                         <?php } else { ?>
                             <textarea id="simEditor" name="sim_details"><?php echo $sim_details ?? ""; ?></textarea>
