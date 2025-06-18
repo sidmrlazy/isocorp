@@ -42,7 +42,6 @@ include 'includes/connection.php';
                 <div class="mb-3 mt-3">
                     <label style="font-size: 12px;" for="edit">Details</label>
                     <div class="WYSIWYG-editor">
-                        <!-- <textarea id="editorNew" name="comm_details"><?php echo $data['comm_details']; ?></textarea> -->
                          <textarea id="editorNew" name="comm_details"><?php echo htmlspecialchars($data['comm_details']); ?></textarea>
 
                     </div>
