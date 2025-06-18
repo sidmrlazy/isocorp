@@ -92,7 +92,7 @@ include 'includes/connection.php';
                 <thead class="table-dark">
                     <tr>
                         <th style="font-size: 12px !important;" scope="col">Topic</th>
-                        <th style="font-size: 12px !important;" scope="col">Uploaded Date</th>
+                        <th style="font-size: 12px !important;" scope="col">Date</th>
                         <!-- <th style="font-size: 12px !important;" scope="col">Uploaded By</th> -->
                         <th style="font-size: 12px !important;" scope="col">Edit</th>
                         <th style="font-size: 12px !important;" scope="col">Delete</th>
@@ -104,7 +104,8 @@ include 'includes/connection.php';
                         $comm_id = $row['comm_id'];
                         $comm_data = $row['comm_data'];
                         $comm_by = $row['comm_by'];
-                        $comm_date = $row['comm_date'];
+                        $comm_date = date('m-d-Y', strtotime($row['comm_date']));
+
                     ?>
                         <tr>
                             <th style="font-size: 12px !important;"><?php echo $comm_data ?></th>
