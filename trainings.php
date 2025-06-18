@@ -6,17 +6,17 @@ include('includes/connection.php');
 $filterDate = $_GET['date'] ?? null;
 $filterMonth = $_GET['month'] ?? null;
 
-$query = "SELECT * FROM iso_training";
+$query = "SELECT * FROM `iso_training`";
 if ($filterDate) {
-    $query .= " WHERE training_date = '$filterDate'";
+    $query .= " WHERE ``training_date`` = '$filterDate'";
 } elseif ($filterMonth) {
-    $query .= " WHERE DATE_FORMAT(training_date, '%Y-%m') = '$filterMonth'";
+    $query .= " WHERE DATE_FORMAT(`training_date`, '%Y-%m') = '$filterMonth'";
 }
-$query .= " ORDER BY training_date DESC";
+$query .= " ORDER BY `training_date` DESC";
 $result = $connection->query($query);
 
 // For calendar highlighting
-$calendarQuery = "SELECT DISTINCT training_date FROM iso_training";
+$calendarQuery = "SELECT DISTINCT `training_date` FROM iso_training";
 $calendarResult = $connection->query($calendarQuery);
 $trainingDates = [];
 while ($row = $calendarResult->fetch_assoc()) {
@@ -86,8 +86,13 @@ $jsonDates = json_encode($trainingDates);
 
         $stmt = $connection->prepare("INSERT INTO iso_training (training_topic, training_description, training_date, training_document_path, training_created_at, training_created_by) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssss", $training_topic, $training_description, $training_date, $training_document_path, $training_created_at, $training_created_by);
-        $stmt->execute();
-        echo "<script>location.href='trainings.php';</script>";
+        // $stmt->execute();
+        // echo "<script>location.href='trainings.php';</script>";
+        if ($stmt->execute()) {
+            echo "<script>location.href='trainings.php';</script>";
+        } else {
+            echo "Error: " . $stmt->error;
+        }
     }
 
     if (isset($_POST['delete_training'])) {
