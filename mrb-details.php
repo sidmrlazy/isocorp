@@ -191,14 +191,14 @@ include 'includes/connection.php';
                     <textarea id="editorNew" name="training_details"><?php echo htmlspecialchars($training_data_fetched); ?></textarea>
                 </div>
                 <?php if ($training_details_status == "1") { ?>
-                    <button type="submit" name="save-training-draft" class="btn btn-primary mt-3">Save Draft</button>
-                    <button type="submit" name="submit-training-draft" class="btn btn-success mt-3">Submit Details</button>
+                    <button style="font-size: 12px !important" type="submit" name="save-training-draft" class="btn btn-sm btn-outline-primary mt-3">Save Draft</button>
+                    <button style="font-size: 12px !important" type="submit" name="submit-training-draft" class="btn btn-sm btn-outline-success mt-3">Submit Details</button>
                 <?php } elseif ($training_details_status == "2") { ?>
-                    <button type="submit" name="save-training-draft" class="btn d-none btn-primary mt-3">Save Draft</button>
-                    <button type="submit" name="submit-training-draft" class="btn d-none btn-success mt-3">Submit Details</button>
+                    <button style="font-size: 12px !important" type="submit" name="save-training-draft" class="btn btn-sm d-none btn-outline-primary mt-3">Save Draft</button>
+                    <button style="font-size: 12px !important" type="submit" name="submit-training-draft" class="btn btn-sm d-none btn-outline-success mt-3">Submit Details</button>
                 <?php } else { ?>
-                    <button type="submit" name="save-training-draft" class="btn btn-primary mt-3">Save Draft</button>
-                    <button type="submit" name="submit-training-draft" class="btn btn-success mt-3">Submit Details</button>
+                    <button style="font-size: 12px !important" type="submit" name="save-training-draft" class="btn btn-outline-primary mt-3">Save Draft</button>
+                    <button style="font-size: 12px !important" type="submit" name="submit-training-draft" class="btn btn-outline-success mt-3">Submit Details</button>
                 <?php } ?>
             </form>
         </div>
