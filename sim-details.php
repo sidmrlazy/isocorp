@@ -68,22 +68,32 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         <!-- ========== MAIN LEFT SECTION ========== -->
         <div class="col-md-6">
             <div class="card p-3">
-                <p style="margin: 0;"><strong>Topic:</strong> <?php echo $sim_id . " " . $sim_topic ?? "N/A"; ?></p>
+                <div class="mb-3">
+                    <p style="margin: 0;"><strong>Topic:</strong> <?php echo $sim_id . " " . $sim_topic ?? "N/A"; ?></p>
+                </div>
                 <form action="" method="POST">
+                    <!-- <div class="WYSIWYG-editor">
+                        <textarea id="editorNew"><?php echo htmlspecialchars_decode($sim_details); ?></textarea>
+                    </div> -->
                     <div class="WYSIWYG-editor">
                         <?php if ($sim_final == '2') { ?>
-                            <p><?php echo !empty($sim_details) ? htmlspecialchars_decode($sim_details) : 'No details available.'; ?></p>
+                            <!-- <p></p> -->
+                            <textarea id="simEditor" name="sim_details"><?php echo !empty($sim_details) ? htmlspecialchars_decode($sim_details) : 'No details available.'; ?></textarea>
                         <?php } else { ?>
-                            <textarea id="editorNewSim" name="sim_details"><?php echo $sim_details ?? ""; ?></textarea>
+                            <textarea id="simEditor" name="sim_details"><?php echo $sim_details ?? ""; ?></textarea>
                         <?php } ?>
                     </div>
                     <?php if ($sim_final != '2') { ?>
-                        <button type="submit" name="update-sim-detail" class="btn btn-primary mt-3">Save Draft</button>
-                        <button type="submit" name="update-sim-final" class="btn btn-success mt-3">Submit Details</button>
+                        <div class="d-flex justify-content-end align-items-center mt-3">
+                            <button style="font-size: 12px !important;" type="submit" name="update-sim-detail" class="btn btn-sm btn-outline-primary">Save Draft</button>
+                            <button style="font-size: 12px !important; margin-left: 5px !important" type="submit" name="update-sim-final" class="btn btn-sm btn-outline-success">Submit Details</button>
+                        </div>
                     <?php } ?>
                 </form>
             </div>
         </div>
+
+
 
         <!-- ========== MAIN RIGHT SECTION ========== -->
         <div class="col-md-6">
@@ -305,7 +315,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 </div>
 <script>
     $(document).ready(function() {
-        $('#editorNewSim').summernote({
+        $('#simEditor').summernote({
             height: 300,
             minHeight: 150,
             maxHeight: 500,
@@ -313,7 +323,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         });
 
         $('form').on('submit', function() {
-            $('#editorNewSim').val($('#editorNewSim').summernote('code'));
+            $('#simEditor').val($('#simEditor').summernote('code'));
         });
     });
 
