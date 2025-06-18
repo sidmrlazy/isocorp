@@ -945,30 +945,31 @@ include 'includes/connection.php';
                 //     });
                 // });
 
-                $(document).ready(function() {
-                    $('#history-content').summernote({
-                        height: 300,
-                        minHeight: 150,
-                        maxHeight: 500,
-                        focus: true,
-                        toolbar: [
-                            ["style", ["style"]],
-                            ["font", ["bold", "underline", "clear"]],
-                            ["color", ["color"]],
-                            ["para", ["ul", "ol", "paragraph"]],
-                            ["table", ["table"]],
-                            ["insert", ["link"]],
-                            ["view", ["fullscreen"]],
-                        ],
-                    });
+                $("#history-content").summernote({
+                    height: 300,
+                    minHeight: 150,
+                    maxHeight: 500,
+                    focus: true,
+                    toolbar: [
+                        ["style", ["style"]],
+                        ["font", ["bold", "underline", "clear"]],
+                        ["color", ["color"]],
+                        ["para", ["ul", "ol", "paragraph"]],
+                        ["table", ["table"]],
+                        ["insert", ["link"]],
+                        ["view", ["fullscreen"]],
+                    ],
+                });
 
-                    document.querySelectorAll('.view-history-btn').forEach(btn => {
-                        btn.addEventListener('click', function() {
-                            const versionDetails = this.getAttribute('data-version');
-                            const updatedOn = this.getAttribute('data-updatedon');
-                            document.getElementById('history-updated-on').innerHTML = updatedOn;
-                            $('#history-content').summernote('code', versionDetails);
-                        });
+
+                document.querySelectorAll('.view-history-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const versionDetails = this.getAttribute('data-version');
+                        const updatedOn = this.getAttribute('data-updatedon');
+                        document.getElementById('history-updated-on').innerHTML = updatedOn;
+
+                        // Use Summernote's API to set content
+                        $('#history-content').summernote('code', versionDetails);
                     });
                 });
 
@@ -1006,6 +1007,8 @@ include 'includes/connection.php';
                         option.style.display = text.includes(searchTerm) ? '' : 'none';
                     });
                 });
+
+                
             </script>
         </div>
     </div>
