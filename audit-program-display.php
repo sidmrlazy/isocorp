@@ -8,79 +8,82 @@ include 'includes/connection.php';
 include 'includes/header.php';
 include 'includes/navbar.php';
 
-$user_id = isset($_COOKIE['user_id']) ? $_COOKIE['user_id'] : (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Guest');
-$user_name = isset($_COOKIE['user_name']) ? $_COOKIE['user_name'] : (isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Guest');
-$user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'Guest');
-
-$ap_id = "";
-$ap_name = "";
-$ap_assigned = "";
-$ap_created_date = "";
-$ap_details = "";
-$ap_comments = [];
-
-// Handle comment deletion
-if (isset($_GET['delete_comment'])) {
-    $delete_id = mysqli_real_escape_string($connection, $_GET['delete_comment']);
-    mysqli_query($connection, "DELETE FROM audit_program_comments WHERE ap_c_id = '$delete_id'");
-}
-
-// Handle comment submission
-if (isset($_POST['submit-comment'])) {
-    $ap_c_main_id = mysqli_real_escape_string($connection, $_POST['ap_id']);
-    $ap_c_by = $user_name; // Replace this with $_SESSION['username'] or appropriate logged-in user variable
-    $ap_c_date = date("Y-m-d H:i:s");
-    $ap_c_comment = mysqli_real_escape_string($connection, $_POST['comment']);
-
-    $insert_comment = "INSERT INTO audit_program_comments (ap_c_main_id, ap_c_by, ap_c_date, ap_c_comment)
-                       VALUES ('$ap_c_main_id', '$ap_c_by', '$ap_c_date', '$ap_c_comment')";
-    mysqli_query($connection, $insert_comment);
-}
-
-// Update audit program
-if (isset($_POST['update-ap'])) {
-    $ap_id = mysqli_real_escape_string($connection, $_POST['ap_id']);
-    $ap_details = mysqli_real_escape_string($connection, $_POST['editorNew']);
-
-    $update_query = "UPDATE audit_program SET ap_details = '$ap_details' WHERE ap_id = '$ap_id'";
-    if (mysqli_query($connection, $update_query)) {
-        echo "<div class='alert alert-success' style='font-size: 12px;'>Audit Program updated successfully.</div>";
-    } else {
-        echo "<div class='alert alert-danger' style='font-size: 12px;'>Error updating Audit Program: " . mysqli_error($connection) . "</div>";
-    }
-}
-
-// Load audit program details
-if (isset($_GET['id'])) {
-    $ap_id = mysqli_real_escape_string($connection, $_GET['id']);
-    $fetch_audit_details = "SELECT * FROM audit_program WHERE ap_id = '$ap_id'";
-    $result = mysqli_query($connection, $fetch_audit_details);
-
-    if ($result && mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        $ap_name = htmlspecialchars($row['ap_name']);
-        $ap_assigned = htmlspecialchars($row['ap_assigned']);
-        $ap_created_date = htmlspecialchars($row['ap_created_date']);
-        $ap_details = htmlspecialchars($row['ap_details']);
-    } else {
-        echo "<div class='alert alert-warning'>Audit Programme not found.</div>";
-    }
-
-    // Load comments
-    $comments_query = "SELECT * FROM audit_program_comments WHERE ap_c_main_id = '$ap_id' ORDER BY ap_c_date DESC";
-    $comments_result = mysqli_query($connection, $comments_query);
-    if ($comments_result) {
-        while ($comment = mysqli_fetch_assoc($comments_result)) {
-            $ap_comments[] = $comment;
-        }
-    }
-} else {
-    echo "<div class='alert alert-danger'>Invalid request. No Audit Programme ID provided.</div>";
-    exit;
-}
 ?>
 
 <div class="dashboard-container">
+    <?php
+
+    $user_id = isset($_COOKIE['user_id']) ? $_COOKIE['user_id'] : (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Guest');
+    $user_name = isset($_COOKIE['user_name']) ? $_COOKIE['user_name'] : (isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Guest');
+    $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'Guest');
+
+    $ap_id = "";
+    $ap_name = "";
+    $ap_assigned = "";
+    $ap_created_date = "";
+    $ap_details = "";
+    $ap_comments = [];
+
+    // Handle comment deletion
+    if (isset($_GET['delete_comment'])) {
+        $delete_id = mysqli_real_escape_string($connection, $_GET['delete_comment']);
+        mysqli_query($connection, "DELETE FROM audit_program_comments WHERE ap_c_id = '$delete_id'");
+    }
+
+    // Handle comment submission
+    if (isset($_POST['submit-comment'])) {
+        $ap_c_main_id = mysqli_real_escape_string($connection, $_POST['ap_id']);
+        $ap_c_by = $user_name; // Replace this with $_SESSION['username'] or appropriate logged-in user variable
+        $ap_c_date = date("Y-m-d H:i:s");
+        $ap_c_comment = mysqli_real_escape_string($connection, $_POST['comment']);
+
+        $insert_comment = "INSERT INTO audit_program_comments (ap_c_main_id, ap_c_by, ap_c_date, ap_c_comment)
+                       VALUES ('$ap_c_main_id', '$ap_c_by', '$ap_c_date', '$ap_c_comment')";
+        mysqli_query($connection, $insert_comment);
+    }
+
+    // Update audit program
+    if (isset($_POST['update-ap'])) {
+        $ap_id = mysqli_real_escape_string($connection, $_POST['ap_id']);
+        $ap_details = mysqli_real_escape_string($connection, $_POST['editorNew']);
+
+        $update_query = "UPDATE audit_program SET ap_details = '$ap_details' WHERE ap_id = '$ap_id'";
+        if (mysqli_query($connection, $update_query)) {
+            echo "<div id='alertBox' class='alert alert-success' style='font-size: 12px;'>Audit Program updated successfully.</div>";
+        } else {
+            echo "<div id='alertBox' class='alert alert-danger' style='font-size: 12px;'>Error updating Audit Program: " . mysqli_error($connection) . "</div>";
+        }
+    }
+
+    // Load audit program details
+    if (isset($_GET['id'])) {
+        $ap_id = mysqli_real_escape_string($connection, $_GET['id']);
+        $fetch_audit_details = "SELECT * FROM audit_program WHERE ap_id = '$ap_id'";
+        $result = mysqli_query($connection, $fetch_audit_details);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            $ap_name = htmlspecialchars($row['ap_name']);
+            $ap_assigned = htmlspecialchars($row['ap_assigned']);
+            $ap_created_date = htmlspecialchars($row['ap_created_date']);
+            $ap_details = htmlspecialchars($row['ap_details']);
+        } else {
+            echo "<div id='alertBox' class='alert alert-warning'>Audit Programme not found.</div>";
+        }
+
+        // Load comments
+        $comments_query = "SELECT * FROM audit_program_comments WHERE ap_c_main_id = '$ap_id' ORDER BY ap_c_date DESC";
+        $comments_result = mysqli_query($connection, $comments_query);
+        if ($comments_result) {
+            while ($comment = mysqli_fetch_assoc($comments_result)) {
+                $ap_comments[] = $comment;
+            }
+        }
+    } else {
+        echo "<div id='alertBox' class='alert alert-danger'>Invalid request. No Audit Programme ID provided.</div>";
+        exit;
+    }
+    ?>
     <div class="row">
         <!-- =========== LEFT SECTION =========== -->
         <div class="col-md-6">
