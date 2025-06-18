@@ -151,7 +151,7 @@ include('includes/auth_check.php');
 
                 // Disable fields
                 document.getElementById('edit_coc_topic').readOnly = true;
-                $('#editorNew').summernote('disable');
+                $('#editorNew').summernote('enable');
                 document.getElementById('edit_coc_review_date').readOnly = true;
 
                 // Hide submit button
