@@ -6,7 +6,6 @@ if (!isset($_SESSION['user_session']) && !isset($_COOKIE['user_session'])) {
 }
 include('includes/header.php');
 include('includes/navbar.php');
-include 'includes/config.php';
 include 'includes/connection.php';
 
 // Dummy placeholders for required variables
@@ -41,7 +40,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     }
 
     if (isset($_POST['update-sim-detail']) && isset($sim_id)) {
-        $sim_details = trim($_POST['sim_details']);
+        $sim_details = mysqli_real_escape_string($connection, trim($_POST['sim_details']));
         $stmt = mysqli_prepare($connection, "UPDATE sim SET sim_details = ? WHERE sim_id = ?");
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "si", $sim_details, $sim_id);
@@ -52,7 +51,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     }
 
     if (isset($_POST['update-sim-final']) && isset($sim_id)) {
-        $sim_details = trim($_POST['sim_details']);
+        $sim_details = mysqli_real_escape_string($connection, trim($_POST['sim_details']));
         $stmt = mysqli_prepare($connection, "UPDATE sim SET sim_details = ?, sim_final = '2' WHERE sim_id = ?");
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "si", $sim_details, $sim_id);
