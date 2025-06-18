@@ -42,7 +42,7 @@ include('includes/connection.php');
     $insert_res_count = mysqli_num_rows($fetch_data_r);
     if ($insert_res_count > 0) {
     ?>
-        <div class="card p-3 table-responsive mt-3">
+        <div class="card p-3 table-responsive mt-3 mb-5">
             <table class="table table-bordered table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
