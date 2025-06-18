@@ -106,7 +106,7 @@ include 'includes/navbar.php';
             <table class="table table-hover table-striped table-bordered">
                 <thead class="table-dark">
                     <tr>
-                        <th style="font-size: 12px !important;">ID</th>
+                        <!-- <th style="font-size: 12px !important;">ID</th> -->
                         <th style="font-size: 12px !important;">Topic</th>
                         <th style="font-size: 12px !important;">Assigned to</th>
                         <th style="font-size: 12px !important;">Review Date</th>
@@ -123,7 +123,7 @@ include 'includes/navbar.php';
                         $ap_created_date = htmlspecialchars($row['ap_created_date']);
                     ?>
                         <tr>
-                            <td style="font-size: 12px !important;"><?php echo $ap_id ?></td>
+                            <!-- <td style="font-size: 12px !important;"><?php echo $ap_id ?></td> -->
                             <td style="font-size: 12px !important;"><?php echo $ap_name ?></td>
                             <td style="font-size: 12px !important;"><?php echo $ap_assigned ?></td>
                             <td style="font-size: 12px !important;"><?php echo $ap_created_date ?></td>

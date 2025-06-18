@@ -58,7 +58,7 @@ include('includes/auth_check.php');
                 <div class="modal-body">
                     <input type="hidden" name="coc_id" id="edit_coc_id">
                     <div class="mb-3">
-                        <label class="form-label">Code of Conduct Topic</label>
+                        <label class="form-label">Topic</label>
                         <input required name="coc_topic" type="text" class="form-control" id="edit_coc_topic">
                     </div>
                     <div class="WYSIWYG-editor mb-3">
@@ -151,7 +151,7 @@ include('includes/auth_check.php');
 
                 // Disable fields
                 document.getElementById('edit_coc_topic').readOnly = true;
-                $('#editorNew').summernote('disable');
+                $('#editorNew').summernote('enable');
                 document.getElementById('edit_coc_review_date').readOnly = true;
 
                 // Hide submit button

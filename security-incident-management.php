@@ -6,7 +6,6 @@ if (!isset($_SESSION['user_session']) && !isset($_COOKIE['user_session'])) {
 }
 include('includes/header.php');
 include('includes/navbar.php');
-include 'includes/config.php';
 include 'includes/connection.php'; ?>
 
 <div class="dashboard-container">
@@ -49,10 +48,10 @@ include 'includes/connection.php'; ?>
             $updated_sim_source = mysqli_real_escape_string($connection, $_POST['sim_source']);
             $updated_sim_type = mysqli_real_escape_string($connection, $_POST['sim_type']);
             $updated_sim_reported_by = mysqli_real_escape_string($connection, $_POST['sim_reported_by']);
-            $updated_sim_assigned_to = mysqli_real_escape_string($connection, $_POST['sim_assigned_to'] ?? '');
-            $updated_sim_start_date = mysqli_real_escape_string($connection, $_POST['sim_start_date'] ?? '');
-            $updated_sim_end_date = mysqli_real_escape_string($connection, $_POST['sim_end_date'] ?? '');
-            $updated_sim_due_date = mysqli_real_escape_string($connection, $_POST['sim_due_date'] ?? '');
+            $updated_sim_assigned_to = mysqli_real_escape_string($connection, $_POST['sim_assigned_to']);
+            $updated_sim_start_date = mysqli_real_escape_string($connection, $_POST['sim_start_date']);
+            $updated_sim_end_date = mysqli_real_escape_string($connection, $_POST['sim_end_date']);
+            $updated_sim_due_date = mysqli_real_escape_string($connection, $_POST['sim_due_date']);
 
             // Fetch sim_final and sim_details from the database
             $check_final_query = "SELECT sim_final, sim_details FROM `sim` WHERE sim_id = '$updated_sim_id'";
@@ -330,7 +329,7 @@ include 'includes/connection.php'; ?>
                                 <td class="text-center">
                                     <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this incident?');">
                                         <input type="hidden" name="sim_id" value="<?php echo $sim_id ?>">
-                                        <button type="submit" name="delete" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
+                                        <button type="submit" style="font-size: 12px !important;" name="delete" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
                                     </form>
                                 </td>
                             </form>

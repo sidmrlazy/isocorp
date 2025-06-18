@@ -134,8 +134,8 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
             <form class="card p-3" action="" method="POST">
                 <input type="text" name="new_ca_id" value="<?php echo $tbl_ca_id ?>" hidden>
                 <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Status</label>
-                    <select name="ca_status" class="form-select" aria-label="Default select example">
+                    <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Status</label>
+                    <select style="font-size: 12px !important" name="ca_status" class="form-select" aria-label="Default select example">
                         <option selected>Open this select menu</option>
                         <option value="To-do">To-do</option>
                         <option value="Assessment">Assessment</option>
@@ -147,13 +147,13 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                 </div>
 
                 <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Financial Value</label>
+                    <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Financial Value</label>
                     <input type="text" class="form-control" name="ca_financial_value" id="exampleInputEmail1" aria-describedby="emailHelp">
                 </div>
 
                 <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Source</label>
-                    <select name="ca_source[]" class="form-select" aria-label="Default select example" multiple>
+                    <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Source</label>
+                    <select style="font-size: 12px !important" name="ca_source[]" class="form-select" aria-label="Default select example" multiple>
                         <option selected>Open this select menu</option>
                         <option value="To-do">Pre-stage 1</option>
                         <option value="External Audit Findings">External Audit Findings</option>
@@ -169,8 +169,8 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                 </div>
 
                 <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Severity</label>
-                    <select name="ca_severity[]" class="form-select" aria-label="Default select example" multiple>
+                    <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Severity</label>
+                    <select style="font-size: 12px !important" name="ca_severity[]" class="form-select" aria-label="Default select example" multiple>
                         <option selected>Open this select menu</option>
                         <option value="Major Non-Conformity">Major Non-Conformity</option>
                         <option value="Minor Non-Conformity">Minor Non-Conformity</option>
@@ -180,8 +180,8 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                 </div>
 
                 <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Assigned to</label>
-                    <select class="form-select" name="ca_assigned_to" aria-label="Default select example">
+                    <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Assigned to</label>
+                    <select style="font-size: 12px !important" class="form-select" name="ca_assigned_to" aria-label="Default select example">
                         <option selected>Open this select menu</option>
                         <?php
                         $fetch_user = "SELECT * FROM user";
@@ -195,8 +195,8 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                     </select>
                 </div>
                 <div class="btn-row">
-                    <button type="submit" name="save-form-draft" class="btn btn-dark btn-sm">Save Draft</button>
-                    <button type="submit" name="submit-form-draft" class="btn btn-success btn-sm">Submit Notes</button>
+                    <button style="font-size: 12px !important" type="submit" name="save-form-draft" class="btn btn-dark btn-sm">Save Draft</button>
+                    <button style="font-size: 12px !important" type="submit" name="submit-form-draft" class="btn btn-success btn-sm">Submit Notes</button>
                 </div>
             </form>
         </div>
@@ -234,24 +234,24 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
             <form action="" method="POST" class="card p-3">
                 <input type="text" name="ca_id" value="<?php echo $tbl_ca_id ?>" hidden>
                 <div class="WYSIWYG-editor">
-                    <label for="editorNew" class="form-label">Description</label>
+                    <label style="font-size: 12px !important" for="editorNew" class="form-label">Description</label>
                     <textarea id="editorNew" name="ca_description"><?php echo $tbl_ca_description ?></textarea>
                 </div>
                 <?php if ($tbl_ca_description_status_fetched == '1') { ?>
 
                     <div class="btn-row">
-                        <button type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
-                        <button type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
+                        <button style="font-size: 12px !important" type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
+                        <button style="font-size: 12px !important" type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
                     </div>
                 <?php } else if ($tbl_ca_description_status_fetched == '2') { ?>
                     <div class="btn-row d-none">
-                        <button type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
-                        <button type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
+                        <button style="font-size: 12px !important" type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
+                        <button style="font-size: 12px !important" type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
                     </div>
                 <?php } else { ?>
                     <div class="btn-row">
-                        <button type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
-                        <button type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
+                        <button style="font-size: 12px !important" type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
+                        <button style="font-size: 12px !important" type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
                     </div>
                 <?php } ?>
             </form>
@@ -259,8 +259,8 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
             <!-- ============ COMMENT SECTION ============ -->
             <div class="card p-3 mt-3">
                 <div class="heading-row">
-                    <p style="font-size: 18px;">Comments</p>
-                    <button
+                    <p style="font-size: 12px;">Comments</p>
+                    <button style="font-size: 12px !important"
                         style="font-size: 12px;"
                         type="button"
                         data-bs-toggle="modal"
@@ -292,7 +292,7 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                         <form action="" method="POST" class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">Add Comment</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button style="font-size: 12px !important" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <input type="text" name="ca_comment_parent_id" value="<?php echo $tbl_ca_id ?>" hidden>
@@ -300,11 +300,11 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
 
                                 <div class="WYSIWYG-editor form-floating">
                                     <textarea class="form-control" name="ca_comment_data" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
-                                    <label for="floatingTextarea2">Comments</label>
+                                    <label style="font-size: 12px !important" for="floatingTextarea2">Comments</label>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" name="add-comment" class="btn btn-primary">Submit</button>
+                                <button style="font-size: 12px !important" type="submit" name="add-comment" class="btn btn-primary">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -335,7 +335,7 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                                         <?php echo $comment_by ?></strong> - <?php echo $ca_comment_date ?></p>
                                 <form action="" method="POST" style="margin-top: 0 !important;">
                                     <input type="hidden" name="delete_comment_id" value="<?php echo $ca_comment_id ?>">
-                                    <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
+                                    <button style="font-size: 12px !important" type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
                                         <ion-icon name="close-circle-outline"></ion-icon>
                                     </button>
                                 </form>
