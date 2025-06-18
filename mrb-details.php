@@ -153,6 +153,21 @@ if (!empty($training_id)) {
                 </div>
 
                 <div class="table-responsive">
+                    <?php
+                    if (isset($_POST['delete_document'])) {
+                        $doc_id = mysqli_real_escape_string($connection, $_POST['delete_doc_id']);
+                        $get_path_q = mysqli_query($connection, "SELECT file_path FROM training_document WHERE training_document_id = '$doc_id'");
+                        if ($get_path_q && mysqli_num_rows($get_path_q) > 0) {
+                            $file = mysqli_fetch_assoc($get_path_q);
+                            if (file_exists($file['file_path'])) {
+                                unlink($file['file_path']); // Delete the file from server
+                            }
+                        }
+                        $del_q = "DELETE FROM training_document WHERE training_document_id = '$doc_id'";
+                        mysqli_query($connection, $del_q);
+                    }
+
+                    ?>
                     <table class="table table-striped table-bordered table-hover">
                         <thead class="table-dark">
                             <tr>
