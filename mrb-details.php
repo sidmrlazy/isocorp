@@ -212,7 +212,7 @@ if (!empty($training_id)) {
             <div class="card p-3">
                 <div class="heading-row d-flex justify-content-between">
                     <p style="font-size: 18px;">Comments</p>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#commentModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Add Note</button>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#commentModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Add Comment</button>
                 </div>
 
                 <?php
