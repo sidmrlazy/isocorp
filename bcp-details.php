@@ -63,7 +63,7 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
                             <label style="font-size: 12px !important;" class="form-label">Status</label>
                             <select style="font-size: 12px !important;" class="form-select" name="bcp_status" required>
                                 <option disabled <?php if (empty($row['bcp_status'])) echo "selected"; ?>>Select status</option>
-                                <option value="Approved" <?php if ($row['bcp_status'] == 'Approved') echo "selected"; ?>>Approved</option>
+                                <option value="Complete" <?php if ($row['bcp_status'] == 'Complete') echo "selected"; ?>>Complete</option>
                                 <option value="In-progress" <?php if ($row['bcp_status'] == 'In-progress') echo "selected"; ?>>In-progress</option>
                                 <option value="Not Approved" <?php if ($row['bcp_status'] == 'Not Approved') echo "selected"; ?>>Not Approved</option>
                             </select>
