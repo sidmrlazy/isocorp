@@ -7,7 +7,7 @@ $id = $_GET['id'] ?? 0;
 $showSuccess = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_description'])) {
-    $updatedDescription = $_POST['training_description'];
+    $updatedDescription = mysqli_real_escape_string($connection, $_POST['training_description']);
     $updateQuery = "UPDATE iso_training SET training_description = ? WHERE training_id = ?";
     $updateStmt = $connection->prepare($updateQuery);
     $updateStmt->bind_param("si", $updatedDescription, $id);
