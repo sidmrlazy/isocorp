@@ -71,9 +71,9 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                 <form action="" method="POST">
                     <div class="WYSIWYG-editor">
                         <?php if ($sim_final == '2') { ?>
-                            <textarea id="simEditor" name="sim_details"><?php echo !empty($sim_details) ? $sim_details : 'No details available.'; ?></textarea>
+                            <textarea id="simEditor" name="sim_details"><?php echo $sim_details; ?></textarea>
                         <?php } else { ?>
-                            <textarea id="simEditor" name="sim_details"><?php echo $sim_details ?? ""; ?></textarea>
+                            <textarea id="simEditor" name="sim_details"><?php echo $sim_details; ?></textarea>
                         <?php } ?>
                     </div>
                     <?php if ($sim_final != '2') { ?>
