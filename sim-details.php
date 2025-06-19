@@ -58,27 +58,22 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             mysqli_stmt_execute($stmt);
             echo "<p style='font-size: 12px !important;' id='alertBox' class='alert alert-success'>SIM finalized and closed successfully!</p>";
             mysqli_stmt_close($stmt);
-
-            // Optional: Insert Old SIM Details into sim_details_history
         }
     }
-
     ?>
     <div class="row mb-5">
         <!-- ========== MAIN LEFT SECTION ========== -->
         <div class="col-md-6">
             <div class="card p-3">
                 <div class="mb-3">
-                    <p style="margin: 0;">
-                        <strong>Topic:</strong> <?php echo $sim_id . " " . ($sim_topic ?? "N/A"); ?>
-                    </p>
+                    <p style="margin: 0;"><strong>Topic:</strong> <?php echo $sim_id . " " . $sim_topic ?? "N/A"; ?></p>
                 </div>
                 <form action="" method="POST">
                     <div class="WYSIWYG-editor">
                         <?php if ($sim_final == '2') { ?>
-                            <textarea id="simEditor" name="sim_details" readonly><?php echo htmlspecialchars($sim_details ?? 'No details available.'); ?></textarea>
+                            <textarea id="simEditor" name="sim_details"><?php echo !empty($sim_details) ? htmlspecialchars_decode($sim_details) : 'No details available.'; ?></textarea>
                         <?php } else { ?>
-                            <textarea id="simEditor" name="sim_details"><?php echo htmlspecialchars($sim_details ?? ""); ?></textarea>
+                            <textarea id="simEditor" name="sim_details"><?php echo htmlspecialchars_decode($sim_details) ?? ""; ?></textarea>
                         <?php } ?>
                     </div>
                     <?php if ($sim_final != '2') { ?>
@@ -90,7 +85,6 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                 </form>
             </div>
         </div>
-
 
 
 
