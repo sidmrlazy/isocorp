@@ -39,12 +39,13 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
     }
 
+
     if (isset($_POST['update-sim-detail']) && isset($sim_id)) {
-        $sim_details = str_replace(["\\r\\n", "\\n", "\\r", "\r\n"], PHP_EOL, $_POST['sim_details']);
-        $sim_details = mysqli_real_escape_string($connection, $sim_details);
 
+        // Normalize line endings to Unix style (\n) — optional but good practice
+        $sim_details = str_replace(["\r\n", "\r"], "\n", $_POST['sim_details']);
 
-        // $sim_details = mysqli_real_escape_string($connection, $_POST['sim_details']);
+        // Prepare statement without using mysqli_real_escape_string
         $stmt = mysqli_prepare($connection, "UPDATE sim SET sim_details = ? WHERE sim_id = ?");
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "si", $sim_details, $sim_id);
@@ -56,10 +57,9 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
     if (isset($_POST['update-sim-final']) && isset($sim_id)) {
 
-        $sim_details = str_replace(["\\r\\n", "\\n", "\\r"], PHP_EOL, $_POST['sim_details']);
-        $sim_details = mysqli_real_escape_string($connection, $sim_details);
+        // Normalize line endings to Unix style (\n)
+        $sim_details = str_replace(["\r\n", "\r"], "\n", $_POST['sim_details']);
 
-        // $sim_details = mysqli_real_escape_string($connection, $_POST['sim_details']);
         $stmt = mysqli_prepare($connection, "UPDATE sim SET sim_details = ?, sim_final = '2' WHERE sim_id = ?");
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "si", $sim_details, $sim_id);
@@ -68,6 +68,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             mysqli_stmt_close($stmt);
         }
     }
+
     ?>
     <div class="row mb-5">
         <!-- ========== MAIN LEFT SECTION ========== -->
