@@ -40,6 +40,9 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     }
 
     if (isset($_POST['update-sim-detail']) && isset($sim_id)) {
+        var_dump($_POST['sim_details']);
+        exit;
+
         $sim_details = mysqli_real_escape_string($connection, $_POST['sim_details']);
         $stmt = mysqli_prepare($connection, "UPDATE sim SET sim_details = ? WHERE sim_id = ?");
         if ($stmt) {
@@ -51,6 +54,9 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     }
 
     if (isset($_POST['update-sim-final']) && isset($sim_id)) {
+        var_dump($_POST['sim_details']);
+        exit;
+
         $sim_details = mysqli_real_escape_string($connection, $_POST['sim_details']);
         $stmt = mysqli_prepare($connection, "UPDATE sim SET sim_details = ?, sim_final = '2' WHERE sim_id = ?");
         if ($stmt) {
@@ -72,7 +78,6 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                     <div class="WYSIWYG-editor">
                         <?php if ($sim_final == '2') { ?>
                             <textarea id="simEditor" name="sim_details"><?php echo $sim_details; ?></textarea>
-
                         <?php } else { ?>
                             <textarea id="simEditor" name="sim_details"><?php echo $sim_details; ?></textarea>
 
