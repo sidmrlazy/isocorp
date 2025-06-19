@@ -40,7 +40,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     }
 
     if (isset($_POST['update-sim-detail']) && isset($sim_id)) {
-        $sim_details = str_replace(["\\r\\n", "\\n", "\\r"], PHP_EOL, $_POST['sim_details']);
+        $sim_details = str_replace(["\\r\\n", "\\n", "\\r", "\r\n"], PHP_EOL, $_POST['sim_details']);
         $sim_details = mysqli_real_escape_string($connection, $sim_details);
 
 
