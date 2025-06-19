@@ -58,7 +58,7 @@ $result = $stmt->get_result()->fetch_assoc();
                 <div class="card p-3 mb-3">
                     <label class="mb-3">Training Details</label>
                     <div class="WYSIWYG-editor mb-3">
-                        <textarea name="training_description" id="editorNew" rows="10" class="form-control"><?= htmlspecialchars($result['training_description']) ?></textarea>
+                        <textarea name="training_description" id="editorNew" rows="10" class="form-control"><?= htmlspecialchars_decode($result['training_description']) ?></textarea>
                     </div>
                     <div class="d-flex justify-content-end">
                         <button type="submit" name="update_description" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
