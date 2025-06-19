@@ -39,8 +39,12 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
     }
 
+
     if (isset($_POST['update-sim-detail']) && isset($sim_id)) {
-        $sim_details = mysqli_real_escape_string($connection, $_POST['sim_details']);
+
+        // Normalize line endings to Unix style (\n) — optional but good practice
+        $sim_details = str_replace(["\r\n", "\r", "\n"], "\r\n", $_POST['sim_details']);
+        // Prepare statement without using mysqli_real_escape_string
         $stmt = mysqli_prepare($connection, "UPDATE sim SET sim_details = ? WHERE sim_id = ?");
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "si", $sim_details, $sim_id);
@@ -51,7 +55,9 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     }
 
     if (isset($_POST['update-sim-final']) && isset($sim_id)) {
-        $sim_details = mysqli_real_escape_string($connection, $_POST['sim_details']);
+
+        // Normalize line endings to Unix style (\n)
+        $sim_details = str_replace(["\r\n", "\r", "\n"], "\r\n", $_POST['sim_details']);
         $stmt = mysqli_prepare($connection, "UPDATE sim SET sim_details = ?, sim_final = '2' WHERE sim_id = ?");
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "si", $sim_details, $sim_id);
@@ -60,6 +66,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             mysqli_stmt_close($stmt);
         }
     }
+
     ?>
     <div class="row mb-5">
         <!-- ========== MAIN LEFT SECTION ========== -->
@@ -71,9 +78,10 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                 <form action="" method="POST">
                     <div class="WYSIWYG-editor">
                         <?php if ($sim_final == '2') { ?>
-                            <textarea id="simEditor" name="sim_details"><?php echo !empty($sim_details) ? htmlspecialchars_decode($sim_details) : 'No details available.'; ?></textarea>
+                            <textarea id="simEditor" name="sim_details"><?php echo $sim_details; ?></textarea>
                         <?php } else { ?>
-                            <textarea id="simEditor" name="sim_details"><?php echo htmlspecialchars_decode($sim_details) ?? ""; ?></textarea>
+                            <textarea id="simEditor" name="sim_details"><?php echo $sim_details; ?></textarea>
+
                         <?php } ?>
                     </div>
                     <?php if ($sim_final != '2') { ?>
