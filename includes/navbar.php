@@ -70,6 +70,11 @@ include 'includes/connection.php';
                 <ion-icon style="font-size: 20px !important;" name="barbell-outline"></ion-icon> Trainings
               </a>
             </li>
+            <li>
+              <a class="dropdown-item" href="bcp.php">
+                <ion-icon style="font-size: 20px !important;" name="bicycle-outline"></ion-icon> Business Continuity Plan
+              </a>
+            </li>
           </ul>
         </li>
       </ul>
