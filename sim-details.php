@@ -73,7 +73,7 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         <div class="col-md-6">
             <div class="card p-3">
                 <div class="mb-3">
-                    <p style="margin: 0;"><strong>Topic:</strong> <?php echo $sim_id . " " . $sim_topic ?? "N/A"; ?></p>
+                    <p style="margin: 0;"><strong>Topic:</strong> <?php echo $sim_topic ?? "N/A"; ?></p>
                 </div>
                 <form action="" method="POST">
                     <div class="WYSIWYG-editor">
