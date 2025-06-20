@@ -1,49 +1,84 @@
 <?php
-include 'includes/connection.php';
+include('includes/connection.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $policy_ids = $_POST['policy_id'];
-    $policy_types = $_POST['policy_type'];
-    $policy_names = $_POST['policy_name'];
-    $applicabilities = $_POST['applicable_status'] ?? [];
+    $policy_ids = $_POST['policy_id'] ?? [];
+    $policy_types = $_POST['policy_type'] ?? [];
+    $policy_names = $_POST['policy_name'] ?? [];
     $justifications = $_POST['justification'] ?? [];
+    $applicable_reasons = $_POST['applicable_reason'] ?? [];
+    $applicable_status = $_POST['applicable_status'] ?? [];
 
-    foreach ($policy_ids as $index => $policy_id) {
-        $type = $policy_types[$index];
-        $name = $policy_names[$index];
-        $applicable = isset($applicabilities[$index]) ? $applicabilities[$index] : null;
-        $justification = trim($justifications[$index] ?? '');
+    $soa_ra = $_POST['soa_ra'] ?? [];
+    $soa_br_bp = $_POST['soa_br_bp'] ?? [];
+    $soa_lr_co = $_POST['soa_lr_co'] ?? [];
 
-        // Check if entry exists
-        $check_sql = "SELECT soa_applicable, soa_justification FROM soa WHERE soa_policy_type = ? AND soa_policy_id = ?";
-        $stmt = $connection->prepare($check_sql);
-        $stmt->bind_param("si", $type, $policy_id);
-        $stmt->execute();
-        $stmt->store_result();
-        $stmt->bind_result($existing_applicable, $existing_justification);
-        $stmt->fetch();
+    if (empty($policy_ids)) {
+        echo "⚠️ No policy data posted.";
+        exit;
+    }
 
-        if ($stmt->num_rows > 0) {
-            // Update if something changed
-            if ((string)$applicable !== (string)$existing_applicable || $justification !== $existing_justification) {
-                $update_sql = "UPDATE soa SET soa_applicable = ?, soa_justification = ?, soa_policy_name = ?, soa_created_at = NOW() WHERE soa_policy_type = ? AND soa_policy_id = ?";
-                $update_stmt = $connection->prepare($update_sql);
-                $update_stmt->bind_param("isssi", $applicable, $justification, $name, $type, $policy_id);
-                $update_stmt->execute();
-                $update_stmt->close();
-            }
-        } else {
-            // Insert if new
-            $insert_sql = "INSERT INTO soa (soa_policy_type, soa_policy_id, soa_policy_name, soa_applicable, soa_justification, soa_created_at) VALUES (?, ?, ?, ?, ?, NOW())";
-            $insert_stmt = $connection->prepare($insert_sql);
-            $insert_stmt->bind_param("sisis", $type, $policy_id, $name, $applicable, $justification);
-            $insert_stmt->execute();
-            $insert_stmt->close();
+    $all_good = true;
+
+    for ($i = 0; $i < count($policy_ids); $i++) {
+        $id = $policy_ids[$i] ?? '';
+        $type = $policy_types[$i] ?? '';
+        $name = $policy_names[$i] ?? '';
+        $justification = $justifications[$i] ?? '';
+        $reason = $applicable_reasons[$i] ?? '';
+
+        // Applicable status stays Y/N
+        $applicable = isset($applicable_status[$i])
+            ? ($applicable_status[$i] === '1' ? 'Y' : 'N')
+            : null;
+
+
+        // If checkbox was ticked, it's 'Y'; if not ticked, let it be NULL
+        $ra = array_key_exists($i, $soa_ra) ? 'Y' : null;
+        $brbp = array_key_exists($i, $soa_br_bp) ? 'Y' : null;
+        $lrco = array_key_exists($i, $soa_lr_co) ? 'Y' : null;
+
+        $stmt = $connection->prepare("
+            INSERT INTO soa (
+                soa_policy_id, soa_policy_type, soa_policy_name,
+                soa_justification, soa_applicable_reason, soa_applicable,
+                soa_ra, soa_br_bp, soa_lr_co, soa_created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        ");
+
+        if (!$stmt) {
+            echo "❌ Prepare failed: " . $connection->error;
+            $all_good = false;
+            continue;
+        }
+
+        $stmt->bind_param(
+            "sssssssss",
+            $id,
+            $type,
+            $name,
+            $justification,
+            $reason,
+            $applicable,
+            $ra,
+            $brbp,
+            $lrco
+        );
+
+        if (!$stmt->execute()) {
+            echo "❌ Execute failed: " . $stmt->error . "<br>";
+            $all_good = false;
         }
 
         $stmt->close();
     }
 
-    header("Location: soa-setup.php?success=1");
-    exit;
+    if ($all_good) {
+        header("Location: soa-setup.php?status=success");
+        exit;
+    } else {
+        echo "⚠️ One or more rows failed to insert. Check above errors.";
+    }
+} else {
+    echo "⚠️ Invalid request.";
 }
