@@ -40,13 +40,13 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
                         <p><strong>Topic:</strong> <?php echo htmlspecialchars($row['bcp_topic']); ?></p>
 
                         <div class="mb-3">
-                            <label class="form-label">Review Date</label>
-                            <input type="date" class="form-control" name="bcp_review_date" value="<?php echo htmlspecialchars($row['bcp_review_date']); ?>">
+                            <label style="font-size: 12px !important;" class="form-label">Review Date</label>
+                            <input style="font-size: 12px !important;" type="date" class="form-control" name="bcp_review_date" value="<?php echo htmlspecialchars($row['bcp_review_date']); ?>">
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Assigned To</label>
-                            <select class="form-select" name="bcp_assigned_to" required>
+                            <label style="font-size: 12px !important;" class="form-label">Assigned To</label>
+                            <select style="font-size: 12px !important;" class="form-select" name="bcp_assigned_to" required>
                                 <option disabled <?php if (empty($row['bcp_assigned_to'])) echo "selected"; ?>>Select user</option>
                                 <?php while ($user = mysqli_fetch_assoc($users_result)): ?>
                                     <option value="<?php echo $user['isms_user_name']; ?>" <?php echo ($row['bcp_assigned_to'] == $user['isms_user_name']) ? 'selected' : ''; ?>>
@@ -57,8 +57,8 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select class="form-select" name="bcp_status" required>
+                            <label style="font-size: 12px !important;" class="form-label">Status</label>
+                            <select style="font-size: 12px !important;" class="form-select" name="bcp_status" required>
                                 <option disabled <?php if (empty($row['bcp_status'])) echo "selected"; ?>>Select status</option>
                                 <option value="Complete" <?php if ($row['bcp_status'] == 'Complete') echo "selected"; ?>>Complete</option>
                                 <option value="In-progress" <?php if ($row['bcp_status'] == 'In-progress') echo "selected"; ?>>In-progress</option>
@@ -67,12 +67,12 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label"><strong>Details</strong></label>
+                            <label style="font-size: 12px !important;" class="form-label"><strong>Details</strong></label>
                             <textarea class="form-control" name="bcp_details" id="editorNew" rows="12"><?php echo htmlspecialchars($row['bcp_details']); ?></textarea>
                         </div>
 
                         <div class="d-flex justify-content-end">
-                            <button type="submit" name="update_bcp" class="btn btn-sm btn-outline-success">Update</button>
+                            <button style="font-size: 12px !important;" type="submit" name="update_bcp" class="btn btn-sm btn-outline-success">Update</button>
                         </div>
                     </form>
                 </div>
@@ -86,8 +86,8 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
             <div class="card p-3">
                 <!-- ADD DOC BUTTON -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <label>Documents</label>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon></button>
+                    <label style="font-size: 12px !important;">Documents</label>
+                    <button style="font-size: 12px !important;" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon></button>
                 </div>
 
                 <?php
@@ -137,28 +137,28 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
                     <table class="table table-striped table-bordered table-hover">
                         <thead class="table-dark">
                             <tr>
-                                <th>#</th>
-                                <th>Filename</th>
-                                <th>Uploaded</th>
-                                <th>Download</th>
-                                <th>Delete</th>
+                                <th style="font-size: 12px !important;">#</th>
+                                <th style="font-size: 12px !important;">Filename</th>
+                                <th style="font-size: 12px !important;">Uploaded</th>
+                                <th style="font-size: 12px !important;">Download</th>
+                                <th style="font-size: 12px !important;">Delete</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php $count = 1;
                             while ($doc = mysqli_fetch_assoc($docs_result)): ?>
                                 <tr>
-                                    <td><?php echo $count++; ?></td>
-                                    <td><?php echo htmlspecialchars($doc['doc_filename']); ?></td>
-                                    <td><?php echo $doc['uploaded_at']; ?></td>
-                                    <td>
+                                    <td style="font-size: 12px !important;"><?php echo $count++; ?></td>
+                                    <td style="font-size: 12px !important;"><?php echo htmlspecialchars($doc['doc_filename']); ?></td>
+                                    <td style="font-size: 12px !important;"><?php echo $doc['uploaded_at']; ?></td>
+                                    <td style="font-size: 12px !important;">
                                         <a href="uploads/bcp_docs/<?php echo rawurlencode($doc['doc_filename']); ?>" class="btn btn-sm btn-outline-primary" download>Download</a>
                                     </td>
-                                    <td>
+                                    <td style="font-size: 12px !important;">
                                         <form method="POST" onsubmit="return confirm('Are you sure you want to delete this document?');">
-                                            <input type="hidden" name="delete_doc_id" value="<?php echo $doc['bcp_doc_id']; ?>">
-                                            <input type="hidden" name="delete_doc_file" value="<?php echo htmlspecialchars($doc['doc_filename']); ?>">
-                                            <button type="submit" name="delete_bcp_doc" class="btn btn-sm btn-outline-danger">Delete</button>
+                                            <input style="font-size: 12px !important;" type="hidden" name="delete_doc_id" value="<?php echo $doc['bcp_doc_id']; ?>">
+                                            <input style="font-size: 12px !important;" type="hidden" name="delete_doc_file" value="<?php echo htmlspecialchars($doc['doc_filename']); ?>">
+                                            <button style="font-size: 12px !important;" type="submit" name="delete_bcp_doc" class="btn btn-sm btn-outline-danger">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -173,17 +173,17 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5">Add document</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <button style="font-size: 12px !important;" type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="mb-3">
-                                    <label class="form-label">Select Document</label>
-                                    <input type="file" class="form-control" name="bcp_document" required>
+                                    <label style="font-size: 12px !important;" class="form-label">Select Document</label>
+                                    <input style="font-size: 12px !important;" type="file" class="form-control" name="bcp_document" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" name="upload_doc" class="btn btn-sm btn-outline-success">Upload</button>
+                                <button style="font-size: 12px !important;" type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                <button style="font-size: 12px !important;" type="submit" name="upload_doc" class="btn btn-sm btn-outline-success">Upload</button>
                             </div>
                         </div>
                     </form>
