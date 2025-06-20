@@ -52,13 +52,22 @@ while ($row = $result->fetch_assoc()) {
     if ($row['soa_applicable'] === 'N') $notApplicableCount++;
 }
 
-// Header rows
+// Header Rows
 $sheet->setCellValue('A1', 'Applicable Controls');
 $sheet->setCellValue('C1', $applicableCount);
-$sheet->mergeCells('D1:H2');
-$sheet->setCellValue('D1', 'BR/BP - Business Requirement/Best Practices     |     LR/CO - Legal Requirement/Contractual Obligation     |     RA - Risk Assessment');
 
-// Style for merged D1:H2
+$sheet->setCellValue('A2', 'Not-Applicable Controls');
+$sheet->setCellValue('C2', $notApplicableCount);
+
+// Merge and label D1:F2 as "Reasons for Selection"
+$sheet->mergeCells('D1:F2');
+$sheet->setCellValue('D1', 'Reasons for Selection');
+
+// Merge and label G1:H2 with full explanation
+$sheet->mergeCells('G1:H2');
+$sheet->setCellValue('G1', 'BR/BP - Business Requirement/Best Practices     |     LR/CO - Legal Requirement/Contractual Obligation     |     RA - Risk Assessment');
+
+// Style for merged cells
 $sheet->getStyle('D1:H2')->applyFromArray([
     'alignment' => [
         'wrapText' => true,
@@ -74,7 +83,7 @@ $sheet->setCellValue('C2', $notApplicableCount);
 // Table Headers
 $sheet->mergeCells('A3:B3');
 $sheet->setCellValue('A3', 'Policy Name');
-$sheet->setCellValue('C3', 'Applicable');
+$sheet->setCellValue('C3', 'Applicability');
 $sheet->setCellValue('D3', 'RA');
 $sheet->setCellValue('E3', 'BR/BP');
 $sheet->setCellValue('F3', 'LR/CO');
@@ -113,11 +122,9 @@ $sheet->getStyle("A3:H" . ($rowIndex - 1))->applyFromArray([
     ]
 ]);
 
-// Green Background for Row 1 and Row 2
+// Green Background and Bold Text
 $sheet->getStyle('A1:H1')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('A9D08E');
 $sheet->getStyle('A2:H2')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('A9D08E');
-
-// Bold for rows 1 & 2
 $sheet->getStyle('A1:H2')->getFont()->setBold(true);
 
 // Output
