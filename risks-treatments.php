@@ -15,7 +15,7 @@ foreach ($impact_levels as $impact) {
         $heatmap[$impact][$likelihood] = 0;
     }
 }
-
+$serial = 1;
 while ($row = $risks->fetch_assoc()) {
     $heatmap[$row['risks_impact']][$row['risks_likelihood']]++;
 }
@@ -153,7 +153,7 @@ $color_map = [
                     while ($row = $risks->fetch_assoc()):
                     ?>
                         <tr class="risk-details-content">
-                            <td><?= $row['risks_id'] ?></td>
+                            <td><?= $serial++; ?></td>
                             <td>
                                 <a href="risks-details.php?id=<?= $row['risks_id'] ?>" class="text-primary">
                                     <?= htmlspecialchars($row['risks_name']) ?>
