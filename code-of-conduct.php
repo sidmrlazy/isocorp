@@ -96,6 +96,7 @@ include('includes/auth_check.php');
                 </thead>
                 <tbody>
                     <?php
+                    $serial = 1;
                     while ($row = mysqli_fetch_assoc($result)) {
                         $coc_id = $row['coc_id'];
                         $coc_topic = $row['coc_topic'];
@@ -103,7 +104,10 @@ include('includes/auth_check.php');
                         $coc_review_date = $row['coc_review_date'];
                     ?>
                         <tr>
-                            <td style="font-size: 12px !important;"><?php echo $coc_id; ?></td>
+                            <td style="font-size: 12px !important;">
+                                <?php // echo $coc_id; ?>
+                                <?php $serial++; ?>
+                            </td>
                             <td style="font-size: 12px !important;"><?php echo $coc_topic; ?></td>
                             <td style="font-size: 12px !important;">
                                 <input type="text" name="coc_id" value="<?php echo $coc_id; ?>" hidden>
