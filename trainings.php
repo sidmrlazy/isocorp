@@ -4,13 +4,11 @@ include('includes/navbar.php');
 include('includes/connection.php');
 
 $filterDate = $_GET['date'] ?? null;
-$filterMonth = $_GET['month'] ?? null;
+// $filterMonth = $_GET['month'] ?? null;
 
 $query = "SELECT * FROM `iso_training`";
 if ($filterDate) {
-    $query .= " WHERE ``training_date`` = '$filterDate'";
-} elseif ($filterMonth) {
-    $query .= " WHERE DATE_FORMAT(`training_date`, '%Y-%m') = '$filterMonth'";
+    $query .= " WHERE `training_date` = '$filterDate'";
 }
 $query .= " ORDER BY `training_date` DESC";
 $result = $connection->query($query);
@@ -140,8 +138,7 @@ $jsonDates = json_encode($trainingDates);
             <div class="table-responsive card p-3">
                 <?php if ($filterDate): ?>
                     <label class="mb-3">Showing trainings for the date: <strong><?= htmlspecialchars($filterDate) ?></strong></label>
-                <?php elseif ($filterMonth): ?>
-                    <label class="mb-3">Showing trainings for the month: <strong><?= date("F Y", strtotime($filterMonth . '-01')) ?></strong></label>
+               
                 <?php else: ?>
                     <label class="mb-3">Showing all trainings</label>
                 <?php endif; ?>
