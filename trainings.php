@@ -125,12 +125,13 @@ $jsonDates = json_encode($trainingDates);
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <form method="GET" class="row g-2 align-items-center">
                         <div class="col-auto">
-                            <label for="month" class="col-form-label">Filter by Month:</label>
+                            <label for="date" class="col-form-label">Filter by Date:</label>
                         </div>
                         <div class="col-auto">
-                            <input type="month" id="month" name="month" class="form-control form-control-sm" value="<?= htmlspecialchars($filterMonth) ?>" onchange="this.form.submit()">
+                            <input type="date" id="date" name="date" class="form-control form-control-sm" value="<?= htmlspecialchars($filterDate) ?>" onchange="this.form.submit()">
                         </div>
                     </form>
+
                     <a href="trainings.php" class="btn btn-outline-secondary btn-sm">Reset Filter</a>
                 </div>
             </div>
@@ -157,7 +158,7 @@ $jsonDates = json_encode($trainingDates);
                     </thead>
                     <tbody>
                         <?php
-                        $serial = 1; 
+                        $serial = 1;
                         while ($row = $result->fetch_assoc()): ?>
                             <tr>
                                 <td style="font-size: 12px !important;">
