@@ -170,7 +170,9 @@ include 'includes/connection.php'; ?>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = mysqli_fetch_assoc($fetch_r)) {
+                    <?php
+                    $serial = 1;
+                    while ($row = mysqli_fetch_assoc($fetch_r)) {
                         $sim_id = $row['sim_id'];
                         $sim_topic = $row['sim_topic'];
                         $sim_status = $row['sim_status'];
@@ -189,7 +191,7 @@ include 'includes/connection.php'; ?>
                                 <!-- ================ SERIAL NUMBER ================ -->
                                 <th scope="row" style="font-size: 12px !important;">
                                     <input type="hidden" name="sim_id" value="<?php echo $sim_id ?>">
-                                    <?php echo $sim_id ?>
+                                    <?php echo $serial++; ?>
                                 </th>
 
                                 <!-- ================ TOPIC ================ -->
