@@ -85,7 +85,7 @@ include 'includes/connection.php';
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
             <!-- <li><a class="dropdown-item" href="#"><ion-icon name="person-outline"></ion-icon> Profile</a></li> -->
-            <li><a class="dropdown-item" href="audit-program-setup.php"><ion-icon name="construct-outline"></ion-icon> Audit Programme Setup</a></li>
+            <!-- <li><a class="dropdown-item" href="audit-program-setup.php"><ion-icon name="construct-outline"></ion-icon> Audit Programme Setup</a></li> -->
             <li><a class="dropdown-item" href="user-setup.php"><ion-icon name="person-add-outline"></ion-icon>User Setup</a></li>
             <li><a class="dropdown-item" href="soa-setup.php"><ion-icon name="document-outline"></ion-icon>Statement of Applicability</a></li>
             <li><a class="dropdown-item" href="logout.php"><ion-icon name="log-out-outline"></ion-icon> Logout</a></li>
