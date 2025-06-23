@@ -99,6 +99,7 @@ include 'includes/config.php';
                     </thead>
                     <tbody>
                         <?php
+                        $serial = 1;
                         while ($row = mysqli_fetch_assoc($get_res)) {
                             $ca_id = $row['ca_id'];
                             $ca_topic = $row['ca_topic'];
@@ -111,7 +112,10 @@ include 'includes/config.php';
                             $ca_created_date = $row['ca_created_date'];
                         ?>
                             <tr>
-                                <td style="font-size: 12px !important;"><?php echo $ca_id ?></td>
+                                <td style="font-size: 12px !important;">
+                                    <?php echo $serial++; 
+                                    //echo $ca_id ?>
+                                </td>
                                 <td style="font-size: 12px !important;">
                                     <a href="corrective-actions-details.php?id=<?php echo $ca_id ?>"><?php echo $ca_topic ?></a>
                                 </td>
