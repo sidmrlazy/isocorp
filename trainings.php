@@ -156,9 +156,13 @@ $jsonDates = json_encode($trainingDates);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $result->fetch_assoc()): ?>
+                        <?php
+                        $serial = 1; 
+                        while ($row = $result->fetch_assoc()): ?>
                             <tr>
-                                <td style="font-size: 12px !important;"><?= $row['training_id'] ?></td>
+                                <td style="font-size: 12px !important;">
+                                    <?php echo $serial++; ?>
+                                </td>
                                 <td style="font-size: 12px !important;"><?= htmlspecialchars($row['training_topic']) ?></td>
                                 <td style="font-size: 12px !important;"><?= $row['training_date'] ?></td>
                                 <td style="font-size: 12px !important;">
