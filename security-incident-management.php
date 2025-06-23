@@ -171,7 +171,9 @@ include 'includes/connection.php'; ?>
                 </thead>
                 <tbody>
                     <?php
-                    $serial = 1;
+                    $serial = ($current_page - 1) * $records_per_page + 1;
+
+
                     while ($row = mysqli_fetch_assoc($fetch_r)) {
                         $sim_id = $row['sim_id'];
                         $sim_topic = $row['sim_topic'];
