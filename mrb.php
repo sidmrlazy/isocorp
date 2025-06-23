@@ -55,13 +55,17 @@ include('includes/connection.php');
                 </thead>
                 <tbody>
                     <?php
+                    $serial = 1;
                     while ($row = mysqli_fetch_assoc($fetch_data_r)) {
                         $training_id = $row['training_id'];
                         $training_topic = $row['training_topic'];
                         $training_date = $row['training_date'];
                     ?>
                         <tr>
-                            <th style="font-size: 12px !important;" scope="row"><?php echo $training_id ?></th>
+                            <th style="font-size: 12px !important;" scope="row">
+                                <input type="hidden" name="training_id" value="<?php echo $training_id ?>">
+                                <?php echo $serial++; ?>
+                            </th>
                             <td style="font-size: 12px">
                                 <a href="mrb-details.php?id=<?php echo $training_id; ?>">
                                     <?php echo $training_topic ?>
