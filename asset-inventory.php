@@ -77,6 +77,7 @@ include 'includes/config.php';
                 </thead>
                 <tbody>
                     <?php
+                    $serial = 1;
                     while ($row = mysqli_fetch_assoc($fetch_r)) {
                         $asset_id = $row['asset_id'];
                         $asset_name = $row['asset_name'];
@@ -93,7 +94,10 @@ include 'includes/config.php';
                         $asset_created_by = $row['asset_created_by'];
                     ?>
                         <tr>
-                            <th style="font-size: 12px !important;" class="asset-data" scope="row"><?php echo $asset_id ?></th>
+                            <th style="font-size: 12px !important;" class="asset-data" scope="row">
+                            <input type="hidden" name="asset_id" value="<?php echo $asset_id ?>">    
+                            <?php echo $serial++; ?>
+                            </th>
                             <td class="asset-data">
                                 <a href="asset-details.php?id=<?php echo $asset_id; ?>"><?php echo $asset_name; ?></a>
                             </td>
