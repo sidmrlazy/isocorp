@@ -295,7 +295,11 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                 ?>
                         <div style="margin-top: 20px; border-bottom: 1px solid #e7e7e7">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h6 style="font-size: 10px !important; margin: 0;"><strong>Comment by:</strong> <?php echo $comment_owner; ?> - <?php echo $comment_date; ?></h6>
+                                <h6 style="font-size: 10px !important; margin: 0;">
+                                    <strong>Comment by:</strong> <?php echo $comment_owner; ?> -
+                                    <?php echo date("Y-m-d", strtotime($comment_date)); ?>
+                                </h6>
+
                                 <form action="" method="POST">
                                     <input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>">
                                     <button type="submit" name="delete_comment" class="btn btn-sm btn-outline-danger" style="font-size: 10px; margin:0">
