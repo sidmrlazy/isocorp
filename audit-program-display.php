@@ -104,7 +104,7 @@ include 'includes/navbar.php';
         </div>
 
         <!-- =========== RIGHT SECTION =========== -->
-        <div class="col-md-6">
+        <div class="col-md-6 mb-5">
             <div class="card p-3 mb-3">
                 <?php
                 if (isset($_POST['upload_doc'])) {
