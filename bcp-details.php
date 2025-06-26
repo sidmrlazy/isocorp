@@ -152,7 +152,7 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
                                     <td style="font-size: 12px !important;"><?php echo htmlspecialchars($doc['doc_filename']); ?></td>
                                     <td style="font-size: 12px !important;"><?php echo $doc['uploaded_at']; ?></td>
                                     <td style="font-size: 12px !important;">
-                                        <a href="uploads/bcp_docs/<?php echo rawurlencode($doc['doc_filename']); ?>" class="btn btn-sm btn-outline-primary" download>Download</a>
+                                        <a href="uploads/bcp_docs/<?php echo rawurlencode($doc['doc_filename']); ?>" class="btn btn-sm btn-outline-primary" style="font-size: 12px !important;" download>Download</a>
                                     </td>
                                     <td style="font-size: 12px !important;">
                                         <form method="POST" onsubmit="return confirm('Are you sure you want to delete this document?');">
