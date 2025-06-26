@@ -188,7 +188,10 @@ include 'includes/connection.php';
                 ?>
                         <div class="card p-2 mb-2">
                             <div style="display: flex; justify-content: space-between;">
-                                <p style="font-size: 12px !important; margin: 0;"><strong><?php echo htmlspecialchars($sf_comment_by); ?></strong> - <?php echo $sf_comment_date; ?></p>
+                                <p style="font-size: 12px !important; margin: 0;">
+                                    <strong>
+                                        <?php echo htmlspecialchars($sf_comment_by); ?>
+                                    </strong> - <?php echo date('m-d-Y', strtotime($sf_comment_date)); ?></p>
                                 <form action="" method="POST">
                                     <input type="hidden" name="sf_comment_id" value="<?php echo $row['sf_comment_id']; ?>">
                                     <button type="submit" style="font-size: 12px;" name="del-comm" class="btn btn-sm btn-outline-danger"><ion-icon name="close-outline"></ion-icon></button>
