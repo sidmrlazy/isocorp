@@ -230,7 +230,7 @@ if (!empty($training_id)) {
                 ?>
                         <div class="note-container mb-3">
                             <div class="d-flex justify-content-between">
-                                <p class="mb-1" style="font-size: 12px;"><strong><?php echo $training_comment_by; ?></strong> - <?php echo $training_comment_datetime; ?></p>
+                                <p class="mb-1" style="font-size: 12px;"><strong><?php echo $training_comment_by; ?></strong> - <?php echo date('m-d-Y', strtotime($training_comment_datetime)); ?></p>
                                 <form action="" method="POST">
                                     <input type="hidden" name="delete_comment_id" value="<?php echo $training_comment_id; ?>">
                                     <button type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="font-size: 16px;">
