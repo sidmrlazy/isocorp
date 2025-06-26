@@ -92,7 +92,7 @@ include 'includes/config.php';
                             <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Severity</th>
                             <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Assigned to</th>
                             <!-- <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Created by</th> -->
-                            <!-- <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Created date</th> -->
+                            <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Created date</th>
                             <!-- <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">EDIT TOPIC</th> -->
                             <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">Delete</th>
                         </tr>
@@ -125,7 +125,7 @@ include 'includes/config.php';
                                 <td style="font-size: 12px !important;"><?php echo $ca_severity ?></td>
                                 <td style="font-size: 12px !important;"><?php echo $ca_assigned_to ?></td>
                                 <!-- <td style="font-size: 12px !important;"><?php echo $ca_created_by ?></td> -->
-                                <!-- <td style="font-size: 12px !important;"><?php echo $ca_created_date ?></td> -->
+                                <td style="font-size: 12px !important;"><?php echo $ca_created_date ?></td>
                                 <!-- <td style="font-size: 12px !important;" class="text-center">
                                     <form action="" method="POST">
                                         <input type="text" name="ca_id" value="<?php echo $ca_id ?>" hidden>
