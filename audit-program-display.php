@@ -216,7 +216,7 @@ include 'includes/navbar.php';
                 </div>
             </div>
             <!-- Comment section -->
-            <div class="card p-3">
+            <div class="card p-3 mb-5">
                 <p style="margin: 0; font-weight: 600">Comments</p>
                 <form method="POST" action="" class="mt-3">
                     <input type="hidden" name="ap_id" value="<?php echo $ap_id ?>">
