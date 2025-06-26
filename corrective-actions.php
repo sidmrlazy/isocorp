@@ -125,7 +125,8 @@ include 'includes/config.php';
                                 <td style="font-size: 12px !important;"><?php echo $ca_severity ?></td>
                                 <td style="font-size: 12px !important;"><?php echo $ca_assigned_to ?></td>
                                 <!-- <td style="font-size: 12px !important;"><?php echo $ca_created_by ?></td> -->
-                                <td style="font-size: 12px !important;"><?php echo $ca_created_date ?></td>
+                                <td style="font-size: 12px !important;"><?php echo date('m-d-Y', strtotime($ca_created_date)); ?></td>
+
                                 <!-- <td style="font-size: 12px !important;" class="text-center">
                                     <form action="" method="POST">
                                         <input type="text" name="ca_id" value="<?php echo $ca_id ?>" hidden>
