@@ -230,8 +230,9 @@ include 'includes/navbar.php';
                         <div class="d-flex justify-content-between align-items-start mt-3 mb-3">
                             <p style="margin: 0; margin-right: 20px !important">
                                 <span style="font-weight: 500; font-size: 12px;">
-                                    <?php echo htmlspecialchars($comment['ap_c_by']); ?> (<?php echo htmlspecialchars($comment['ap_c_date']); ?>) -
+                                    <?php echo htmlspecialchars($comment['ap_c_by']); ?> (<?php echo date('m-d-Y', strtotime($comment['ap_c_date'])); ?>) -
                                 </span>
+
                                 <?php echo htmlspecialchars($comment['ap_c_comment']); ?>
                             </p>
                             <a href="?id=<?php echo $ap_id; ?>&delete_comment=<?php echo $comment['ap_c_id']; ?>" onclick="return confirm('Delete this comment?')" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">
