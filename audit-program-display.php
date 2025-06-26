@@ -196,7 +196,7 @@ include 'includes/navbar.php';
                                         <td style="font-size: 12px;"><?php echo htmlspecialchars($doc['ap_d_doc_name']); ?></td>
                                         <td style="font-size: 12px;"><?php echo htmlspecialchars($doc['ap_d_ver']); ?></td>
                                         <td style="font-size: 12px;">
-                                            <a href="ap_doc/<?php echo urlencode($doc['ap_d_doc_name']); ?>" target="_blank" style='font-size: 12px !important' class="btn btn-sm btn-outline-success">Download</a>
+                                            <a href="ap_doc/<?php echo urlencode($doc['ap_d_doc_name']); ?>" download target="_blank" style='font-size: 12px !important' class="btn btn-sm btn-outline-success">Download</a>
                                         </td>
                                         <td style="font-size: 12px;">
                                             <a href="?id=<?php echo $ap_id ?>&delete_doc=<?php echo $doc['ap_d_id']; ?>" style='font-size: 12px !important' class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this document?')">
