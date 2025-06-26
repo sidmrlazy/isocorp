@@ -88,7 +88,6 @@ include('includes/auth_check.php');
             <table class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th style="font-size: 12px !important;">ID</th>
                         <th style="font-size: 12px !important;">Topic</th>
                         <th style="font-size: 12px !important;">View</th>
                         <th style="font-size: 12px !important;">Delete</th>
@@ -104,10 +103,10 @@ include('includes/auth_check.php');
                         $coc_review_date = $row['coc_review_date'];
                     ?>
                         <tr>
-                            <td style="font-size: 12px !important;">
+                            <!-- <td style="font-size: 12px !important;">
                                 <?php // echo $coc_id; ?>
-                                <?php $serial++; ?>
-                            </td>
+                                <?php // $serial++; ?>
+                            </td> -->
                             <td style="font-size: 12px !important;"><?php echo $coc_topic; ?></td>
                             <td style="font-size: 12px !important;">
                                 <input type="text" name="coc_id" value="<?php echo $coc_id; ?>" hidden>
