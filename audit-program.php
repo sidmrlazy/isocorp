@@ -109,7 +109,7 @@ include 'includes/navbar.php';
                         <!-- <th style="font-size: 12px !important;">ID</th> -->
                         <th style="font-size: 12px !important;">Topic</th>
                         <th style="font-size: 12px !important;">Assigned to</th>
-                        <th style="font-size: 12px !important;">Review Date</th>
+                        <th style="font-size: 12px !important;">Created Date</th>
                         <th style="font-size: 12px !important;">View Details</th>
                         <th style="font-size: 12px !important;">Delete</th>
                     </tr>
