@@ -236,7 +236,7 @@ include 'includes/navbar.php';
                                     <ion-icon name="close-circle-outline"></ion-icon>
                                 </a>
                             </div>
-                            <p style="margin: 0;">
+                            <p style="margin: 0; font-size: 12px !important;">
                                 <?php echo htmlspecialchars($comment['ap_c_comment']); ?>
                             </p>
                         </div>
