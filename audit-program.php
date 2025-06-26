@@ -92,7 +92,7 @@ include 'includes/navbar.php';
             echo "<div class='alert alert-danger' style='font-size: 12px !important;'>Error: " . mysqli_error($connection) . "</div>";
         }
     }
-    $query = "SELECT * FROM audit_program";
+    $query = "SELECT * FROM audit_program ORDER BY ap_created_date DESC";
     $result = mysqli_query($connection, $query);
     $count = mysqli_num_rows($result);
 
