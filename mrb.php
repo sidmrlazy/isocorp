@@ -71,7 +71,8 @@ include('includes/connection.php');
                                     <?php echo $training_topic ?>
                                 </a>
                             </td>
-                            <td style="font-size: 12px"><?php echo $training_date ?></td>
+                            <td style="font-size: 12px"><?php echo date('m-d-Y', strtotime($training_date)); ?></td>
+
                             <td style="font-size: 12px" class="text-center">
                                 <form action="edit-mrb.php?id=<?php echo $training_id; ?>" method="post">
                                     <input type="text" name="training_id" value="<?php echo $training_id; ?>" hidden>
