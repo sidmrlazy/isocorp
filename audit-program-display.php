@@ -34,7 +34,7 @@ include 'includes/navbar.php';
     if (isset($_POST['submit-comment'])) {
         $ap_c_main_id = mysqli_real_escape_string($connection, $_POST['ap_id']);
         $ap_c_by = $user_name; // Replace this with $_SESSION['username'] or appropriate logged-in user variable
-        $ap_c_date = date("Y-m-d H:i:s");
+        $ap_c_date = date("Y-m-d");
         $ap_c_comment = mysqli_real_escape_string($connection, $_POST['comment']);
 
         $insert_comment = "INSERT INTO audit_program_comments (ap_c_main_id, ap_c_by, ap_c_date, ap_c_comment)
@@ -221,23 +221,24 @@ include 'includes/navbar.php';
                 <form method="POST" action="" class="mt-3">
                     <input type="hidden" name="ap_id" value="<?php echo $ap_id ?>">
                     <textarea name="comment" class="form-control mb-2" rows="2" placeholder="Add a comment..." required></textarea>
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end mb-3">
                         <button type="submit" style="font-size: 12px !important;" name="submit-comment" class="btn btn-sm btn-outline-success">Add comment</button>
                     </div>
                 </form>
                 <?php if (!empty($ap_comments)): ?>
                     <?php foreach ($ap_comments as $comment): ?>
-                        <div class="d-flex justify-content-between align-items-start mt-3 mb-3">
-                            <p style="margin: 0; margin-right: 20px !important">
+                        <div style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px;">
+                            <div class="d-flex justify-content-between align-items-start">
                                 <span style="font-weight: 500; font-size: 12px;">
                                     <?php echo htmlspecialchars($comment['ap_c_by']); ?> (<?php echo date('m-d-Y', strtotime($comment['ap_c_date'])); ?>) -
                                 </span>
-
+                                <a href="?id=<?php echo $ap_id; ?>&delete_comment=<?php echo $comment['ap_c_id']; ?>" onclick="return confirm('Delete this comment?')" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">
+                                    <ion-icon name="close-circle-outline"></ion-icon>
+                                </a>
+                            </div>
+                            <p style="margin: 0;">
                                 <?php echo htmlspecialchars($comment['ap_c_comment']); ?>
                             </p>
-                            <a href="?id=<?php echo $ap_id; ?>&delete_comment=<?php echo $comment['ap_c_id']; ?>" onclick="return confirm('Delete this comment?')" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">
-                                <ion-icon name="close-circle-outline"></ion-icon>
-                            </a>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
