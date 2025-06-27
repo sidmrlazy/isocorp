@@ -118,7 +118,7 @@ $jsonDates = json_encode($trainingDates);
 
     <div class="row">
         <!-- LEFT TABLE -->
-        <div class="col-md-6">
+        <div class="col-md-6 mb-5">
             <div class="card p-3 mb-3">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <form method="GET" class="row g-2 align-items-center">
