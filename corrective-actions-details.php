@@ -20,6 +20,13 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
             $tbl_ca_id = $row['ca_id'];
             $tbl_ca_description = $row['ca_description'];
             $tbl_ca_description_status_fetched = $row['ca_description_status'];
+
+            // Add these lines to capture dropdown values
+            $ca_status_fetched = $row['ca_status'];
+            $ca_financial_value_fetched = $row['ca_financial_value'];
+            $ca_source_fetched = explode(',', $row['ca_source']);
+            $ca_severity_fetched = explode(',', $row['ca_severity']);
+            $ca_assigned_to_fetched = $row['ca_assigned_to'];
         }
     }
 
@@ -135,64 +142,82 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                 <input type="text" name="new_ca_id" value="<?php echo $tbl_ca_id ?>" hidden>
                 <div class="mb-3">
                     <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Status</label>
-                    <select style="font-size: 12px !important" name="ca_status" class="form-select" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
-                        <option value="To-do">To-do</option>
-                        <option value="Assessment">Assessment</option>
-                        <option value="Awaiting Board Approval">Awaiting Board Approval</option>
-                        <option value="Implementation">Implementation</option>
-                        <option value="Monitoring">Monitoring</option>
-                        <option value="Resolved">Resolved</option>
+                    <select name="ca_status" class="form-select" style="font-size: 12px !important">
+                        <option disabled>Select Status</option>
+                        <?php
+                        $status_options = ["To-do", "Assessment", "Awaiting Board Approval", "Implementation", "Monitoring", "Resolved"];
+                        foreach ($status_options as $status) {
+                            $selected = ($ca_status_fetched == $status) ? "selected" : "";
+                            echo "<option value='$status' $selected>$status</option>";
+                        }
+                        ?>
                     </select>
+
                 </div>
 
                 <div class="mb-3">
                     <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Financial Value</label>
-                    <input type="text" class="form-control" name="ca_financial_value" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <input type="text" style="font-size: 12px !important;" class="form-control" name="ca_financial_value" value="<?php echo $ca_financial_value_fetched ?>" />
                 </div>
 
                 <div class="mb-3">
                     <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Source</label>
-                    <select style="font-size: 12px !important" name="ca_source[]" class="form-select" aria-label="Default select example" multiple>
-                        <option selected>Open this select menu</option>
-                        <option value="To-do">Pre-stage 1</option>
-                        <option value="External Audit Findings">External Audit Findings</option>
-                        <option value="Internal Audit Findings">Internal Audit Findings</option>
-                        <option value="Concern/Complaint">Concern/Complaint</option>
-                        <option value="Security Incident/Event/Weakness">Security Incident/Event/Weakness</option>
-                        <option value="Measurement Trend">Measurement Trend</option>
-                        <option value="Risk Assessment">Risk Assessment</option>
-                        <option value="Suggestions">Suggestions</option>
-                        <option value="Process Review">Process Review</option>
-                        <option value="Other">Other</option>
+                    <select name="ca_source[]" class="form-select" multiple style="font-size: 12px !important">
+                        <?php
+                        $source_options = [
+                            "Pre-stage 1",
+                            "External Audit Findings",
+                            "Internal Audit Findings",
+                            "Concern/Complaint",
+                            "Security Incident/Event/Weakness",
+                            "Measurement Trend",
+                            "Risk Assessment",
+                            "Suggestions",
+                            "Process Review",
+                            "Other"
+                        ];
+                        foreach ($source_options as $source) {
+                            $selected = in_array($source, $ca_source_fetched) ? "selected" : "";
+                            echo "<option value='$source' $selected>$source</option>";
+                        }
+                        ?>
                     </select>
+
                 </div>
 
                 <div class="mb-3">
                     <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Severity</label>
-                    <select style="font-size: 12px !important" name="ca_severity[]" class="form-select" aria-label="Default select example" multiple>
-                        <option selected>Open this select menu</option>
-                        <option value="Major Non-Conformity">Major Non-Conformity</option>
-                        <option value="Minor Non-Conformity">Minor Non-Conformity</option>
-                        <option value="Observation">Observation</option>
-                        <option value="Opportunity for Improvement">Opportunity for Improvement</option>
+                    <select name="ca_severity[]" class="form-select" multiple style="font-size: 12px !important">
+                        <?php
+                        $severity_options = [
+                            "Major Non-Conformity",
+                            "Minor Non-Conformity",
+                            "Observation",
+                            "Opportunity for Improvement"
+                        ];
+                        foreach ($severity_options as $severity) {
+                            $selected = in_array($severity, $ca_severity_fetched) ? "selected" : "";
+                            echo "<option value='$severity' $selected>$severity</option>";
+                        }
+                        ?>
                     </select>
+
                 </div>
 
                 <div class="mb-3">
                     <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Assigned to</label>
-                    <select style="font-size: 12px !important" class="form-select" name="ca_assigned_to" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
+                    <select name="ca_assigned_to" class="form-select" style="font-size: 12px !important">
                         <?php
                         $fetch_user = "SELECT * FROM user";
                         $fetch_user_r = mysqli_query($connection, $fetch_user);
                         while ($row = mysqli_fetch_assoc($fetch_user_r)) {
                             $user_name = $row['isms_user_name'];
-
+                            $selected = ($user_name == $ca_assigned_to_fetched) ? "selected" : "";
+                            echo "<option value='$user_name' $selected>$user_name</option>";
+                        }
                         ?>
-                            <option value="<?php echo $user_name ?>"><?php echo $user_name ?></option>
-                        <?php } ?>
                     </select>
+
                 </div>
                 <div class="btn-row">
                     <button style="font-size: 12px !important" type="submit" name="save-form-draft" class="btn btn-dark btn-sm">Save Draft</button>
