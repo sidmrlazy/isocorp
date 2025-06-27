@@ -333,7 +333,7 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                             <div class="d-flex justify-content-center align-items-center">
                                 <p class="note-owner" style="flex: 1"><strong>
                                         <?php echo $comment_by ?></strong> - <?php echo $ca_comment_date ?></p>
-                                <form action="" method="POST" style="margin-top: 0 !important;">
+                                <form action="" method="POST" style="margin-top: 0 !important;" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                     <input type="hidden" name="delete_comment_id" value="<?php echo $ca_comment_id ?>">
                                     <button style="font-size: 12px !important" type="submit" name="delete-note" class="btn btn-sm btn-outline-dark" style="border: 0; font-size: 18px;">
                                         <ion-icon name="close-circle-outline"></ion-icon>
