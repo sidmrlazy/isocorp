@@ -344,7 +344,7 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                     $delete_res = mysqli_query($connection, $delete_query);
                 }
 
-                $fetch_comment_q = "SELECT * FROM `tblca_comment` WHERE `ca_comment_parent_id` = '$tbl_ca_id'";
+                $fetch_comment_q = "SELECT * FROM `tblca_comment` WHERE `ca_comment_parent_id` = '$tbl_ca_id' AND `ca_comment_type` IS NULL";
                 $fetch_comment_r = mysqli_query($connection, $fetch_comment_q);
                 $fetch_comment_count = mysqli_num_rows($fetch_comment_r);
                 if ($fetch_comment_count > 0) {
