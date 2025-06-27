@@ -4,7 +4,7 @@ include 'includes/navbar.php';
 include 'includes/connection.php';
 ?>
 <div class="dashboard-container">
-    <a href="add-user.php" class="btn btn-success mb-3 mt-3">Add User</a>
+    <a href="add-user.php" class="btn btn-sm btn-outline-success mb-3 mt-3">Add User</a>
 
     <?php
     if (isset($_POST['del-user'])) {
@@ -52,7 +52,7 @@ include 'includes/connection.php';
     $get_user_count = mysqli_num_rows($get_users_result);
 
     if ($get_user_count > 0) { ?>
-        <div class="table-responsive table-container ">
+        <div class="table-responsive card p-3">
             <table class="table table-bordered table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
