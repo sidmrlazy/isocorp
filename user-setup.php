@@ -47,7 +47,7 @@ include 'includes/connection.php';
     }
 
     // Fetch and display users
-    $get_users = "SELECT * FROM user";
+    $get_users = "SELECT * FROM user ORDER BY isms_user_creation_dt ASC";
     $get_users_result = mysqli_query($connection, $get_users);
     $get_user_count = mysqli_num_rows($get_users_result);
 
@@ -68,6 +68,7 @@ include 'includes/connection.php';
                 </thead>
                 <tbody>
                     <?php
+                    $serial = 1;
                     while ($row = mysqli_fetch_assoc($get_users_result)) {
                         $isms_user_id = $row['isms_user_id'];
                         $isms_user_name = $row['isms_user_name'];
@@ -76,7 +77,7 @@ include 'includes/connection.php';
                         $isms_user_creation_dt = $row['isms_user_creation_dt'];
                     ?>
                         <tr>
-                            <td style="font-size: 12px !important;" scope="row"><?php echo $isms_user_id ?></td>
+                            <td style="font-size: 12px !important;" scope="row"><?php echo $serial++; ?></td>
                             <td style="font-size: 12px !important;"><?php echo $isms_user_name ?></td>
                             <td style="font-size: 12px !important;"><?php echo $isms_user_email ?></td>
                             <td style="font-size: 12px !important;"><?php echo ($isms_user_role == '1') ? "Admin" : "Read Only"; ?></td>
