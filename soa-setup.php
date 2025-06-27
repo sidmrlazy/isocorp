@@ -66,9 +66,9 @@ include 'includes/connection.php';
             <button type="submit" name="save_only" class="btn btn-sm btn-outline-primary" style="font-size: 12px;">Save Applicability</button>
             <button type="submit" name="download_excel" formaction="download_policies_excel.php" class="btn btn-sm btn-outline-success" style="font-size: 12px;">Download Statement of Applicability</button>
         </div>
-        <div class="card p-3 table-responsive">
+        <div class="card table-responsive" style="max-height: 600px; overflow-y: auto;">
             <table class="table table-bordered table-striped table-hover">
-                <thead class="table-dark">
+                <thead class="table-dark" style="position: sticky; top: 0; z-index: 1; background-color: #343a40;">
                     <tr>
                         <th style="font-size: 12px;">Policy</th>
                         <th style="font-size: 12px;">
