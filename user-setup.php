@@ -61,9 +61,9 @@ include 'includes/connection.php';
                         <th style="font-size: 12px !important;" scope="col">EMAIL</th>
                         <th style="font-size: 12px !important;" scope="col">USER ROLE</th>
                         <th style="font-size: 12px !important;" scope="col">CREATED ON</th>
-                        <th style="font-size: 12px !important;" scope="col" class="text-center">ROLE</th>
+                        <th style="font-size: 12px !important;" scope="col" class="text-center">EDIT ROLE</th>
                         <th style="font-size: 12px !important;" scope="col" class="text-center">DELETE</th>
-                        <th style="font-size: 12px !important;" scope="col" class="text-center">UPDATE</th>
+                        <!-- <th style="font-size: 12px !important;" scope="col" class="text-center">UPDATE</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -81,7 +81,7 @@ include 'includes/connection.php';
                             <td style="font-size: 12px !important;"><?php echo $isms_user_name ?></td>
                             <td style="font-size: 12px !important;"><?php echo $isms_user_email ?></td>
                             <td style="font-size: 12px !important;"><?php echo ($isms_user_role == '1') ? "Admin" : "Read Only"; ?></td>
-                            <td style="font-size: 12px !important;"><?php echo $isms_user_creation_dt ?></td>
+                            <td style="font-size: 12px !important;"><?php echo date('m-d-Y', strtotime($isms_user_creation_dt)); ?></td>
                             <td style="font-size: 12px !important;" class="text-center">
                                 <form action="edit-user-role.php" method="POST">
                                     <input type="hidden" name="isms_user_id" value="<?php echo $isms_user_id ?>">
@@ -98,13 +98,13 @@ include 'includes/connection.php';
                                     </button>
                                 </form>
                             </td>
-                            <td style="font-size: 12px !important;" class="text-center">
+                            <!-- <td style="font-size: 12px !important;" class="text-center">
                                 <form action="" method="POST">
                                     <input type="hidden" name="isms_user_id" value="<?php echo $isms_user_id ?>">
                                     <button style="font-size: 12px !important;" class="btn btn-sm btn-outline-warning">
                                         <ion-icon name="create-outline"></ion-icon>
                                     </button>
-                                </form>
+                                </form> -->
                             </td>
                         </tr>
                     <?php } ?>
