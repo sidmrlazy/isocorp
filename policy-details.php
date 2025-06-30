@@ -239,8 +239,14 @@ include 'includes/connection.php';
                         <textarea id="editorNew"><?php echo htmlspecialchars_decode($policy_content); ?></textarea>
                     </div>
                     <input type="hidden" name="editorContent" id="editorContent">
+                    <?php
+                    if ($user_role == "2") {
+                    ?>
+                        <button type="submit" name="save" class="d-none btn btn-sm btn-success mt-3">Update</button>
+                    <?php } else { ?>
+                        <button type="submit" name="save" class="btn btn-sm btn-success mt-3">Update</button>
+                    <?php } ?>
 
-                    <button type="submit" name="save" class="btn btn-sm btn-success mt-3">Update</button>
                 </form>
             </div>
 
@@ -358,28 +364,20 @@ include 'includes/connection.php';
                         <input class="form-control" style="font-size: 12px;" name="vc_due_date" type="date"
                             value="<?php echo htmlspecialchars($vc_due_date_value); ?>">
                     </div>
-
-                    <button type="submit" name="update-details" class="btn btn-sm btn-success">Submit</button>
+                    <?php
+                    if ($user_role == "2") {
+                    ?>
+                        <button type="button" class="d-none btn btn-sm btn-success">Submit</button>
+                    <?php } else { ?>
+                        <button type="submit" name="update-details" class="btn btn-sm btn-secondary" disabled>Submit</button>
+                    <?php } ?>
                 </form>
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="mb-3">
-                <!-- ========== SOA ========== -->
-                <!-- <div class="card p-3 mb-3">
-                    <form action="" method="POST" class="d-flex justify-content-between align-items-center">
-                        <div class="form-check">
-                            <input type="hidden" name="policy_id" value="<?= htmlspecialchars($policy_id) ?>">
-                            <input type="hidden" name="policy_table" value="<?= htmlspecialchars($policy_table) ?>">
-                            <input class="form-check-input" type="checkbox" value="1" id="checkDefault">
-                            <label class="form-check-label" for="checkDefault">
-                                Statement of Applicability
-                            </label>
-                        </div>
-                        <button type="submit" name="add-soa" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Add</button>
-                    </form>
-                </div> -->
+
                 <!-- ========== HISTORY ========== -->
                 <div class="card p-3 mb-3">
                     <div style="display: flex !important; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -414,7 +412,13 @@ include 'includes/connection.php';
                                             <th style="font-size: 12px !important;" scope="col">Previous Details</th>
                                             <th style="font-size: 12px !important;" scope="col">Updated on</th>
                                             <th style="font-size: 12px !important;" scope="col">View</th>
-                                            <th style="font-size: 12px !important;" scope="col">Remove</th>
+                                            <?php
+                                            if ($user_role == "2") {
+                                            ?>
+                                                <th class="d-none" style="font-size: 12px !important;" scope="col">Remove</th>
+                                            <?php } else { ?>
+                                                <th style="font-size: 12px !important;" scope="col">Remove</th>
+                                            <?php } ?>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -433,14 +437,27 @@ include 'includes/connection.php';
                                                         View Previous Version
                                                     </button>
                                                 </td>
-                                                <td>
-                                                    <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                                        <input type="hidden" name="history_id" value="<?php echo $history['history_id']; ?>">
-                                                        <button type="submit" name="history_remove" style="font-size: 12px;" class="btn btn-sm btn-outline-danger">
-                                                            Remove
-                                                        </button>
-                                                    </form>
-                                                </td>
+                                                <?php
+                                                if ($user_role == "2") {
+                                                ?>
+                                                    <td class="d-none">
+                                                        <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                            <input type="hidden" name="history_id" value="<?php echo $history['history_id']; ?>">
+                                                            <button type="submit" name="history_remove" style="font-size: 12px;" class="btn btn-sm btn-outline-danger">
+                                                                Remove
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                <?php } else { ?>
+                                                    <td>
+                                                        <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                            <input type="hidden" name="history_id" value="<?php echo $history['history_id']; ?>">
+                                                            <button type="submit" name="history_remove" style="font-size: 12px;" class="btn btn-sm btn-outline-danger">
+                                                                Remove
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                <?php } ?>
 
                                             </tr>
                                         <?php } ?>
@@ -488,11 +505,21 @@ include 'includes/connection.php';
                 </div>
                 <!-- ========== DOCUMENTS ========== -->
                 <div class="card p-3 mb-3">
+
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Documents</h6>
-                        <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#uploadDoc" style="font-size: 12px !important;">
-                            <ion-icon name="add-outline"></ion-icon>
-                        </button>
+                        <?php
+                        if ($user_role == "2") {
+                        ?>
+                            <button class="d-none btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#uploadDoc" style="font-size: 12px !important;">
+                                <ion-icon name="add-outline"></ion-icon>
+                            </button>
+                        <?php } else { ?>
+                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#uploadDoc" style="font-size: 12px !important;">
+                                <ion-icon name="add-outline"></ion-icon>
+                            </button>
+                        <?php } ?>
+
                     </div>
 
                     <?php
@@ -636,8 +663,15 @@ include 'includes/connection.php';
                                         <th style="font-size: 12px !important;">Name</th>
                                         <th style="font-size: 12px !important;">Version</th>
                                         <th style="font-size: 12px !important;">Download</th>
-                                        <th style="font-size: 12px !important;">Edit</th>
-                                        <th style="font-size: 12px !important;">Delete</th>
+                                        <?php
+                                        if ($user_role == "2") {
+                                        ?>
+                                            <th class="d-none" style="font-size: 12px !important;">Edit</th>
+                                            <th class="d-none" style="font-size: 12px !important;">Delete</th>
+                                        <?php } else { ?>
+                                            <th style="font-size: 12px !important;">Edit</th>
+                                            <th style="font-size: 12px !important;">Delete</th>
+                                        <?php } ?>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -653,20 +687,40 @@ include 'includes/connection.php';
                                             <td>
                                                 <a href="<?= $document_path ?>" class="btn btn-sm btn-outline-info" style="font-size: 12px;" download>Download</a>
                                             </td>
-                                            <td>
-                                                <form action="update-document.php" method="POST">
-                                                    <input type="text" name="policy_document_id" value="<?php echo $document_id; ?>" hidden>
-                                                    <button type="submit" name="doc-edit-btn" class="btn btn-sm btn-outline-warning" style="font-size: 12px;">
-                                                        Edit
-                                                    </button>
-                                                </form>
-                                            </td>
-                                            <td>
-                                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                                    <input type="text" name="document_id" value="<?= $document_id ?>" hidden>
-                                                    <button type="submit" name="delete-doc" class="btn btn-sm btn-outline-danger" style="font-size: 12px;">Delete</button>
-                                                </form>
-                                            </td>
+                                            <?php
+                                            if ($user_role == "2") {
+                                            ?>
+                                                <td class="d-none">
+                                                    <form action="update-document.php" method="POST">
+                                                        <input type="text" name="policy_document_id" value="<?php echo $document_id; ?>" hidden>
+                                                        <button type="submit" name="doc-edit-btn" class="btn btn-sm btn-outline-warning" style="font-size: 12px;">
+                                                            Edit
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                                <td class="d-none">
+                                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                        <input type="text" name="document_id" value="<?= $document_id ?>" hidden>
+                                                        <button type="submit" name="delete-doc" class="btn btn-sm btn-outline-danger" style="font-size: 12px;">Delete</button>
+                                                    </form>
+                                                </td>
+
+                                            <?php } else { ?>
+                                                <td>
+                                                    <form action="update-document.php" method="POST">
+                                                        <input type="text" name="policy_document_id" value="<?php echo $document_id; ?>" hidden>
+                                                        <button type="submit" name="doc-edit-btn" class="btn btn-sm btn-outline-warning" style="font-size: 12px;">
+                                                            Edit
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                                <td>
+                                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                        <input type="text" name="document_id" value="<?= $document_id ?>" hidden>
+                                                        <button type="submit" name="delete-doc" class="btn btn-sm btn-outline-danger" style="font-size: 12px;">Delete</button>
+                                                    </form>
+                                                </td>
+                                            <?php } ?>
                                         </tr>
                                     <?php endwhile; ?>
                                 </tbody>
@@ -716,9 +770,17 @@ include 'includes/connection.php';
                     ?>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h6>Associated Risks & Treatments</h6>
-                        <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#riskModal" style="font-size: 12px !important;">
-                            <ion-icon name="add-outline"></ion-icon>
-                        </button>
+                        <?php
+                        if ($user_role == "2") {
+                        ?>
+                            <button class="d-none btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#riskModal" style="font-size: 12px !important;">
+                                <ion-icon name="add-outline"></ion-icon>
+                            </button>
+                        <?php } else { ?>
+                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#riskModal" style="font-size: 12px !important;">
+                                <ion-icon name="add-outline"></ion-icon>
+                            </button>
+                        <?php } ?>
                     </div>
                     <!-- ======= ADD RISK MODAL ======= -->
                     <div class="modal fade" id="riskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -785,7 +847,13 @@ include 'includes/connection.php';
                                     <tr>
                                         <th style="font-size: 12px !important;">Risk Name</th>
                                         <th style="font-size: 12px !important;">View</th>
-                                        <th style="font-size: 12px !important;">Remove</th>
+                                        <?php
+                                        if ($user_role == "2") {
+                                        ?>
+                                            <th class="d-none" style="font-size: 12px !important;">Remove</th>
+                                        <?php } else { ?>
+                                            <th style="font-size: 12px !important;">Remove</th>
+                                        <?php } ?>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -797,18 +865,35 @@ include 'includes/connection.php';
                                                     View
                                                 </a>
                                             </td>
-                                            <td>
-                                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                                    <input type="hidden" name="risk_id" value="<?php echo $risk['risks_id']; ?>">
-                                                    <input type="hidden" name="clause_id" value="<?php echo htmlspecialchars($policy_id); ?>">
-                                                    <input type="hidden" name="clause_type" value="<?php echo htmlspecialchars($policy_table); ?>">
+                                            <?php
+                                            if ($user_role == "2") {
+                                            ?>
+                                                <td class="d-none">
+                                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                        <input type="hidden" name="risk_id" value="<?php echo $risk['risks_id']; ?>">
+                                                        <input type="hidden" name="clause_id" value="<?php echo htmlspecialchars($policy_id); ?>">
+                                                        <input type="hidden" name="clause_type" value="<?php echo htmlspecialchars($policy_table); ?>">
 
-                                                    <button type="submit" name="del-risk" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">
-                                                        <ion-icon name="trash-outline"></ion-icon>
-                                                    </button>
-                                                </form>
+                                                        <button type="submit" name="del-risk" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">
+                                                            <ion-icon name="trash-outline"></ion-icon>
+                                                        </button>
+                                                    </form>
 
-                                            </td>
+                                                </td>
+                                            <?php } else { ?>
+                                                <td>
+                                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                        <input type="hidden" name="risk_id" value="<?php echo $risk['risks_id']; ?>">
+                                                        <input type="hidden" name="clause_id" value="<?php echo htmlspecialchars($policy_id); ?>">
+                                                        <input type="hidden" name="clause_type" value="<?php echo htmlspecialchars($policy_table); ?>">
+
+                                                        <button type="submit" name="del-risk" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">
+                                                            <ion-icon name="trash-outline"></ion-icon>
+                                                        </button>
+                                                    </form>
+
+                                                </td>
+                                            <?php } ?>
                                         </tr>
                                     <?php } ?>
                                 </tbody>
@@ -936,15 +1021,6 @@ include 'includes/connection.php';
             </div>
 
             <script>
-                // document.querySelectorAll('.view-history-btn').forEach(btn => {
-                //     btn.addEventListener('click', function() {
-                //         const versionDetails = this.getAttribute('data-version');
-                //         const updatedOn = this.getAttribute('data-updatedon');
-                //         document.getElementById('history-updated-on').innerHTML = updatedOn;
-                //         document.getElementById('history-content').value = stripHtml(versionDetails);
-                //     });
-                // });
-
                 $(document).ready(function() {
                     $('#history-content').summernote({
                         height: 300,
