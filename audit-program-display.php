@@ -22,12 +22,27 @@ include 'includes/navbar.php';
     $ap_assigned = "";
     $ap_created_date = "";
     $ap_details = "";
+    $ap_complete_date = "";
+    $ap_status = "";
     $ap_comments = [];
 
     // Handle comment deletion
     if (isset($_GET['delete_comment'])) {
         $delete_id = mysqli_real_escape_string($connection, $_GET['delete_comment']);
         mysqli_query($connection, "DELETE FROM audit_program_comments WHERE ap_c_id = '$delete_id'");
+    }
+
+    if (isset($_POST['add-det'])) {
+        $ap_complete_date = mysqli_real_escape_string($connection, $_POST['ap_complete_date']);
+        $ap_status = mysqli_real_escape_string($connection, $_POST['ap_status']);
+        $ap_id = mysqli_real_escape_string($connection, $_POST['ap_id']);
+
+        $update_query = "UPDATE audit_program SET ap_complete_date = '$ap_complete_date', ap_status = '$ap_status' WHERE ap_id = '$ap_id'";
+        if (mysqli_query($connection, $update_query)) {
+            echo "<div id='alertBox' class='alert alert-success' style='font-size: 12px;'>Audit Program details updated successfully.</div>";
+        } else {
+            echo "<div id='alertBox' class='alert alert-danger' style='font-size: 12px;'>Error updating Audit Program details: " . mysqli_error($connection) . "</div>";
+        }
     }
 
     // Handle comment submission
@@ -67,6 +82,8 @@ include 'includes/navbar.php';
             $ap_assigned = htmlspecialchars($row['ap_assigned']);
             $ap_created_date = htmlspecialchars($row['ap_created_date']);
             $ap_details = htmlspecialchars($row['ap_details']);
+            $ap_complete_date = htmlspecialchars($row['ap_complete_date']);
+            $ap_status = htmlspecialchars($row['ap_status']);
         } else {
             echo "<div id='alertBox' class='alert alert-warning'>Audit Programme not found.</div>";
         }
@@ -91,7 +108,7 @@ include 'includes/navbar.php';
                 <p style="margin: 0;"><?php echo $ap_name ?></p>
             </div>
 
-            <form action="" method="POST" class="card p-3">
+            <form action="" method="POST" class="card p-3 mb-3">
                 <input type="hidden" name="ap_id" value="<?php echo $ap_id ?>">
 
                 <div class="WYSIWYG-editor">
@@ -99,6 +116,28 @@ include 'includes/navbar.php';
                 </div>
                 <div class="d-flex justify-content-end mt-3">
                     <button type="submit" name="update-ap" style="font-size: 12px;" class="btn btn-sm btn-outline-success">Update</button>
+                </div>
+            </form>
+
+            <form method="POST" class="card p-3 mb-3">
+                <input type="hidden" name="ap_id" value="<?php echo $ap_id ?>">
+                <div class="mb-3">
+                    <label style='font-size: 12px !important' class="form-label">Completion Date</label>
+                    <input style='font-size: 12px !important' type="date" name="ap_complete_date" class="form-control" value="<?php echo $ap_complete_date; ?>">
+                </div>
+                <div class="mb-3">
+                    <label style='font-size: 12px !important' class="form-label">Created Date</label>
+                    <select name='ap_status' style='font-size: 12px !important' class="form-select" aria-label="Default select example">
+                        <option disabled <?php if ($ap_status == '') echo 'selected'; ?>>Open this select menu</option>
+                        <option value="Completed" <?php if ($ap_status == 'Completed') echo 'selected'; ?>>Completed</option>
+                        <option value="Scheduled" <?php if ($ap_status == 'Scheduled') echo 'selected'; ?>>Scheduled</option>
+                        <option value="Cancelled" <?php if ($ap_status == 'Cancelled') echo 'selected'; ?>>Cancelled</option>
+                    </select>
+
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" name="add-det" class="btn btn-sm btn-outline-success" style='font-size: 12px !important'>Submit</button>
                 </div>
             </form>
         </div>

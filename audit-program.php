@@ -50,7 +50,7 @@ include 'includes/navbar.php';
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label" style="font-size: 12px !important;">Upload Date</label>
+                        <label class="form-label" style="font-size: 12px !important;">Created Date</label>
                         <input name="ap_created_date" type="date" class="form-control" style="font-size: 12px !important;" required>
                     </div>
 
@@ -110,6 +110,8 @@ include 'includes/navbar.php';
                         <th style="font-size: 12px !important;">Topic</th>
                         <th style="font-size: 12px !important;">Assigned to</th>
                         <th style="font-size: 12px !important;">Created Date</th>
+                        <th style="font-size: 12px !important;">Completion Date</th>
+                        <th style="font-size: 12px !important;">Status</th>
                         <th style="font-size: 12px !important;">View Details</th>
                         <th style="font-size: 12px !important;">Delete</th>
                     </tr>
@@ -121,12 +123,16 @@ include 'includes/navbar.php';
                         $ap_name = htmlspecialchars($row['ap_name']);
                         $ap_assigned = htmlspecialchars($row['ap_assigned']);
                         $ap_created_date = htmlspecialchars($row['ap_created_date']);
+                        $ap_complete_date = htmlspecialchars($row['ap_complete_date']);
+                        $ap_status = htmlspecialchars($row['ap_status']);
                     ?>
                         <tr>
                             <!-- <td style="font-size: 12px !important;"><?php echo $ap_id ?></td> -->
                             <td style="font-size: 12px !important;"><?php echo $ap_name ?></td>
                             <td style="font-size: 12px !important;"><?php echo $ap_assigned ?></td>
                             <td style="font-size: 12px !important;"><?php echo $ap_created_date ?></td>
+                            <td style="font-size: 12px !important;"><?php echo $ap_complete_date ?></td>
+                            <td style="font-size: 12px !important;"><?php echo $ap_status ?></td>
                             <td style="font-size: 12px !important;">
                                 <a href="audit-program-display.php?id=<?php echo $ap_id; ?>" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">View</a>
                             </td>
