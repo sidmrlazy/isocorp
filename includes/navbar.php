@@ -55,11 +55,11 @@ include 'includes/connection.php';
                 <ion-icon style="font-size: 20px !important;" name="glasses-outline"></ion-icon> Audit Programme
               </a>
             </li>
-            <li>
+            <!-- <li>
               <a class="dropdown-item" href="applicable-legislations.php">
                 <ion-icon style="font-size: 20px !important;" name="shield-half-outline"></ion-icon> Applicable Legislations
               </a>
-            </li>
+            </li> -->
             <li>
               <a class="dropdown-item" href="code-of-conduct.php">
                 <ion-icon style="font-size: 20px !important;" name="document-text-outline"></ion-icon> Code of conduct
