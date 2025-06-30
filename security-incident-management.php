@@ -121,17 +121,33 @@ include 'includes/connection.php'; ?>
     }
     ?>
     <!-- =========== CREATE TOPIC SECTION =========== -->
-    <div class="card p-3 mt-3">
-        <form action="" method="POST">
-            <div class="mb-3">
-                <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Create Topic</label>
-                <input style="font-size: 12px !important;" type="text" name="sim_topic" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required placeholder="Enter topic">
-            </div>
-            <div class="d-flex justify-content-end">
-                <button type="submit" name="create" class="btn btn-sm btn-outline-success">Create</button>
-            </div>
-        </form>
-    </div>
+    <?php
+    if ($user_role == "2") {
+    ?>
+        <div class="d-none card p-3 mt-3">
+            <form action="" method="POST">
+                <div class="mb-3">
+                    <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Create Topic</label>
+                    <input style="font-size: 12px !important;" type="text" name="sim_topic" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required placeholder="Enter topic">
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" name="create" class="btn btn-sm btn-outline-success">Create</button>
+                </div>
+            </form>
+        </div>
+    <?php } else { ?>
+        <div class="card p-3 mt-3">
+            <form action="" method="POST">
+                <div class="mb-3">
+                    <label style="font-size: 12px !important;" for="exampleInputEmail1" class="form-label">Create Topic</label>
+                    <input style="font-size: 12px !important;" type="text" name="sim_topic" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required placeholder="Enter topic">
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" name="create" class="btn btn-sm btn-outline-success">Create</button>
+                </div>
+            </form>
+        </div>
+    <?php } ?>
     <?php
     $records_per_page = 10;
     $current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -163,10 +179,15 @@ include 'includes/connection.php'; ?>
                         <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Due Date</th>
                         <!-- <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Reported Date</th> -->
 
-                        <?php if ($user_role === '1') { ?>
+                        <?php
+                        if ($user_role == "2") {
+                        ?>
+                            <th style="font-size: 12px !important; font-weight: 600 !important;" class="d-none text-center" scope="col">Action</th>
+                            <th style="font-size: 12px !important; font-weight: 600 !important;" class="d-none text-center" scope="col">Delete</th>
+                        <?php } else { ?>
                             <th style="font-size: 12px !important; font-weight: 600 !important;" class="text-center" scope="col">Action</th>
+                            <th style="font-size: 12px !important; font-weight: 600 !important;" class="text-center" scope="col">Delete</th>
                         <?php } ?>
-                        <th style="font-size: 12px !important; font-weight: 600 !important;" class="text-center" scope="col">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -322,20 +343,37 @@ include 'includes/connection.php'; ?>
                                     </div>
                                 </td>
 
-                                <?php if ($user_role === '1') { ?>
+                                <?php
+                                if ($user_role == "2") {
+                                ?>
+                                    <input type="hidden" value="<?php echo htmlspecialchars($user_name); ?>" name="sim_reported_by">
+                                    <td class="d-none text-center">
+                                        <button type="submit" style="font-size: 12px;" name="record" class="btn btn-sm btn-outline-success"
+                                            <?= $sim_status == "2" ? 'disabled' : '' ?>>Record</button>
+                                    </td>
+
+                                    <td class="d-none text-center">
+                                        <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this incident?');">
+                                            <input type="hidden" name="sim_id" value="<?php echo $sim_id ?>">
+                                            <button type="submit" style="font-size: 12px !important;" name="delete" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
+                                        </form>
+                                    </td>
+                                <?php } else { ?>
+
                                     <input type="hidden" value="<?php echo htmlspecialchars($user_name); ?>" name="sim_reported_by">
                                     <td class="text-center">
                                         <button type="submit" style="font-size: 12px;" name="record" class="btn btn-sm btn-outline-success"
                                             <?= $sim_status == "2" ? 'disabled' : '' ?>>Record</button>
                                     </td>
+
+                                    <td class="text-center">
+                                        <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this incident?');">
+                                            <input type="hidden" name="sim_id" value="<?php echo $sim_id ?>">
+                                            <button type="submit" style="font-size: 12px !important;" name="delete" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
+                                        </form>
+                                    </td>
                                 <?php } ?>
 
-                                <td class="text-center">
-                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this incident?');">
-                                        <input type="hidden" name="sim_id" value="<?php echo $sim_id ?>">
-                                        <button type="submit" style="font-size: 12px !important;" name="delete" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
-                                    </form>
-                                </td>
                             </form>
                         </tr>
                     <?php } ?>
