@@ -37,7 +37,7 @@ include('includes/connection.php');
         '$user_name')";
         $insert_res = mysqli_query($connection, $insert_query);
     }
-    $fetch_data = "SELECT * FROM training";
+    $fetch_data = "SELECT * FROM training ORDER BY training_date DESC";
     $fetch_data_r = mysqli_query($connection, $fetch_data);
     $insert_res_count = mysqli_num_rows($fetch_data_r);
     if ($insert_res_count > 0) {
