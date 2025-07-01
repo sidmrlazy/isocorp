@@ -42,20 +42,38 @@ $jsonDates = json_encode($trainingDates);
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Training Date</label>
-                        <input type="date" name="training_date" class="form-control" required>
+                        <label style='font-size: 12px !important' class="form-label">Training Date</label>
+                        <input style='font-size: 12px !important' type="date" name="training_date" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Topic</label>
-                        <input type="text" name="training_topic" class="form-control" required>
+                        <label style='font-size: 12px !important' class="form-label">Owner</label>
+                        <select  name="training_assigned_to" class="form-select" style="font-size: 12px !important;" required>
+                            <option selected disabled>Select a user</option>
+                            <?php
+                            $get_users = "SELECT * FROM user";
+                            $get_user_result = mysqli_query($connection, $get_users);
+                            if ($get_user_result) {
+                                while ($row = mysqli_fetch_assoc($get_user_result)) {
+                                    $user_name = htmlspecialchars($row['isms_user_name']);
+                                    echo "<option value=\"$user_name\">$user_name</option>";
+                                }
+                            } else {
+                                echo "<option disabled>Error loading users</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label style='font-size: 12px !important' class="form-label">Topic</label>
+                        <input style='font-size: 12px !important' type="text" name="training_topic" class="form-control" required>
                     </div>
 
                     <div class="WYSIWYG-editor mb-3">
                         <textarea name="training_description" id="editorNew"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Upload Document</label>
-                        <input type="file" name="training_document" class="form-control">
+                        <label style='font-size: 12px !important' class="form-label">Upload Document</label>
+                        <input style='font-size: 12px !important' type="file" name="training_document" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -68,30 +86,31 @@ $jsonDates = json_encode($trainingDates);
     <?php
     // Handle insert
     if (isset($_POST['submit_training'])) {
-        $training_topic = $_POST['training_topic'];
-        $training_description = $_POST['training_description'];
-        $training_date = $_POST['training_date'];
-        $training_created_by = $_SESSION['user_name'];
-        $training_created_at = date('Y-m-d H:i:s');
+    $training_topic = $_POST['training_topic'];
+    $training_description = $_POST['training_description'];
+    $training_date = $_POST['training_date'];
+    $training_created_by = $user_name;
+    $training_assigned_to = $_POST['training_assigned_to'];
+    $training_created_at = date('Y-m-d H:i:s');
 
-        $training_document_path = '';
-        if (isset($_FILES['training_document']) && $_FILES['training_document']['error'] == 0) {
-            $uploadDir = 'uploads/trainings/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-            $training_document_path = $uploadDir . basename($_FILES['training_document']['name']);
-            move_uploaded_file($_FILES['training_document']['tmp_name'], $training_document_path);
-        }
-
-        $stmt = $connection->prepare("INSERT INTO iso_training (training_topic, training_description, training_date, training_document_path, training_created_at, training_created_by) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssss", $training_topic, $training_description, $training_date, $training_document_path, $training_created_at, $training_created_by);
-        // $stmt->execute();
-        // echo "<script>location.href='trainings.php';</script>";
-        if ($stmt->execute()) {
-            echo "<script>location.href='trainings.php';</script>";
-        } else {
-            echo "Error: " . $stmt->error;
-        }
+    $training_document_path = '';
+    if (isset($_FILES['training_document']) && $_FILES['training_document']['error'] == 0) {
+        $uploadDir = 'uploads/trainings/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+        $training_document_path = $uploadDir . basename($_FILES['training_document']['name']);
+        move_uploaded_file($_FILES['training_document']['tmp_name'], $training_document_path);
     }
+
+    $stmt = $connection->prepare("INSERT INTO iso_training (training_topic, training_description, training_date, training_document_path, training_created_at, training_created_by, training_assigned_to) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssss", $training_topic, $training_description, $training_date, $training_document_path, $training_created_at, $training_created_by, $training_assigned_to);
+
+    if ($stmt->execute()) {
+        echo "<script>location.href='trainings.php';</script>";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+}
+
 
     if (isset($_POST['delete_training'])) {
         $delete_id = $_POST['delete_training_id'];
@@ -138,7 +157,7 @@ $jsonDates = json_encode($trainingDates);
             <div class="table-responsive card p-3">
                 <?php if ($filterDate): ?>
                     <label class="mb-3">Showing trainings for the date: <strong><?= htmlspecialchars($filterDate) ?></strong></label>
-               
+
                 <?php else: ?>
                     <label class="mb-3">Showing all trainings</label>
                 <?php endif; ?>
@@ -148,7 +167,9 @@ $jsonDates = json_encode($trainingDates);
                         <tr>
                             <th style="font-size: 12px !important;">ID</th>
                             <th style="font-size: 12px !important;">Topic</th>
-                            <th style="font-size: 12px !important;">Date</th>
+                            <th style="font-size: 12px !important;">Training Date</th>
+                            <th style="font-size: 12px !important;">Assigned to</th>
+                            <th style="font-size: 12px !important;">Status</th>
                             <th style="font-size: 12px !important;">View</th>
                             <th style="font-size: 12px !important;">Delete</th>
                         </tr>
@@ -163,6 +184,8 @@ $jsonDates = json_encode($trainingDates);
                                 </td>
                                 <td style="font-size: 12px !important;"><?= htmlspecialchars($row['training_topic']) ?></td>
                                 <td style="font-size: 12px !important;"><?= $row['training_date'] ?></td>
+                                <td style="font-size: 12px !important;"><?= htmlspecialchars($row['training_assigned_to']) ?></td>
+                                <td style="font-size: 12px !important;"><?= htmlspecialchars($row['training_status']) ?></td>
                                 <td style="font-size: 12px !important;">
                                     <a style="font-size: 12px !important;" class="btn btn-sm btn-outline-success" href="training-details.php?id=<?= $row['training_id'] ?>">View</a>
                                 </td>
