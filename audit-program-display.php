@@ -126,7 +126,7 @@ include 'includes/navbar.php';
                     <input style='font-size: 12px !important' type="date" name="ap_complete_date" class="form-control" value="<?php echo $ap_complete_date; ?>">
                 </div>
                 <div class="mb-3">
-                    <label style='font-size: 12px !important' class="form-label">Created Date</label>
+                    <label style='font-size: 12px !important' class="form-label">Status</label>
                     <select name='ap_status' style='font-size: 12px !important' class="form-select" aria-label="Default select example">
                         <option disabled <?php if ($ap_status == '') echo 'selected'; ?>>Open this select menu</option>
                         <option value="Completed" <?php if ($ap_status == 'Completed') echo 'selected'; ?>>Completed</option>
