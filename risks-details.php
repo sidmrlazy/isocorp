@@ -251,6 +251,10 @@ $risk = $result->fetch_assoc();
                         <td style="font-size: 12px !important;"><?= $risk['risks_impact'] ?></td>
                     </tr>
                     <tr>
+                        <th style="font-size: 12px !important; width: 20% !important;">Action</th>
+                        <td style="font-size: 12px !important;"><?= $risk['risks_action'] ?></td>
+                    </tr>
+                    <tr>
                         <th style="font-size: 12px !important; width: 20% !important;">Status</th>
                         <td style="font-size: 12px !important;"><?= $risk['risks_status'] ?></td>
                     </tr>
