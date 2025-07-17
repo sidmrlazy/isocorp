@@ -74,7 +74,7 @@ include 'includes/config.php';
     </div>
 
     <?php
-    $get_query = "SELECT * FROM tblca";
+    $get_query = "SELECT * FROM tblca ORDER BY `ca_created_date` DESC";
     $get_res = mysqli_query($connection, $get_query);
     $get_count = mysqli_num_rows($get_res);
     if ($get_count > 0) {
