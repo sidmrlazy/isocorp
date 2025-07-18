@@ -188,29 +188,33 @@ if (!empty($training_id)) {
                                     $doc_path = $doc['file_path'];
 
                                     echo "<tr>";
-                                    echo "<td style='font-size: 12px !important'>$doc_name</td>";
-                                    echo "<td style='font-size: 12px !important'>
-                    <a href='$doc_path' style='font-size: 12px !important' class='btn btn-sm btn-outline-primary' download>Download</a>
+                                    echo "<td style='font-size: 12px !important;'>$doc_name</td>";
+                                    echo "<td style='font-size: 12px !important;'>
+                    <a href='$doc_path' class='btn btn-sm btn-outline-primary' style='font-size: 12px !important;' download>Download</a>
                   </td>";
 
-                                    echo "<td style='font-size: 12px !important'>";
                                     if ($user_role == "2") {
-                                        echo "<form method='POST' style='display:none;'>
-                        <input type='hidden' name='delete_doc_id' value='$doc_id'>
-                        <button type='submit' style='font-size: 12px !important' name='delete_document' class='btn btn-sm btn-outline-danger' onclick='return confirm(\"Delete this document?\")'>Delete</button>
-                      </form>";
+                                        // Hide the delete column visually but still include it (optional)
+                                        echo "<td class='d-none' style='font-size: 12px !important;'>
+                        <form method='POST' style='display:inline;'>
+                            <input type='hidden' name='delete_doc_id' value='$doc_id'>
+                            <button type='submit' class='btn btn-sm btn-outline-danger' style='font-size: 12px !important;' name='delete_document' onclick='return confirm(\"Delete this document?\")'>Delete</button>
+                        </form>
+                      </td>";
                                     } else {
-                                        echo "<form method='POST' style='display:inline;'>
-                        <input type='hidden' name='delete_doc_id' value='$doc_id'>
-                        <button type='submit' style='font-size: 12px !important' name='delete_document' class='btn btn-sm btn-outline-danger' onclick='return confirm(\"Delete this document?\")'>Delete</button>
-                      </form>";
+                                        // Show delete column
+                                        echo "<td style='font-size: 12px !important;'>
+                        <form method='POST' style='display:inline;'>
+                            <input type='hidden' name='delete_doc_id' value='$doc_id'>
+                            <button type='submit' class='btn btn-sm btn-outline-danger' style='font-size: 12px !important;' name='delete_document' onclick='return confirm(\"Delete this document?\")'>Delete</button>
+                        </form>
+                      </td>";
                                     }
-                                    echo "</td>";
 
                                     echo "</tr>";
                                 }
                             } else {
-                                echo "<tr><td colspan='3' style='font-size: 12px !important' class='text-muted'>No documents uploaded.</td></tr>";
+                                echo "<tr><td colspan='3' style='font-size: 12px !important;' class='text-muted'>No documents uploaded.</td></tr>";
                             }
                             ?>
                         </tbody>
