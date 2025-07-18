@@ -78,57 +78,116 @@ $result = $stmt->get_result()->fetch_assoc();
                         </textarea>
 
                     </div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" name="update_description" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
-                    </div>
+                    <?php if ($user_role == "2") { ?>
+                        <div class="d-none justify-content-end">
+                            <button type="submit" name="update_description" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
+                        </div>
+                    <?php } else { ?>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" name="update_description" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
+                        </div>
+                    <?php } ?>
                 </div>
             </form>
 
             <!-- Assignment Section -->
             <form method="POST" class="card p-3">
-                <div class="mb-3">
-                    <label style="font-size: 12px !important">Training Date</label>
-                    <input style="font-size: 12px !important" name="training_date" type="date" class="form-control"
-                        value="<?= htmlspecialchars($result['training_date']) ?>" required>
-                </div>
+                <?php if ($user_role == "2") { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important">Training Date</label>
+                        <input disabled style="font-size: 12px !important" name="training_date" type="date" class="form-control"
+                            value="<?= htmlspecialchars($result['training_date']) ?>" required>
+                    </div>
+                <?php } else { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important">Training Date</label>
+                        <input style="font-size: 12px !important" name="training_date" type="date" class="form-control"
+                            value="<?= htmlspecialchars($result['training_date']) ?>" required>
+                    </div>
+                <?php } ?>
 
-                <div class="mb-3">
-                    <label style="font-size: 12px !important">Assigned to</label>
-                    <select name="training_assigned_to" class="form-select" style="font-size: 12px !important;" required>
-                        <option disabled>Select a user</option>
-                        <?php
-                        $get_users = "SELECT * FROM user";
-                        $get_user_result = mysqli_query($connection, $get_users);
-                        if ($get_user_result) {
-                            while ($row = mysqli_fetch_assoc($get_user_result)) {
-                                $user_name = htmlspecialchars($row['isms_user_name']);
-                                $selected = ($result['training_assigned_to'] === $user_name) ? 'selected' : '';
-                                echo "<option value=\"$user_name\" $selected>$user_name</option>";
+                <?php if ($user_role == "2") { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important">Assigned to</label>
+                        <select disabled name="training_assigned_to" class="form-select" style="font-size: 12px !important;" required>
+                            <option disabled>Select a user</option>
+                            <?php
+                            $get_users = "SELECT * FROM user";
+                            $get_user_result = mysqli_query($connection, $get_users);
+                            if ($get_user_result) {
+                                while ($row = mysqli_fetch_assoc($get_user_result)) {
+                                    $user_name = htmlspecialchars($row['isms_user_name']);
+                                    $selected = ($result['training_assigned_to'] === $user_name) ? 'selected' : '';
+                                    echo "<option value=\"$user_name\" $selected>$user_name</option>";
+                                }
+                            } else {
+                                echo "<option disabled>Error loading users</option>";
                             }
-                        } else {
-                            echo "<option disabled>Error loading users</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
+                            ?>
+                        </select>
+                    </div>
+                <?php } else { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important">Assigned to</label>
+                        <select name="training_assigned_to" class="form-select" style="font-size: 12px !important;" required>
+                            <option disabled>Select a user</option>
+                            <?php
+                            $get_users = "SELECT * FROM user";
+                            $get_user_result = mysqli_query($connection, $get_users);
+                            if ($get_user_result) {
+                                while ($row = mysqli_fetch_assoc($get_user_result)) {
+                                    $user_name = htmlspecialchars($row['isms_user_name']);
+                                    $selected = ($result['training_assigned_to'] === $user_name) ? 'selected' : '';
+                                    echo "<option value=\"$user_name\" $selected>$user_name</option>";
+                                }
+                            } else {
+                                echo "<option disabled>Error loading users</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                <?php } ?>
 
-                <div class="mb-3">
-                    <label style="font-size: 12px !important">Status</label>
-                    <select style="font-size: 12px !important" name="training_status" class="form-select" required>
-                        <option disabled>Select status</option>
-                        <?php
-                        $statuses = ['Scheduled', 'Completed', 'Cancelled'];
-                        foreach ($statuses as $status) {
-                            $selected = ($result['training_status'] === $status) ? 'selected' : '';
-                            echo "<option value=\"$status\" $selected>$status</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
+                <?php if ($user_role == "2") { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important">Status</label>
+                        <select disabled style="font-size: 12px !important" name="training_status" class="form-select" required>
+                            <option disabled>Select status</option>
+                            <?php
+                            $statuses = ['Scheduled', 'Completed', 'Cancelled'];
+                            foreach ($statuses as $status) {
+                                $selected = ($result['training_status'] === $status) ? 'selected' : '';
+                                echo "<option value=\"$status\" $selected>$status</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                <?php } else { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important">Status</label>
+                        <select style="font-size: 12px !important" name="training_status" class="form-select" required>
+                            <option disabled>Select status</option>
+                            <?php
+                            $statuses = ['Scheduled', 'Completed', 'Cancelled'];
+                            foreach ($statuses as $status) {
+                                $selected = ($result['training_status'] === $status) ? 'selected' : '';
+                                echo "<option value=\"$status\" $selected>$status</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                <?php } ?>
 
-                <div class="d-flex justify-content-end">
-                    <button type="submit" name="update-assign" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
-                </div>
+
+                <?php if ($user_role == "2") { ?>
+                    <div class="d-none justify-content-end">
+                        <button type="submit" name="update-assign" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
+                    </div>
+                <?php } else { ?>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" name="update-assign" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
+                    </div>
+                <?php } ?>
             </form>
         </div>
 
@@ -141,7 +200,11 @@ $result = $stmt->get_result()->fetch_assoc();
                         <tr>
                             <th style="font-size: 12px !important;">Document Name</th>
                             <th style="font-size: 12px !important;">Download</th>
-                            <th style="font-size: 12px !important;">Delete</th>
+                            <?php if ($user_role == "2") { ?>
+                                <th style="font-size: 12px !important;" class="d-none">Delete</th>
+                            <?php } else { ?>
+                                <th style="font-size: 12px !important;">Delete</th>
+                            <?php } ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -152,9 +215,17 @@ $result = $stmt->get_result()->fetch_assoc();
                                 <td>
                                     <a style="font-size: 12px !important" href="<?= $result['training_document_path'] ?>" target="_blank" class="btn btn-sm btn-outline-success">Download</a>
                                 </td>
-                                <td>
-                                    <a style="font-size: 12px !important" href="?id=<?= $id ?>&delete_doc=<?= urlencode($result['training_document_path']) ?>" onclick="return confirm('Are you sure you want to delete this document?')" class="btn btn-sm btn-outline-danger">Delete</a>
-                                </td>
+                                <?php if ($user_role == "2") { ?>
+                                    <td class="d-none">
+                                        <a style="font-size: 12px !important" href="?id=<?= $id ?>&delete_doc=<?= urlencode($result['training_document_path']) ?>" onclick="return confirm('Are you sure you want to delete this document?')" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </td>
+                                <?php } else { ?>
+                                    <td>
+                                        <a style="font-size: 12px !important" href="?id=<?= $id ?>&delete_doc=<?= urlencode($result['training_document_path']) ?>" onclick="return confirm('Are you sure you want to delete this document?')" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </td>
+                                <?php } ?>
+
+
                             </tr>
                         <?php else: ?>
                             <tr>

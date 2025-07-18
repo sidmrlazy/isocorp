@@ -28,9 +28,15 @@ $jsonDates = json_encode($trainingDates);
         <h1>TRAINING</h1>
         <h2><a href="dashboard.php">Dashboard</a> > Training</h2>
     </div>
-    <div class="d-flex justify-content-end mb-3 mt-3">
-        <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#addTrainingModal">Add Training</button>
-    </div>
+    <?php if ($user_role == "2") { ?>
+        <div class="d-none justify-content-end mb-3 mt-3">
+            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#addTrainingModal">Add Training</button>
+        </div>
+    <?php } else { ?>
+        <div class="d-flex justify-content-end mb-3 mt-3">
+            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#addTrainingModal">Add Training</button>
+        </div>
+    <?php } ?>
 
     <!-- ===== Add Training Modal ===== -->
     <div class="modal fade" id="addTrainingModal" tabindex="-1">
@@ -47,7 +53,7 @@ $jsonDates = json_encode($trainingDates);
                     </div>
                     <div class="mb-3">
                         <label style='font-size: 12px !important' class="form-label">Owner</label>
-                        <select  name="training_assigned_to" class="form-select" style="font-size: 12px !important;" required>
+                        <select name="training_assigned_to" class="form-select" style="font-size: 12px !important;" required>
                             <option selected disabled>Select a user</option>
                             <?php
                             $get_users = "SELECT * FROM user";
@@ -86,30 +92,30 @@ $jsonDates = json_encode($trainingDates);
     <?php
     // Handle insert
     if (isset($_POST['submit_training'])) {
-    $training_topic = $_POST['training_topic'];
-    $training_description = $_POST['training_description'];
-    $training_date = $_POST['training_date'];
-    $training_created_by = $user_name;
-    $training_assigned_to = $_POST['training_assigned_to'];
-    $training_created_at = date('Y-m-d H:i:s');
+        $training_topic = $_POST['training_topic'];
+        $training_description = $_POST['training_description'];
+        $training_date = $_POST['training_date'];
+        $training_created_by = $user_name;
+        $training_assigned_to = $_POST['training_assigned_to'];
+        $training_created_at = date('Y-m-d H:i:s');
 
-    $training_document_path = '';
-    if (isset($_FILES['training_document']) && $_FILES['training_document']['error'] == 0) {
-        $uploadDir = 'uploads/trainings/';
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-        $training_document_path = $uploadDir . basename($_FILES['training_document']['name']);
-        move_uploaded_file($_FILES['training_document']['tmp_name'], $training_document_path);
+        $training_document_path = '';
+        if (isset($_FILES['training_document']) && $_FILES['training_document']['error'] == 0) {
+            $uploadDir = 'uploads/trainings/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            $training_document_path = $uploadDir . basename($_FILES['training_document']['name']);
+            move_uploaded_file($_FILES['training_document']['tmp_name'], $training_document_path);
+        }
+
+        $stmt = $connection->prepare("INSERT INTO iso_training (training_topic, training_description, training_date, training_document_path, training_created_at, training_created_by, training_assigned_to) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssss", $training_topic, $training_description, $training_date, $training_document_path, $training_created_at, $training_created_by, $training_assigned_to);
+
+        if ($stmt->execute()) {
+            echo "<script>location.href='trainings.php';</script>";
+        } else {
+            echo "Error: " . $stmt->error;
+        }
     }
-
-    $stmt = $connection->prepare("INSERT INTO iso_training (training_topic, training_description, training_date, training_document_path, training_created_at, training_created_by, training_assigned_to) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssss", $training_topic, $training_description, $training_date, $training_document_path, $training_created_at, $training_created_by, $training_assigned_to);
-
-    if ($stmt->execute()) {
-        echo "<script>location.href='trainings.php';</script>";
-    } else {
-        echo "Error: " . $stmt->error;
-    }
-}
 
 
     if (isset($_POST['delete_training'])) {
@@ -135,7 +141,7 @@ $jsonDates = json_encode($trainingDates);
 
     ?>
 
-    <div class="row">
+    <div class="row mt-5">
         <!-- LEFT TABLE -->
         <div class="col-md-6 mb-5">
             <div class="card p-3 mb-3">
@@ -171,7 +177,11 @@ $jsonDates = json_encode($trainingDates);
                             <th style="font-size: 12px !important;">Assigned to</th>
                             <th style="font-size: 12px !important;">Status</th>
                             <th style="font-size: 12px !important;">View</th>
-                            <th style="font-size: 12px !important;">Delete</th>
+                            <?php if ($user_role == "2") { ?>
+                                <th style="font-size: 12px !important;" class="d-none">Delete</th>
+                            <?php } else { ?>
+                                <th style="font-size: 12px !important;">Delete</th>
+                            <?php } ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -189,12 +199,21 @@ $jsonDates = json_encode($trainingDates);
                                 <td style="font-size: 12px !important;">
                                     <a style="font-size: 12px !important;" class="btn btn-sm btn-outline-success" href="training-details.php?id=<?= $row['training_id'] ?>">View</a>
                                 </td>
-                                <td>
-                                    <form method="POST" onsubmit="return confirm('Are you sure you want to delete this training?');">
-                                        <input type="hidden" name="delete_training_id" value="<?= $row['training_id'] ?>">
-                                        <button type="submit" name="delete_training" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">Delete</button>
-                                    </form>
-                                </td>
+                                <?php if ($user_role == "2") { ?>
+                                    <td class="d-none">
+                                        <form method="POST" onsubmit="return confirm('Are you sure you want to delete this training?');">
+                                            <input type="hidden" name="delete_training_id" value="<?= $row['training_id'] ?>">
+                                            <button type="submit" name="delete_training" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">Delete</button>
+                                        </form>
+                                    </td>
+                                <?php } else { ?>
+                                    <td>
+                                        <form method="POST" onsubmit="return confirm('Are you sure you want to delete this training?');">
+                                            <input type="hidden" name="delete_training_id" value="<?= $row['training_id'] ?>">
+                                            <button type="submit" name="delete_training" class="btn btn-sm btn-outline-danger" style="font-size: 12px !important;">Delete</button>
+                                        </form>
+                                    </td>
+                                <?php } ?>
 
                             </tr>
                         <?php endwhile; ?>
