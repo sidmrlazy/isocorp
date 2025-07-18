@@ -186,15 +186,24 @@ if (!empty($training_id)) {
                                     $doc_id = $doc['training_document_id'];
                                     $doc_name = htmlspecialchars($doc['file_name']);
                                     $doc_path = $doc['file_path'];
+
                                     echo "<tr>";
                                     echo "<td style='font-size: 12px !important'>$doc_name</td>";
-                                    echo "<td style='font-size: 12px !important'><a href='$doc_path' style='font-size: 12px !important' class='btn btn-sm btn-outline-primary' download>Download</a></td>";
                                     echo "<td style='font-size: 12px !important'>
-                            <form method='POST' style='display:inline;'>
-                                <input type='hidden' name='delete_doc_id' value='$doc_id'>
-                                <button type='submit' style='font-size: 12px !important' name='delete_document' class='btn btn-sm btn-outline-danger' onclick='return confirm(\"Delete this document?\")'>Delete</button>
-                            </form>
-                          </td>";
+                    <a href='$doc_path' style='font-size: 12px !important' class='btn btn-sm btn-outline-primary' download>Download</a>
+                  </td>";
+
+                                    echo "<td style='font-size: 12px !important'>";
+                                    if ($user_role != "2") {
+                                        echo "<form method='POST' style='display:inline;'>
+                        <input type='hidden' name='delete_doc_id' value='$doc_id'>
+                        <button type='submit' style='font-size: 12px !important' name='delete_document' class='btn btn-sm btn-outline-danger' onclick='return confirm(\"Delete this document?\")'>Delete</button>
+                      </form>";
+                                    } else {
+                                        echo "<button class='btn btn-sm btn-outline-secondary' style='font-size: 12px !important' disabled>Delete</button>";
+                                    }
+                                    echo "</td>";
+
                                     echo "</tr>";
                                 }
                             } else {
@@ -202,6 +211,7 @@ if (!empty($training_id)) {
                             }
                             ?>
                         </tbody>
+
                     </table>
                 </div>
 
