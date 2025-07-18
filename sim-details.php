@@ -84,11 +84,20 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
                         <?php } ?>
                     </div>
-                    <?php if ($sim_final != '2') { ?>
-                        <div class="d-flex justify-content-end align-items-center mt-3">
-                            <button style="font-size: 12px !important;" type="submit" name="update-sim-detail" class="btn btn-sm btn-outline-primary">Save Draft</button>
-                            <button style="font-size: 12px !important; margin-left: 5px !important" type="submit" name="update-sim-final" class="btn btn-sm btn-outline-success">Submit Details</button>
-                        </div>
+                    <?php if ($user_role == "2") { ?>
+                        <?php if ($sim_final != '2') { ?>
+                            <div class="d-none justify-content-end align-items-center mt-3">
+                                <button style="font-size: 12px !important;" type="submit" name="update-sim-detail" class="btn btn-sm btn-outline-primary">Save Draft</button>
+                                <button style="font-size: 12px !important; margin-left: 5px !important" type="submit" name="update-sim-final" class="btn btn-sm btn-outline-success">Submit Details</button>
+                            </div>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <?php if ($sim_final != '2') { ?>
+                            <div class="d-flex justify-content-end align-items-center mt-3">
+                                <button style="font-size: 12px !important;" type="submit" name="update-sim-detail" class="btn btn-sm btn-outline-primary">Save Draft</button>
+                                <button style="font-size: 12px !important; margin-left: 5px !important" type="submit" name="update-sim-final" class="btn btn-sm btn-outline-success">Submit Details</button>
+                            </div>
+                        <?php } ?>
                     <?php } ?>
                 </form>
             </div>
@@ -102,7 +111,11 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             <div class="card p-3 mb-3">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <h6>Linked Risks & Treatments</h6>
-                    <button class="btn btn-sm btn-outline-success" style="font-size: 12px !important; margin: 0 !important;" data-bs-toggle="modal" data-bs-target="#riskModal">+</button>
+                    <?php if ($user_role == "2") { ?>
+                        <button class="d-none btn btn-sm btn-outline-success" style="font-size: 12px !important; margin: 0 !important;" data-bs-toggle="modal" data-bs-target="#riskModal">+</button>
+                    <?php } else { ?>
+                        <button class="btn btn-sm btn-outline-success" style="font-size: 12px !important; margin: 0 !important;" data-bs-toggle="modal" data-bs-target="#riskModal">+</button>
+                    <?php }  ?>
                 </div>
 
                 <!-- ========== SIM RISKS MODAL ========== -->
@@ -194,7 +207,11 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                 <tr>
                                     <th style="font-size: 12px !important;">Risk Name</th>
                                     <th style="font-size: 12px !important;">View</th>
-                                    <th style="font-size: 12px !important;">Remove</th>
+                                    <?php if ($user_role == "2") { ?>
+                                        <th style="font-size: 12px !important;" class="d-none">Remove</th>
+                                    <?php } else { ?>
+                                        <th style="font-size: 12px !important;">Remove</th>
+                                    <?php } ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -206,12 +223,21 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                                 View Risk
                                             </a>
                                         </td>
-                                        <td>
-                                            <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                                <input type="text" name="risk_id" value="<?php echo $risk['risks_id']; ?>" hidden>
-                                                <button type="submit" name="del-risk" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Remove</button>
-                                            </form>
-                                        </td>
+                                        <?php if ($user_role == "2") { ?>
+                                            <td class="d-none">
+                                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                    <input type="text" name="risk_id" value="<?php echo $risk['risks_id']; ?>" hidden>
+                                                    <button type="submit" name="del-risk" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Remove</button>
+                                                </form>
+                                            </td>
+                                        <?php } else { ?>
+                                            <td>
+                                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                    <input type="text" name="risk_id" value="<?php echo $risk['risks_id']; ?>" hidden>
+                                                    <button type="submit" name="del-risk" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Remove</button>
+                                                </form>
+                                            </td>
+                                        <?php } ?>
                                     </tr>
                                 <?php } ?>
                             </tbody>
