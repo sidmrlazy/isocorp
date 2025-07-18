@@ -173,7 +173,11 @@ if (!empty($training_id)) {
                             <tr>
                                 <th style="font-size: 12px !important;" scope="col">Document Name</th>
                                 <th style="font-size: 12px !important;" scope="col">Download</th>
-                                <th style="font-size: 12px !important;" scope="col">Delete</th>
+                                <?php if ($user_role != "2") { ?>
+                                <th style="font-size: 12px !important;" class="d-none" scope="col">Delete</th>
+                                <?php } else { ?>
+                                    <th style="font-size: 12px !important;" scope="col">Delete</th>
+                                    <?php } ?>
                             </tr>
                         </thead>
                         <tbody>
