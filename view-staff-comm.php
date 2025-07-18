@@ -46,7 +46,11 @@ include 'includes/connection.php';
 
                     </div>
                 </div>
-                <button type="submit" name="save-det" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
+                <?php if ($user_role == "2") { ?>
+                    <button type="submit" name="save-det" class="d-none btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
+                <?php } else { ?>
+                    <button type="submit" name="save-det" class="btn btn-sm btn-outline-success" style="font-size: 12px !important;">Update</button>
+                <?php } ?>
             </form>
         </div>
 
@@ -57,7 +61,11 @@ include 'includes/connection.php';
                 <!-- =========== ADD DOCUMENT =========== -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <label style="font-size: 12px !important;" for="">Documents</label>
-                    <button type="button" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-outline-success">Add</button>
+                    <?php if ($user_role == "2") { ?>
+                        <button type="button" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="d-none btn btn-sm btn-outline-success">Add</button>
+                    <?php } else { ?>
+                        <button type="button" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-outline-success">Add</button>
+                    <?php } ?>
                 </div>
 
                 <?php
@@ -101,7 +109,11 @@ include 'includes/connection.php';
                             <tr>
                                 <th style="font-size: 12px !important;" scope="col">Document</th>
                                 <th style="font-size: 12px !important;" scope="col">Download</th>
-                                <th style="font-size: 12px !important;" scope="col">Delete</th>
+                                <?php if ($user_role == "2") { ?>
+                                    <th style="font-size: 12px !important;" class="d-none" scope="col">Delete</th>
+                                <?php } else { ?>
+                                    <th style="font-size: 12px !important;" scope="col">Delete</th>
+                                <?php } ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -115,12 +127,21 @@ include 'includes/connection.php';
                                         <td style="font-size: 12px !important;">
                                             <a href="<?php echo $row['stfc_doc_filepath']; ?>" style="font-size: 12px !important;" target="_blank" class="btn btn-sm btn-outline-primary">Download</a>
                                         </td>
-                                        <td style="font-size: 12px !important;">
-                                            <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                                <input type="hidden" name="doc_id" value="<?php echo $row['stfc_doc_id']; ?>">
-                                                <button type="submit" style="font-size: 12px !important;" name="delete_document" class="btn btn-sm btn-outline-danger">Delete</button>
-                                            </form>
-                                        </td>
+                                        <?php if ($user_role == "2") { ?>
+                                            <td class="d-none" style="font-size: 12px !important;">
+                                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                    <input type="hidden" name="doc_id" value="<?php echo $row['stfc_doc_id']; ?>">
+                                                    <button type="submit" style="font-size: 12px !important;" name="delete_document" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </td>
+                                        <?php } else { ?>
+                                            <td style="font-size: 12px !important;">
+                                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                    <input type="hidden" name="doc_id" value="<?php echo $row['stfc_doc_id']; ?>">
+                                                    <button type="submit" style="font-size: 12px !important;" name="delete_document" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </td>
+                                        <?php } ?>
                                     </tr>
                             <?php
                                 }
@@ -191,7 +212,8 @@ include 'includes/connection.php';
                                 <p style="font-size: 12px !important; margin: 0;">
                                     <strong>
                                         <?php echo htmlspecialchars($sf_comment_by); ?>
-                                    </strong> - <?php echo date('m-d-Y', strtotime($sf_comment_date)); ?></p>
+                                    </strong> - <?php echo date('m-d-Y', strtotime($sf_comment_date)); ?>
+                                </p>
                                 <form action="" method="POST">
                                     <input type="hidden" name="sf_comment_id" value="<?php echo $row['sf_comment_id']; ?>">
                                     <button type="submit" style="font-size: 12px;" name="del-comm" class="btn btn-sm btn-outline-danger"><ion-icon name="close-outline"></ion-icon></button>
