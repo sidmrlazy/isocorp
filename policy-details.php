@@ -408,7 +408,7 @@ include 'includes/connection.php';
                     ?>
                         <button type="button" class="d-none btn btn-sm btn-success">Submit</button>
                     <?php } else { ?>
-                        <button type="submit" name="update-details" class="btn btn-sm btn-secondary" disabled>Submit</button>
+                        <button type="submit" name="update-details" class="btn btn-sm btn-success">Submit</button>
                     <?php } ?>
                 </form>
             </div>
