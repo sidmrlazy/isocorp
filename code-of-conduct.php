@@ -8,9 +8,16 @@ include('includes/auth_check.php');
 
 <div class="dashboard-container mb-5">
     <!-- ================ MODAL BUTTON ================ -->
-    <div class="d-flex justify-content-end align-items-center mb-3">
-        <button type="button" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#cocModal" class="btn btn-sm btn-outline-success">Add</button>
-    </div>
+
+    <?php if ($user_role == "2") { ?>
+        <div class="d-none justify-content-end align-items-center mb-3">
+            <button type="button" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#cocModal" class="btn btn-sm btn-outline-success">Add</button>
+        </div>
+    <?php } else { ?>
+        <div class="d-flex justify-content-end align-items-center mb-3">
+            <button type="button" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#cocModal" class="btn btn-sm btn-outline-success">Add</button>
+        </div>
+    <?php } ?>
 
     <?php
     $get = "SELECT * FROM coc";
@@ -90,7 +97,11 @@ include('includes/auth_check.php');
                     <tr>
                         <th style="font-size: 12px !important;">Topic</th>
                         <th style="font-size: 12px !important;">View</th>
-                        <th style="font-size: 12px !important;">Delete</th>
+                        <?php if ($user_role == "2") { ?>
+                            <th style="font-size: 12px !important;" class="d-none">Delete</th>
+                        <?php } else { ?>
+                            <th style="font-size: 12px !important;">Delete</th>
+                        <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -104,8 +115,10 @@ include('includes/auth_check.php');
                     ?>
                         <tr>
                             <!-- <td style="font-size: 12px !important;">
-                                <?php // echo $coc_id; ?>
-                                <?php // $serial++; ?>
+                                <?php // echo $coc_id; 
+                                ?>
+                                <?php // $serial++; 
+                                ?>
                             </td> -->
                             <td style="font-size: 12px !important;"><?php echo $coc_topic; ?></td>
                             <td style="font-size: 12px !important;">
@@ -122,12 +135,21 @@ include('includes/auth_check.php');
                                     data-reviewdate="<?php echo htmlspecialchars($coc_review_date); ?>">View</button>
 
                             </td>
-                            <td>
-                                <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                    <input type="text" name="coc_id" value="<?php echo $coc_id; ?>" hidden>
-                                    <button style="font-size: 12px !important;" type="submit" name="delete-coc" class="btn btn-sm btn-outline-danger">Delete</button>
-                                </form>
-                            </td>
+                            <?php if ($user_role == "2") { ?>
+                                <td class="d-none">
+                                    <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                        <input type="text" name="coc_id" value="<?php echo $coc_id; ?>" hidden>
+                                        <button style="font-size: 12px !important;" type="submit" name="delete-coc" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            <?php } else { ?>
+                                <td>
+                                    <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                        <input type="text" name="coc_id" value="<?php echo $coc_id; ?>" hidden>
+                                        <button style="font-size: 12px !important;" type="submit" name="delete-coc" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            <?php } ?>
                         </tr>
                     <?php } ?>
                 </tbody>
