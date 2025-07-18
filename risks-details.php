@@ -295,9 +295,15 @@ $risk = $result->fetch_assoc();
 
 
                         <!-- =============== ADD POLICY BUTTON =============== -->
-                        <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#assignPolicyModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Policy</button>
-                        </div>
+                        <?php if ($user_role == "2") { ?>
+                            <div style="margin-bottom: 10px; display: none; justify-content: flex-end;">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#assignPolicyModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Policy</button>
+                            </div>
+                        <?php } else { ?>
+                            <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#assignPolicyModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Policy</button>
+                            </div>
+                        <?php } ?>
 
                         <?php
                         if (isset($_POST['remove_policy'])) {
@@ -398,14 +404,24 @@ $risk = $result->fetch_assoc();
                                                 <div class="d-flex justify-content-end align-items-center">
                                                     <a href="<?= $url ?>" class="btn btn-sm btn-outline-success" style="font-size: 10px;">View</a>
                                                     <!-- <a href="<?= $url ?>" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">Remove</a> -->
+                                                    <?php if ($user_role == "2") { ?>
+                                                        <form method="POST" style="display:none; margin-left: 5px;" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                            <input type="hidden" name="remove_policy" value="1">
+                                                            <input type="hidden" name="clause_id" value="<?= $policy['id'] ?>">
+                                                            <input type="hidden" name="clause_type" value="<?= $policy['type'] ?>">
+                                                            <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">Remove</button>
+                                                        </form>
+                                                    <?php } else { ?>
+                                                        <form method="POST" style="display:inline-block; margin-left: 5px;" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                            <input type="hidden" name="remove_policy" value="1">
+                                                            <input type="hidden" name="clause_id" value="<?= $policy['id'] ?>">
+                                                            <input type="hidden" name="clause_type" value="<?= $policy['type'] ?>">
+                                                            <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">Remove</button>
+                                                        </form>
 
-                                                    <form method="POST" style="display:inline-block; margin-left: 5px;" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                                        <input type="hidden" name="remove_policy" value="1">
-                                                        <input type="hidden" name="clause_id" value="<?= $policy['id'] ?>">
-                                                        <input type="hidden" name="clause_type" value="<?= $policy['type'] ?>">
-                                                        <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">Remove</button>
-                                                    </form>
+                                                    <?php } ?>
                                                 </div>
                                             </div>
                                         </li>
