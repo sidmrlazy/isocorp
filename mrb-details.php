@@ -89,15 +89,11 @@ if (!empty($training_id)) {
                     <div class="WYSIWYG-editor" style="max-height: fit-content; overflow-y: auto;">
                         <textarea id="editorNew" name="training_details"><?php echo htmlspecialchars($training_data_fetched); ?></textarea>
                     </div>
-                    <?php if ($training_details_status == "1") { ?>
-                        <button type="submit" name="save-training-draft" class="btn btn-sm btn-outline-primary mt-3">Save Draft</button>
-                        <button type="submit" name="submit-training-draft" class="btn btn-sm btn-outline-success mt-3">Submit Details</button>
-                    <?php } elseif ($training_details_status == "2") { ?>
-                        <!-- Hide buttons once submitted -->
-                        <button type="button" disabled class="btn btn-sm btn-secondary mt-3">Details Submitted</button>
+
+                    <?php if ($user_role == "2") { ?>
+                        <button type="submit" name="save-training-draft" style="font-size: 12px !important;" class="d-none btn btn-sm btn-outline-success mt-3">Save Draft</button>
                     <?php } else { ?>
-                        <button type="submit" name="save-training-draft" class="btn btn-sm btn-outline-primary mt-3">Save Draft</button>
-                        <button type="submit" name="submit-training-draft" class="btn btn-sm btn-outline-success mt-3">Submit Details</button>
+                        <button type="submit" name="save-training-draft" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success mt-3">Save Draft</button>
                     <?php } ?>
                 </form>
             </div>
@@ -108,7 +104,11 @@ if (!empty($training_id)) {
             <div class="card p-3 mb-3">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <label for="">Document</label>
-                    <button style="font-size: 12px !important;" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#documentModal">Add</button>
+                    <?php if ($user_role == "2") { ?>
+                        <button style="font-size: 12px !important;" class="d-none btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#documentModal">Add</button>
+                    <?php } else { ?>
+                        <button style="font-size: 12px !important;" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#documentModal">Add</button>
+                    <?php } ?>
                 </div>
                 <?php
                 if (isset($_POST['upload_document']) && isset($_FILES['training_file'])) {
