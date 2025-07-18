@@ -66,12 +66,19 @@ include 'includes/config.php';
         </div>
     </div>
 
-
-    <div class="d-flex justify-content-end align-items-center mt-3 mb-3">
-        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#caModal">
-            <ion-icon name="add-outline"></ion-icon> Add
-        </button>
-    </div>
+    <?php if ($user_role == "2") { ?>
+        <div class="d-none justify-content-end align-items-center mt-3 mb-3">
+            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#caModal">
+                <ion-icon name="add-outline"></ion-icon> Add
+            </button>
+        </div>
+    <?php } else { ?>
+        <div class="d-flex justify-content-end align-items-center mt-3 mb-3">
+            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#caModal">
+                <ion-icon name="add-outline"></ion-icon> Add
+            </button>
+        </div>
+    <?php } ?>
 
     <?php
     $get_query = "SELECT * FROM tblca ORDER BY `ca_created_date` ASC";
@@ -79,7 +86,7 @@ include 'includes/config.php';
     $get_count = mysqli_num_rows($get_res);
     if ($get_count > 0) {
     ?>
-        <div class="card p-3 mb-5">
+        <div class="card p-3 mt-5 mb-5">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover">
                     <thead class="table-dark">
@@ -94,7 +101,11 @@ include 'includes/config.php';
                             <!-- <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Created by</th> -->
                             <th style="font-size: 12px !important; font-weight: 600 !important;" scope="col">Created date</th>
                             <!-- <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">EDIT TOPIC</th> -->
-                            <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">Delete</th>
+                            <?php if ($user_role == "2") { ?>
+                                <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" class="d-none" scope="col">Delete</th>
+                            <?php } else { ?>
+                                <th style="font-size: 12px !important; font-weight: 600 !important; text-align: center;" scope="col">Delete</th>
+                            <?php } ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -113,8 +124,9 @@ include 'includes/config.php';
                         ?>
                             <tr>
                                 <td style="font-size: 12px !important;">
-                                    <?php echo $serial++; 
-                                    //echo $ca_id ?>
+                                    <?php echo $serial++;
+                                    //echo $ca_id 
+                                    ?>
                                 </td>
                                 <td style="font-size: 12px !important;">
                                     <a href="corrective-actions-details.php?id=<?php echo $ca_id ?>"><?php echo $ca_topic ?></a>
@@ -135,14 +147,25 @@ include 'includes/config.php';
                                         </button>
                                     </form>
                                 </td> -->
-                                <td style="font-size: 12px !important;" class="text-center">
-                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                        <input type="text" name="ca_id" value="<?php echo $ca_id ?>" hidden>
-                                        <button type="submit" name="delete" class="btn btn-sm btn-outline-danger" style="font-size: 12px;">
-                                            Remove
-                                        </button>
-                                    </form>
-                                </td>
+                                <?php if ($user_role == "2") { ?>
+                                    <td style="font-size: 12px !important;" class="d-none text-center">
+                                        <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                            <input type="text" name="ca_id" value="<?php echo $ca_id ?>" hidden>
+                                            <button type="submit" name="delete" class="btn btn-sm btn-outline-danger" style="font-size: 12px;">
+                                                Remove
+                                            </button>
+                                        </form>
+                                    </td>
+                                <?php } else { ?>
+                                    <td style="font-size: 12px !important;" class="text-center">
+                                        <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                            <input type="text" name="ca_id" value="<?php echo $ca_id ?>" hidden>
+                                            <button type="submit" name="delete" class="btn btn-sm btn-outline-danger" style="font-size: 12px;">
+                                                Remove
+                                            </button>
+                                        </form>
+                                    </td>
+                                <?php } ?>
                             </tr>
                         <?php } ?>
                     </tbody>
