@@ -34,9 +34,15 @@ include 'includes/connection.php';
     ?>
 
     <div class="table-responsive card p-3">
-        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px">
-            <button type="button" data-bs-toggle="modal" data-bs-target="#insertComm" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon> Add </button>
-        </div>
+        <?php if ($user_role == "2") { ?>
+            <div style="display: none; justify-content: flex-end; align-items: center; margin-bottom: 20px">
+                <button type="button" data-bs-toggle="modal" data-bs-target="#insertComm" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon> Add </button>
+            </div>
+        <?php } else { ?>
+            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px">
+                <button type="button" data-bs-toggle="modal" data-bs-target="#insertComm" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon> Add </button>
+            </div>
+        <?php } ?>
         <!-- =========== INSERT AND UPDATE COM =========== -->
         <div class="modal fade" id="insertComm" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -94,8 +100,13 @@ include 'includes/connection.php';
                         <th style="font-size: 12px !important;" scope="col">Topic</th>
                         <th style="font-size: 12px !important;" scope="col">Date</th>
                         <!-- <th style="font-size: 12px !important;" scope="col">Uploaded By</th> -->
-                        <th style="font-size: 12px !important;" scope="col">Edit</th>
-                        <th style="font-size: 12px !important;" scope="col">Delete</th>
+                        <?php if ($user_role == "2") { ?>
+                            <th style="font-size: 12px !important;" class="d-none" scope="col">Edit</th>
+                            <th style="font-size: 12px !important;" class="d-none" scope="col">Delete</th>
+                        <?php } else { ?>
+                            <th style="font-size: 12px !important;" scope="col">Edit</th>
+                            <th style="font-size: 12px !important;" scope="col">Delete</th>
+                        <?php } ?>
                         <th style="font-size: 12px !important;" scope="col">View</th>
                     </tr>
                 </thead>
@@ -111,18 +122,33 @@ include 'includes/connection.php';
                             <th style="font-size: 12px !important;"><?php echo $comm_data ?></th>
                             <td style="font-size: 12px !important;"><?php echo $comm_date ?></td>
                             <!-- <td style="font-size: 12px !important;"><?php echo $comm_by ?></td> -->
-                            <td style="font-size: 12px !important;">
-                                <form action="" method="POST">
-                                    <input type="text" value="<?php echo $comm_id ?>" name="comm_id" hidden>
-                                    <a href="edit-staff-comm.php?id=<?php echo $comm_id; ?>" class="btn btn-sm btn-outline-warning" style="font-size: 12px !important;">Edit</a>
-                                </form>
-                            </td>
-                            <td style="font-size: 12px !important;">
-                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                    <input type="text" value="<?php echo $comm_id ?>" name="comm_id" hidden>
-                                    <button style="font-size: 12px !important;" type="submit" name="delete-comm" class="btn btn-sm btn-outline-danger">Delete</button>
-                                </form>
-                            </td>
+                            <?php if ($user_role == "2") { ?>
+                                <td style="font-size: 12px !important;" class="d-none">
+                                    <form action="" method="POST">
+                                        <input type="text" value="<?php echo $comm_id ?>" name="comm_id" hidden>
+                                        <a href="edit-staff-comm.php?id=<?php echo $comm_id; ?>" class="btn btn-sm btn-outline-warning" style="font-size: 12px !important;">Edit</a>
+                                    </form>
+                                </td>
+                                <td style="font-size: 12px !important;" class="d-none">
+                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                        <input type="text" value="<?php echo $comm_id ?>" name="comm_id" hidden>
+                                        <button style="font-size: 12px !important;" type="submit" name="delete-comm" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            <?php } else { ?>
+                                <td style="font-size: 12px !important;">
+                                    <form action="" method="POST">
+                                        <input type="text" value="<?php echo $comm_id ?>" name="comm_id" hidden>
+                                        <a href="edit-staff-comm.php?id=<?php echo $comm_id; ?>" class="btn btn-sm btn-outline-warning" style="font-size: 12px !important;">Edit</a>
+                                    </form>
+                                </td>
+                                <td style="font-size: 12px !important;">
+                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                        <input type="text" value="<?php echo $comm_id ?>" name="comm_id" hidden>
+                                        <button style="font-size: 12px !important;" type="submit" name="delete-comm" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            <?php } ?>
                             <td style="font-size: 12px !important;">
                                 <a style="font-size: 12px !important;" href="view-staff-comm.php?id=<?php echo $comm_id; ?>" class="btn btn-sm btn-outline-info">View Details</a>
                             </td>
