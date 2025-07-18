@@ -278,13 +278,13 @@ include 'includes/navbar.php';
                                             <a href="ap_doc/<?php echo urlencode($doc['ap_d_doc_name']); ?>" download target="_blank" style='font-size: 12px !important' class="btn btn-sm btn-outline-success">Download</a>
                                         </td>
                                         <?php if ($user_role == "2") { ?>
-                                            <td style="font-size: 12px;">
+                                            <td class="d-none" style="font-size: 12px;">
                                                 <a href="?id=<?php echo $ap_id ?>&delete_doc=<?php echo $doc['ap_d_id']; ?>" style='font-size: 12px !important' class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this document?')">
                                                     Delete
                                                 </a>
                                             </td>
                                         <?php } else { ?>
-                                            <td class="d-none" style="font-size: 12px;">
+                                            <td style="font-size: 12px;">
                                                 <a href="?id=<?php echo $ap_id ?>&delete_doc=<?php echo $doc['ap_d_id']; ?>" style='font-size: 12px !important' class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this document?')">
                                                     Delete
                                                 </a>
