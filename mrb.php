@@ -12,7 +12,12 @@ include('includes/connection.php');
         <h2><a href="dashboard.php">Dashboard</a> > Management Review Board</h2>
     </div>
 
-    <button type="button" class="btn btn-sm btn-outline-success" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#addTopicModal">Add Topic</button>
+    <?php if ($user_role == "2") { ?>
+        <button type="button" class="d-none btn btn-sm btn-outline-success" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#addTopicModal">Add Topic</button>
+    <?php } else { ?>
+        <button type="button" class="btn btn-sm btn-outline-success" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#addTopicModal">Add Topic</button>
+    <?php } ?>
+
     <?php
     if (isset($_POST['edit-training-topic'])) {
         $fetched_training_id = $_POST['fetched_training_id'];
@@ -49,8 +54,13 @@ include('includes/connection.php');
                         <th style="font-size: 12px !important;" scope="col">#</th>
                         <th style="font-size: 12px !important;" scope="col">Topic</th>
                         <th style="font-size: 12px !important;" scope="col">Created On</th>
-                        <th class="text-center" style="font-size: 12px !important;" scope="col">Edit</th>
-                        <th class="text-center" style="font-size: 12px !important;" scope="col">Delete</th>
+                        <?php if ($user_role == "2") { ?>
+                            <th class="d-none text-center" style="font-size: 12px !important;" scope="col">Edit</th>
+                            <th class="d-none text-center" style="font-size: 12px !important;" scope="col">Delete</th>
+                        <?php } else { ?>
+                            <th class="text-center" style="font-size: 12px !important;" scope="col">Edit</th>
+                            <th class="text-center" style="font-size: 12px !important;" scope="col">Delete</th>
+                        <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,23 +82,41 @@ include('includes/connection.php');
                                 </a>
                             </td>
                             <td style="font-size: 12px"><?php echo date('m-d-Y', strtotime($training_date)); ?></td>
-
-                            <td style="font-size: 12px" class="text-center">
-                                <form action="edit-mrb.php?id=<?php echo $training_id; ?>" method="post">
-                                    <input type="text" name="training_id" value="<?php echo $training_id; ?>" hidden>
-                                    <button style="font-size: 12px;" class="btn btn-sm btn-warning">
-                                        <ion-icon name="create-outline"></ion-icon>
-                                    </button>
-                                </form>
-                            </td>
-                            <td style="font-size: 12px" class="text-center">
-                                <form action="" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                    <input type="text" name="training_id" value="<?php echo $training_id; ?>" hidden>
-                                    <button type="submit" name="delete-topic" style="font-size: 12px;" class="btn btn-sm btn-danger">
-                                        <ion-icon name="trash-outline"></ion-icon>
-                                    </button>
-                                </form>
-                            </td>
+                            <?php if ($user_role == "2") { ?>
+                                <td style="font-size: 12px" class="text-center d-none">
+                                    <form action="edit-mrb.php?id=<?php echo $training_id; ?>" method="post">
+                                        <input type="text" name="training_id" value="<?php echo $training_id; ?>" hidden>
+                                        <button style="font-size: 12px;" class="btn btn-sm btn-warning">
+                                            <ion-icon name="create-outline"></ion-icon>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td style="font-size: 12px" class="text-center d-none">
+                                    <form action="" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                        <input type="text" name="training_id" value="<?php echo $training_id; ?>" hidden>
+                                        <button type="submit" name="delete-topic" style="font-size: 12px;" class="btn btn-sm btn-danger">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
+                                    </form>
+                                </td>
+                            <?php } else { ?>
+                                <td style="font-size: 12px" class="text-center">
+                                    <form action="edit-mrb.php?id=<?php echo $training_id; ?>" method="post">
+                                        <input type="text" name="training_id" value="<?php echo $training_id; ?>" hidden>
+                                        <button style="font-size: 12px;" class="btn btn-sm btn-warning">
+                                            <ion-icon name="create-outline"></ion-icon>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td style="font-size: 12px" class="text-center">
+                                    <form action="" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                        <input type="text" name="training_id" value="<?php echo $training_id; ?>" hidden>
+                                        <button type="submit" name="delete-topic" style="font-size: 12px;" class="btn btn-sm btn-danger">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
+                                    </form>
+                                </td>
+                            <?php } ?>
                         </tr>
                     <?php } ?>
                 </tbody>
