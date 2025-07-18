@@ -103,7 +103,7 @@ include 'includes/navbar.php';
     ?>
     <div class="row">
         <!-- =========== LEFT SECTION =========== -->
-        <div class="col-md-6">
+        <div class="col-md-6 mb-5">
             <div class="card p-3 mb-3">
                 <p style="margin: 0;"><?php echo $ap_name ?></p>
             </div>
@@ -114,31 +114,63 @@ include 'includes/navbar.php';
                 <div class="WYSIWYG-editor">
                     <textarea id="editorNew" name="editorNew"><?php echo $ap_details ?></textarea>
                 </div>
-                <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" name="update-ap" style="font-size: 12px;" class="btn btn-sm btn-outline-success">Update</button>
-                </div>
+                <?php if ($user_role == "2") { ?>
+                    <div class="d-none justify-content-end mt-3">
+                        <button type="submit" name="update-ap" style="font-size: 12px;" class="btn btn-sm btn-outline-success">Update</button>
+                    </div>
+                <?php } else { ?>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" name="update-ap" style="font-size: 12px;" class="btn btn-sm btn-outline-success">Update</button>
+                    </div>
+                <?php } ?>
             </form>
 
             <form method="POST" class="card p-3 mb-3">
                 <input type="hidden" name="ap_id" value="<?php echo $ap_id ?>">
-                <div class="mb-3">
-                    <label style='font-size: 12px !important' class="form-label">Completion Date</label>
-                    <input style='font-size: 12px !important' type="date" name="ap_complete_date" class="form-control" value="<?php echo $ap_complete_date; ?>">
-                </div>
-                <div class="mb-3">
-                    <label style='font-size: 12px !important' class="form-label">Status</label>
-                    <select name='ap_status' style='font-size: 12px !important' class="form-select" aria-label="Default select example">
-                        <option disabled <?php if ($ap_status == '') echo 'selected'; ?>>Open this select menu</option>
-                        <option value="Completed" <?php if ($ap_status == 'Completed') echo 'selected'; ?>>Completed</option>
-                        <option value="Scheduled" <?php if ($ap_status == 'Scheduled') echo 'selected'; ?>>Scheduled</option>
-                        <option value="Cancelled" <?php if ($ap_status == 'Cancelled') echo 'selected'; ?>>Cancelled</option>
-                    </select>
 
-                </div>
+                <?php if ($user_role == "2") { ?>
+                    <div class="mb-3">
+                        <label style='font-size: 12px !important' class="form-label">Completion Date</label>
+                        <input disabled style='font-size: 12px !important' type="date" name="ap_complete_date" class="form-control" value="<?php echo $ap_complete_date; ?>">
+                    </div>
+                <?php } else { ?>
+                    <div class="mb-3">
+                        <label style='font-size: 12px !important' class="form-label">Completion Date</label>
+                        <input style='font-size: 12px !important' type="date" name="ap_complete_date" class="form-control" value="<?php echo $ap_complete_date; ?>">
+                    </div>
+                <?php } ?>
 
-                <div class="d-flex justify-content-end">
-                    <button type="submit" name="add-det" class="btn btn-sm btn-outline-success" style='font-size: 12px !important'>Submit</button>
-                </div>
+                <?php if ($user_role == "2") { ?>
+                    <div class="mb-3">
+                        <label style='font-size: 12px !important' class="form-label">Status</label>
+                        <select disabled name='ap_status' style='font-size: 12px !important' class="form-select" aria-label="Default select example">
+                            <option disabled <?php if ($ap_status == '') echo 'selected'; ?>>Open this select menu</option>
+                            <option value="Completed" <?php if ($ap_status == 'Completed') echo 'selected'; ?>>Completed</option>
+                            <option value="Scheduled" <?php if ($ap_status == 'Scheduled') echo 'selected'; ?>>Scheduled</option>
+                            <option value="Cancelled" <?php if ($ap_status == 'Cancelled') echo 'selected'; ?>>Cancelled</option>
+                        </select>
+                    </div>
+                <?php } else { ?>
+                    <div class="mb-3">
+                        <label style='font-size: 12px !important' class="form-label">Status</label>
+                        <select name='ap_status' style='font-size: 12px !important' class="form-select" aria-label="Default select example">
+                            <option disabled <?php if ($ap_status == '') echo 'selected'; ?>>Open this select menu</option>
+                            <option value="Completed" <?php if ($ap_status == 'Completed') echo 'selected'; ?>>Completed</option>
+                            <option value="Scheduled" <?php if ($ap_status == 'Scheduled') echo 'selected'; ?>>Scheduled</option>
+                            <option value="Cancelled" <?php if ($ap_status == 'Cancelled') echo 'selected'; ?>>Cancelled</option>
+                        </select>
+                    </div>
+                <?php } ?>
+
+                <?php if ($user_role == "2") { ?>
+                    <div class="d-none justify-content-end">
+                        <button type="submit" name="add-det" class="btn btn-sm btn-outline-success" style='font-size: 12px !important'>Submit</button>
+                    </div>
+                <?php } else { ?>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" name="add-det" class="btn btn-sm btn-outline-success" style='font-size: 12px !important'>Submit</button>
+                    </div>
+                <?php } ?>
             </form>
         </div>
 
@@ -213,7 +245,11 @@ include 'includes/navbar.php';
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
                     <p>Documents</p>
-                    <button type="button" name="update-ap" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon></button>
+                    <?php if ($user_role == "2") { ?>
+                        <button type="button" name="update-ap" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="d-none btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon></button>
+                    <?php } else { ?>
+                        <button type="button" name="update-ap" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon></button>
+                    <?php } ?>
                 </div>
                 <div class="table-responsive mt-3">
                     <table class="table table-bordered table-hover table-striped">
@@ -222,7 +258,11 @@ include 'includes/navbar.php';
                                 <th style="font-size: 12px !important;" scope="col">Document</th>
                                 <th style="font-size: 12px !important;" scope="col">Version</th>
                                 <th style="font-size: 12px !important;" scope="col">Download</th>
-                                <th style="font-size: 12px !important;" scope="col">Delete</th>
+                                <?php if ($user_role == "2") { ?>
+                                    <th style="font-size: 12px !important;" class="d-none" scope="col">Delete</th>
+                                <?php } else { ?>
+                                    <th style="font-size: 12px !important;" scope="col">Delete</th>
+                                <?php } ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -237,11 +277,19 @@ include 'includes/navbar.php';
                                         <td style="font-size: 12px;">
                                             <a href="ap_doc/<?php echo urlencode($doc['ap_d_doc_name']); ?>" download target="_blank" style='font-size: 12px !important' class="btn btn-sm btn-outline-success">Download</a>
                                         </td>
-                                        <td style="font-size: 12px;">
-                                            <a href="?id=<?php echo $ap_id ?>&delete_doc=<?php echo $doc['ap_d_id']; ?>" style='font-size: 12px !important' class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this document?')">
-                                                Delete
-                                            </a>
-                                        </td>
+                                        <?php if ($user_role == "2") { ?>
+                                            <td style="font-size: 12px;">
+                                                <a href="?id=<?php echo $ap_id ?>&delete_doc=<?php echo $doc['ap_d_id']; ?>" style='font-size: 12px !important' class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this document?')">
+                                                    Delete
+                                                </a>
+                                            </td>
+                                        <?php } else { ?>
+                                            <td class="d-none" style="font-size: 12px;">
+                                                <a href="?id=<?php echo $ap_id ?>&delete_doc=<?php echo $doc['ap_d_id']; ?>" style='font-size: 12px !important' class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this document?')">
+                                                    Delete
+                                                </a>
+                                            </td>
+                                        <?php } ?>
                                     </tr>
                             <?php
                                 endwhile;

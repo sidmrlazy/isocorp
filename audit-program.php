@@ -11,9 +11,15 @@ include 'includes/navbar.php';
         <h2><a href="dashboard.php">Dashboard</a> > Audit Programme</h2>
     </div>
 
-    <div class="d-flex justify-content-end align-items-center mt-3 mb-3">
-        <button type="button" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Add</button>
-    </div>
+    <?php if ($user_role == "2") { ?>
+        <div class="d-none justify-content-end align-items-center mt-3 mb-3">
+            <button type="button" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Add</button>
+        </div>
+    <?php } else { ?>
+        <div class="d-flex justify-content-end align-items-center mt-3 mb-3">
+            <button type="button" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Add</button>
+        </div>
+    <?php } ?>
 
     <?php
 
@@ -102,7 +108,7 @@ include 'includes/navbar.php';
     <?php if ($count == 0) { ?>
         <div class="alert alert-info" style="font-size: 12px !important;">No audit programmes found.</div>
     <?php } else { ?>
-        <div class="table-responsive card p-3 mb-5">
+        <div class="table-responsive card p-3 mt-3 mb-5">
             <table class="table table-hover table-striped table-bordered">
                 <thead class="table-dark">
                     <tr>
@@ -113,7 +119,11 @@ include 'includes/navbar.php';
                         <th style="font-size: 12px !important;">Completion Date</th>
                         <th style="font-size: 12px !important;">Status</th>
                         <th style="font-size: 12px !important;">View Details</th>
-                        <th style="font-size: 12px !important;">Delete</th>
+                        <?php if ($user_role == "2") { ?>
+                            <th style="font-size: 12px !important;" class="d-none">Delete</th>
+                        <?php } else { ?>
+                            <th style="font-size: 12px !important;">Delete</th>
+                        <?php }  ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -136,12 +146,21 @@ include 'includes/navbar.php';
                             <td style="font-size: 12px !important;">
                                 <a href="audit-program-display.php?id=<?php echo $ap_id; ?>" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">View</a>
                             </td>
-                            <td style="font-size: 12px !important;">
-                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                    <input type="text" name="ap_id" value="<?php echo $ap_id ?>" hidden>
-                                    <button type="submit" name="delete" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Delete</button>
-                                </form>
-                            </td>
+                            <?php if ($user_role == "2") { ?>
+                                <td class="d-none" style="font-size: 12px !important;">
+                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                        <input type="text" name="ap_id" value="<?php echo $ap_id ?>" hidden>
+                                        <button type="submit" name="delete" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            <?php } else { ?>
+                                <td style="font-size: 12px !important;">
+                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                        <input type="text" name="ap_id" value="<?php echo $ap_id ?>" hidden>
+                                        <button type="submit" name="delete" style="font-size: 12px !important;" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            <?php } ?>
                         </tr>
                     <?php } ?>
                 </tbody>
