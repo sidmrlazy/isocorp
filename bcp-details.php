@@ -39,41 +39,80 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
                     <form method="POST">
                         <p><strong>Topic:</strong> <?php echo htmlspecialchars($row['bcp_topic']); ?></p>
 
-                        <div class="mb-3">
-                            <label style="font-size: 12px !important;" class="form-label">Review Date</label>
-                            <input style="font-size: 12px !important;" type="date" class="form-control" name="bcp_review_date" value="<?php echo htmlspecialchars($row['bcp_review_date']); ?>">
-                        </div>
+                        <?php if ($user_role == "2") { ?>
+                            <div class="mb-3">
+                                <label style="font-size: 12px !important;" class="form-label">Review Date</label>
+                                <input disabled style="font-size: 12px !important;" type="date" class="form-control" name="bcp_review_date" value="<?php echo htmlspecialchars($row['bcp_review_date']); ?>">
+                            </div>
+                        <?php } else { ?>
+                            <div class="mb-3">
+                                <label style="font-size: 12px !important;" class="form-label">Review Date</label>
+                                <input style="font-size: 12px !important;" type="date" class="form-control" name="bcp_review_date" value="<?php echo htmlspecialchars($row['bcp_review_date']); ?>">
+                            </div>
+                        <?php } ?>
 
-                        <div class="mb-3">
-                            <label style="font-size: 12px !important;" class="form-label">Assigned To</label>
-                            <select style="font-size: 12px !important;" class="form-select" name="bcp_assigned_to" required>
-                                <option disabled <?php if (empty($row['bcp_assigned_to'])) echo "selected"; ?>>Select user</option>
-                                <?php while ($user = mysqli_fetch_assoc($users_result)): ?>
-                                    <option value="<?php echo $user['isms_user_name']; ?>" <?php echo ($row['bcp_assigned_to'] == $user['isms_user_name']) ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($user['isms_user_name']); ?>
-                                    </option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
+                        <?php if ($user_role == "2") { ?>
+                            <div class="mb-3">
+                                <label style="font-size: 12px !important;" class="form-label">Assigned To</label>
+                                <select disabled style="font-size: 12px !important;" class="form-select" name="bcp_assigned_to" required>
+                                    <option disabled <?php if (empty($row['bcp_assigned_to'])) echo "selected"; ?>>Select user</option>
+                                    <?php while ($user = mysqli_fetch_assoc($users_result)): ?>
+                                        <option value="<?php echo $user['isms_user_name']; ?>" <?php echo ($row['bcp_assigned_to'] == $user['isms_user_name']) ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($user['isms_user_name']); ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+                        <?php } else { ?>
+                            <div class="mb-3">
+                                <label style="font-size: 12px !important;" class="form-label">Assigned To</label>
+                                <select style="font-size: 12px !important;" class="form-select" name="bcp_assigned_to" required>
+                                    <option disabled <?php if (empty($row['bcp_assigned_to'])) echo "selected"; ?>>Select user</option>
+                                    <?php while ($user = mysqli_fetch_assoc($users_result)): ?>
+                                        <option value="<?php echo $user['isms_user_name']; ?>" <?php echo ($row['bcp_assigned_to'] == $user['isms_user_name']) ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($user['isms_user_name']); ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>div>
+                        <?php } ?>
 
-                        <div class="mb-3">
-                            <label style="font-size: 12px !important;" class="form-label">Status</label>
-                            <select style="font-size: 12px !important;" class="form-select" name="bcp_status" required>
-                                <option disabled <?php if (empty($row['bcp_status'])) echo "selected"; ?>>Select status</option>
-                                <option value="Complete" <?php if ($row['bcp_status'] == 'Complete') echo "selected"; ?>>Complete</option>
-                                <option value="In-progress" <?php if ($row['bcp_status'] == 'In-progress') echo "selected"; ?>>In-progress</option>
-                                <option value="Not Approved" <?php if ($row['bcp_status'] == 'Not Approved') echo "selected"; ?>>Not Approved</option>
-                            </select>
-                        </div>
+                        <?php if ($user_role == "2") { ?>
+                            <div class="mb-3">
+                                <label style="font-size: 12px !important;" class="form-label">Status</label>
+                                <select disabled style="font-size: 12px !important;" class="form-select" name="bcp_status" required>
+                                    <option disabled <?php if (empty($row['bcp_status'])) echo "selected"; ?>>Select status</option>
+                                    <option value="Complete" <?php if ($row['bcp_status'] == 'Complete') echo "selected"; ?>>Complete</option>
+                                    <option value="In-progress" <?php if ($row['bcp_status'] == 'In-progress') echo "selected"; ?>>In-progress</option>
+                                    <option value="Not Approved" <?php if ($row['bcp_status'] == 'Not Approved') echo "selected"; ?>>Not Approved</option>
+                                </select>
+                            </div>
+                        <?php } else { ?>
+                            <div class="mb-3">
+                                <label style="font-size: 12px !important;" class="form-label">Status</label>
+                                <select style="font-size: 12px !important;" class="form-select" name="bcp_status" required>
+                                    <option disabled <?php if (empty($row['bcp_status'])) echo "selected"; ?>>Select status</option>
+                                    <option value="Complete" <?php if ($row['bcp_status'] == 'Complete') echo "selected"; ?>>Complete</option>
+                                    <option value="In-progress" <?php if ($row['bcp_status'] == 'In-progress') echo "selected"; ?>>In-progress</option>
+                                    <option value="Not Approved" <?php if ($row['bcp_status'] == 'Not Approved') echo "selected"; ?>>Not Approved</option>
+                                </select>
+                            </div>
+                        <?php } ?>
 
                         <div class="mb-3">
                             <label style="font-size: 12px !important;" class="form-label"><strong>Details</strong></label>
                             <textarea class="form-control" name="bcp_details" id="editorNew" rows="12"><?php echo htmlspecialchars($row['bcp_details']); ?></textarea>
                         </div>
 
-                        <div class="d-flex justify-content-end">
-                            <button style="font-size: 12px !important;" type="submit" name="update_bcp" class="btn btn-sm btn-outline-success">Update</button>
-                        </div>
+                        <?php if ($user_role == "2") { ?>
+                            <div class="d-none justify-content-end">
+                                <button style="font-size: 12px !important;" type="submit" name="update_bcp" class="btn btn-sm btn-outline-success">Update</button>
+                            </div>
+                        <?php } else { ?>
+                            <div class="d-flex justify-content-end">
+                                <button style="font-size: 12px !important;" type="submit" name="update_bcp" class="btn btn-sm btn-outline-success">Update</button>
+                            </div>
+                        <?php } ?>
                     </form>
                 </div>
             <?php else: ?>
@@ -85,10 +124,16 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
         <div class="col-md-6">
             <div class="card p-3">
                 <!-- ADD DOC BUTTON -->
+
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <label style="font-size: 12px !important;">Documents</label>
-                    <button style="font-size: 12px !important;" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon></button>
+                    <?php if ($user_role == "2") { ?>
+                        <button style="font-size: 12px !important;" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="d-none btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon></button>
+                    <?php } else { ?>
+                        <button style="font-size: 12px !important;" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon></button>
+                    <?php } ?>
                 </div>
+
 
                 <?php
                 // Handle upload
@@ -141,7 +186,11 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
                                 <th style="font-size: 12px !important;">Filename</th>
                                 <th style="font-size: 12px !important;">Uploaded</th>
                                 <th style="font-size: 12px !important;">Download</th>
-                                <th style="font-size: 12px !important;">Delete</th>
+                                <?php if ($user_role == "2") { ?>
+                                    <th style="font-size: 12px !important;" class="d-none">Delete</th>
+                                <?php } else { ?>
+                                    <th style="font-size: 12px !important;">Delete</th>
+                                <?php } ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -154,13 +203,23 @@ $users_result = mysqli_query($connection, "SELECT isms_user_name FROM user");
                                     <td style="font-size: 12px !important;">
                                         <a href="uploads/bcp_docs/<?php echo rawurlencode($doc['doc_filename']); ?>" class="btn btn-sm btn-outline-primary" style="font-size: 12px !important;" download>Download</a>
                                     </td>
-                                    <td style="font-size: 12px !important;">
-                                        <form method="POST" onsubmit="return confirm('Are you sure you want to delete this document?');">
-                                            <input style="font-size: 12px !important;" type="hidden" name="delete_doc_id" value="<?php echo $doc['bcp_doc_id']; ?>">
-                                            <input style="font-size: 12px !important;" type="hidden" name="delete_doc_file" value="<?php echo htmlspecialchars($doc['doc_filename']); ?>">
-                                            <button style="font-size: 12px !important;" type="submit" name="delete_bcp_doc" class="btn btn-sm btn-outline-danger">Delete</button>
-                                        </form>
-                                    </td>
+                                    <?php if ($user_role == "2") { ?>
+                                        <td class="d-none" style="font-size: 12px !important;">
+                                            <form method="POST" onsubmit="return confirm('Are you sure you want to delete this document?');">
+                                                <input style="font-size: 12px !important;" type="hidden" name="delete_doc_id" value="<?php echo $doc['bcp_doc_id']; ?>">
+                                                <input style="font-size: 12px !important;" type="hidden" name="delete_doc_file" value="<?php echo htmlspecialchars($doc['doc_filename']); ?>">
+                                                <button style="font-size: 12px !important;" type="submit" name="delete_bcp_doc" class="btn btn-sm btn-outline-danger">Delete</button>
+                                            </form>
+                                        </td>
+                                    <?php } else { ?>
+                                        <td style="font-size: 12px !important;">
+                                            <form method="POST" onsubmit="return confirm('Are you sure you want to delete this document?');">
+                                                <input style="font-size: 12px !important;" type="hidden" name="delete_doc_id" value="<?php echo $doc['bcp_doc_id']; ?>">
+                                                <input style="font-size: 12px !important;" type="hidden" name="delete_doc_file" value="<?php echo htmlspecialchars($doc['doc_filename']); ?>">
+                                                <button style="font-size: 12px !important;" type="submit" name="delete_bcp_doc" class="btn btn-sm btn-outline-danger">Delete</button>
+                                            </form>
+                                        </td>
+                                    <?php } ?>
                                 </tr>
                             <?php endwhile; ?>
                         </tbody>
