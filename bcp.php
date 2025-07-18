@@ -29,9 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_bcp'])) {
     </div>
 
     <!-- ============ BUTTON TO ADD BCP ============ -->
-    <div class="d-flex justify-content-end mb-3" data-bs-toggle="modal" data-bs-target="#bcpModal">
-        <button type="button" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Create New BCP</button>
-    </div>
+    <?php if ($user_role == "2") { ?>
+        <div class="d-none justify-content-end mb-3" data-bs-toggle="modal" data-bs-target="#bcpModal">
+            <button type="button" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Create New BCP</button>
+        </div>
+    <?php } else { ?>
+        <div class="d-flex justify-content-end mb-3" data-bs-toggle="modal" data-bs-target="#bcpModal">
+            <button type="button" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Create New BCP</button>
+        </div>
+    <?php } ?>
 
     <!-- ============ BCP MODAL ============ -->
     <div class="modal fade" id="bcpModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -61,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_bcp'])) {
                 </div>
                 <div class="modal-footer">
                     <button style="font-size: 12px !important;" type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                   <button style="font-size: 12px !important;" type="submit" name="save_bcp" class="btn btn-sm btn-outline-success">Save changes</button>
+                    <button style="font-size: 12px !important;" type="submit" name="save_bcp" class="btn btn-sm btn-outline-success">Save changes</button>
                 </div>
             </div>
         </form>
@@ -69,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_bcp'])) {
     </div>
 
     <!-- ============ BCP TABLE ============ -->
-    <div class="table-responsive card p-3">
+    <div class="table-responsive card mt-3 p-3">
         <?php
         if (isset($_POST['delete_bcp']) && isset($_POST['delete_id'])) {
             $id = intval($_POST['delete_id']);
@@ -86,7 +92,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_bcp'])) {
                     <th style="font-size: 12px !important;" scope="col">Status</th>
                     <th style="font-size: 12px !important;" scope="col">Review Date</th>
                     <th style="font-size: 12px !important;" scope="col">View</th>
-                    <th style="font-size: 12px !important;" scope="col">Delete</th>
+                    <?php if ($user_role == "2") { ?>
+                        <th style="font-size: 12px !important;" class="d-none" scope="col">Delete</th>
+                    <?php } else { ?>
+                        <th style="font-size: 12px !important;" scope="col">Delete</th>
+                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -103,16 +113,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_bcp'])) {
                     echo "<td>
             <a href='bcp-details.php?id={$row['bcp_id']}' class='btn btn-sm btn-outline-success' style='font-size: 12px;'>View</a>
           </td>";
+          if($user_role == "2") {
+                        echo "<td class='d-none'>
+            <form method='POST' onsubmit='return confirm(\"Delete this BCP?\");'>
+                <input type='hidden' name='delete_id' value='{$row['bcp_id']}'>
+                <button style='font-size: 12px;' type='submit' name='delete_bcp' class='btn btn-sm btn-outline-danger'>Delete</button>
+            </form>
+          </td>"; } else {
                     echo "<td>
             <form method='POST' onsubmit='return confirm(\"Delete this BCP?\");'>
                 <input type='hidden' name='delete_id' value='{$row['bcp_id']}'>
                 <button style='font-size: 12px;' type='submit' name='delete_bcp' class='btn btn-sm btn-outline-danger'>Delete</button>
             </form>
           </td>";
+          }
                     echo "</tr>";
-
-                   
-
                 }
                 ?>
             </tbody>
