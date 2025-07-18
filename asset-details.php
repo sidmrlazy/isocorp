@@ -102,28 +102,50 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
             <form action="" method="POST" class="card p-3">
                 <input type="hidden" name="asset_id" value="<?php echo htmlspecialchars($asset_id); ?>">
 
-                <div class="mb-3">
-                    <label style="font-size: 12px !important;" class="form-label">Status</label>
-                    <select style="font-size: 12px !important;" class="form-select" name="asset_status">
-                        <option disabled selected>Select status</option>
-                        <?php foreach (["To-Do", "Live", "Resolved"] as $status): ?>
-                            <option value="<?= $status ?>" <?= ($asset_status == $status) ? "selected" : "" ?>><?= $status ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
 
-                <div class="mb-3">
-                    <label style="font-size: 12px !important;" class="form-label">Financial Value</label>
-                    <input name="asset_value" style="font-size: 12px !important;" type="text" class="form-control" value="<?php echo htmlspecialchars($asset_value); ?>">
-                </div>
+                <?php if ($user_role == "2") { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important;" class="form-label">Status</label>
+                        <select disabled style="font-size: 12px !important;" class="form-select" name="asset_status">
+                            <option disabled selected>Select status</option>
+                            <?php foreach (["To-Do", "Live", "Resolved"] as $status): ?>
+                                <option value="<?= $status ?>" <?= ($asset_status == $status) ? "selected" : "" ?>><?= $status ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                <?php } else { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important;" class="form-label">Status</label>
+                        <select style="font-size: 12px !important;" class="form-select" name="asset_status">
+                            <option disabled selected>Select status</option>
+                            <?php foreach (["To-Do", "Live", "Resolved"] as $status): ?>
+                                <option value="<?= $status ?>" <?= ($asset_status == $status) ? "selected" : "" ?>><?= $status ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                <?php } ?>
+
+                <?php if ($user_role == "2") { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important;" class="form-label">Financial Value</label>
+                        <input disabled name="asset_value" style="font-size: 12px !important;" type="text" class="form-control" value="<?php echo htmlspecialchars($asset_value); ?>">
+                    </div>
+                <?php } else { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important;" class="form-label">Financial Value</label>
+                        <input name="asset_value" style="font-size: 12px !important;" type="text" class="form-control" value="<?php echo htmlspecialchars($asset_value); ?>">
+                    </div>
+                <?php } ?>
 
                 <?php
-                // Reusable multi-select rendering
-                function renderMultiSelect($name, $options, $selectedCSV)
+                // Reusable multi-select rendering with user role check
+                function renderMultiSelect($name, $options, $selectedCSV, $user_role)
                 {
                     $selectedValues = explode(",", $selectedCSV);
+                    $disabledAttr = ($user_role == "2") ? "disabled" : "";
+
                     echo '<div class="mb-3"><label style="font-size: 12px !important;" class="form-label">' . ucfirst(str_replace("_", " ", $name)) . '</label>';
-                    echo '<select style="font-size: 12px !important;" class="form-select" name="' . $name . '[]" multiple>';
+                    echo '<select style="font-size: 12px !important;" class="form-select" name="' . $name . '[]" multiple ' . $disabledAttr . '>';
                     foreach ($options as $opt) {
                         $sel = in_array($opt, $selectedValues) ? "selected" : "";
                         echo "<option value=\"$opt\" $sel>$opt</option>";
@@ -131,6 +153,7 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
                     echo '</select></div>';
                 }
 
+                // Usage
                 renderMultiSelect("asset_type", [
                     "Financial",
                     "IPR",
@@ -145,42 +168,77 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
                     "Other info assets",
                     "Physical Security",
                     "Staff/HR"
-                ], $asset_type);
+                ], $asset_type, $user_role);
 
-                renderMultiSelect("asset_classification", ["Confidential", "Sensitive", "Public"], $asset_classification);
+                renderMultiSelect("asset_classification", ["Confidential", "Sensitive", "Public"], $asset_classification, $user_role);
 
-                renderMultiSelect("asset_location", ["Company Office", "Teleworker (Home)", "Everywhere", "Third Party Datacentre", "On person", "On premise Datacentre", "Other Location"], $asset_location);
+                renderMultiSelect("asset_location", ["Company Office", "Teleworker (Home)", "Everywhere", "Third Party Datacentre", "On person", "On premise Datacentre", "Other Location"], $asset_location, $user_role);
 
-                renderMultiSelect("asset_owner_legal", ["Company", "Employee (inc. BYOD)", "Supplier", "Other"], $asset_owner_legal);
+                renderMultiSelect("asset_owner_legal", ["Company", "Employee (inc. BYOD)", "Supplier", "Other"], $asset_owner_legal, $user_role);
 
-                renderMultiSelect("asset_owner", ["CEO", "DPO", "FD", "HR", "CMO (Marketing)", "CSO (Sales)", "CPO (Purchasing)", "CTO"], $asset_owner);
+                renderMultiSelect("asset_owner", ["CEO", "DPO", "FD", "HR", "CMO (Marketing)", "CSO (Sales)", "CPO (Purchasing)", "CTO"], $asset_owner, $user_role);
                 ?>
 
-                <div class="mb-3">
-                    <label  style="font-size: 12px !important;" class="form-label">Review Date</label>
-                    <input type="date" name="asset_review_date" style="font-size: 12px !important;" class="form-control" value="<?php echo htmlspecialchars($asset_review_date); ?>">
-                </div>
 
-                <div class="mb-3">
-                    <label style="font-size: 12px !important;" class="form-label">Assigned To</label>
-                    <!-- <input type="text" name="asset_assigned_to" class="form-control" value="<?php echo htmlspecialchars($asset_assigned_to); ?>"> -->
-                    <select class="form-select" name="asset_assigned_to" style="font-size: 12px !important;" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
-                        <?php 
-                        $get_user = "SELECT * FROM user";
-                        $get_user_r = mysqli_query($connection, $get_user);
-                        while ($row = mysqli_fetch_assoc($get_user_r)) {
-                            $user_name = $row['isms_user_name'];
-                            $user_id = $row['isms_user_id'];
-                            echo "<option value='$user_name' " . (($asset_assigned_to == $user_name) ? "selected" : "") . ">$user_name</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="d-flex justify-content-end">
-                    <button style="font-size: 12px !important;" type="submit" name="save-asset-draft-form" class="btn btn-sm btn-outline-secondary me-2">Save Draft</button>
-                    <button style="font-size: 12px !important;" type="submit" name="submit-asset-draft-form" class="btn btn-sm btn-outline-success">Submit</button>
-                </div>
+                <?php if ($user_role == "2") { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important;" class="form-label">Review Date</label>
+                        <input disabled type="date" name="asset_review_date" style="font-size: 12px !important;" class="form-control" value="<?php echo htmlspecialchars($asset_review_date); ?>">
+                    </div>
+                <?php } else { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important;" class="form-label">Review Date</label>
+                        <input type="date" name="asset_review_date" style="font-size: 12px !important;" class="form-control" value="<?php echo htmlspecialchars($asset_review_date); ?>">
+                    </div>
+                <?php } ?>
+
+                <?php if ($user_role == "2") { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important;" class="form-label">Assigned To</label>
+                        <!-- <input type="text" name="asset_assigned_to" class="form-control" value="<?php echo htmlspecialchars($asset_assigned_to); ?>"> -->
+                        <select disabled class="form-select" name="asset_assigned_to" style="font-size: 12px !important;" aria-label="Default select example">
+                            <option selected>Open this select menu</option>
+                            <?php
+                            $get_user = "SELECT * FROM user";
+                            $get_user_r = mysqli_query($connection, $get_user);
+                            while ($row = mysqli_fetch_assoc($get_user_r)) {
+                                $user_name = $row['isms_user_name'];
+                                $user_id = $row['isms_user_id'];
+                                echo "<option value='$user_name' " . (($asset_assigned_to == $user_name) ? "selected" : "") . ">$user_name</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                <?php } else { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important;" class="form-label">Assigned To</label>
+                        <!-- <input type="text" name="asset_assigned_to" class="form-control" value="<?php echo htmlspecialchars($asset_assigned_to); ?>"> -->
+                        <select class="form-select" name="asset_assigned_to" style="font-size: 12px !important;" aria-label="Default select example">
+                            <option selected>Open this select menu</option>
+                            <?php
+                            $get_user = "SELECT * FROM user";
+                            $get_user_r = mysqli_query($connection, $get_user);
+                            while ($row = mysqli_fetch_assoc($get_user_r)) {
+                                $user_name = $row['isms_user_name'];
+                                $user_id = $row['isms_user_id'];
+                                echo "<option value='$user_name' " . (($asset_assigned_to == $user_name) ? "selected" : "") . ">$user_name</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                <?php } ?>
+
+                <?php if ($user_role == "2") { ?>
+                    <div class="d-flex justify-content-end">
+                        <button style="font-size: 12px !important;" type="submit" name="save-asset-draft-form" class="d-none btn btn-sm btn-outline-secondary me-2">Save Draft</button>
+                        <button style="font-size: 12px !important;" type="submit" name="submit-asset-draft-form" class="d-none btn btn-sm btn-outline-success">Submit</button>
+                    </div>
+                <?php } else { ?>
+                    <div class="d-flex justify-content-end">
+                        <button style="font-size: 12px !important;" type="submit" name="save-asset-draft-form" class="btn btn-sm btn-outline-secondary me-2">Save Draft</button>
+                        <button style="font-size: 12px !important;" type="submit" name="submit-asset-draft-form" class="btn btn-sm btn-outline-success">Submit</button>
+                    </div>
+                <?php } ?>
             </form>
         </div>
 
@@ -202,22 +260,16 @@ if (isset($_POST['save-asset-draft-form']) || isset($_POST['submit-asset-draft-f
                         $asset_details_status = $row['asset_details_status'];
                     }
                     ?>
-                    <?php if ($asset_details_status == "1") { ?>
-                        <div class="btn-row">
+                    <?php if ($user_role == "2") { ?>
+                        <div class="d-none btn-row">
                             <button style="font-size: 12px !important;" type="submit" name="save-draft-details" class="btn btn-dark btn-sm">Save Draft</button>
-                            <button style="font-size: 12px !important;" type="submit" name="submit-notes-details" class="btn btn-success btn-sm">Submit Notes</button>
-                        </div>
-                    <?php } elseif ($asset_details_status == "2") { ?>
-                        <div class="btn-row d-none">
-                            <button style="font-size: 12px !important;" type="submit" name="save-draft-details" class="btn btn-dark btn-sm">Save Draft</button>
-                            <button style="font-size: 12px !important;" type="submit" name="submit-notes-details" class="btn btn-success btn-sm">Submit Notes</button>
                         </div>
                     <?php } else { ?>
                         <div class="btn-row">
-                            <button style="font-size: 12px !important;" type="submit" name="save-draft-details" class="btn btn-outline-dark btn-sm">Save Draft</button>
-                            <button style="font-size: 12px !important;" type="submit" name="submit-notes-details" class="btn btn-outline-success btn-sm">Submit Notes</button>
+                            <button style="font-size: 12px !important;" type="submit" name="save-draft-details" class="btn btn-dark btn-sm">Save Draft</button>
                         </div>
                     <?php } ?>
+
                 </form>
             </div>
             <!-- ============ COMMENT SECTION ============ -->

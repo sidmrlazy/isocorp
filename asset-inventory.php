@@ -23,11 +23,19 @@ include 'includes/config.php';
         $insert_r = mysqli_query($connection, $insert);
     }
     ?>
-    <div class="d-flex justify-content-end align-items-center">
-        <button type="button" class="btn btn-outline-success btn-sm" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#addNewItem">
-            <ion-icon name="add-circle-outline"></ion-icon> New Item
-        </button>
-    </div>
+    <?php if ($user_role == "2") { ?>
+        <div class="d-none d-flex justify-content-end align-items-center">
+            <button type="button" class="btn btn-outline-success btn-sm" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#addNewItem">
+                <ion-icon name="add-circle-outline"></ion-icon> New Item
+            </button>
+        </div>
+    <?php } else { ?>
+        <div class="d-flex justify-content-end align-items-center">
+            <button type="button" class="btn btn-outline-success btn-sm" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#addNewItem">
+                <ion-icon name="add-circle-outline"></ion-icon> New Item
+            </button>
+        </div>
+    <?php } ?>
 
     <!-- ============ ADD NEW ITEM MODAL ============ -->
     <div class="modal fade" id="addNewItem" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -72,7 +80,11 @@ include 'includes/config.php';
                         <!-- <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Created on</th> -->
                         <!-- <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Created by</th> -->
                         <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Review Date</th>
-                        <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Delete</th>
+                        <?php if ($user_role == "2") { ?>
+                            <th class="d-none asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Delete</th>
+                        <?php } else { ?>
+                            <th class="asset-table-heading" style="font-weight: 600 !important; font-size: 12px !important;" scope="col">Delete</th>
+                        <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -109,17 +121,29 @@ include 'includes/config.php';
                             <td class="asset-data"><?php echo $asset_owner_legal ?></td>
                             <td class="asset-data"><?php echo $asset_owner ?></td>
                             <td class="asset-data"><?php echo $asset_assigned_to ?></td>
-                            <!-- <td class="asset-data"><?php // echo date('m-d-Y', strtotime($asset_created_date)) ?></td> -->
+                            <!-- <td class="asset-data"><?php // echo date('m-d-Y', strtotime($asset_created_date)) 
+                                                        ?></td> -->
                             <!-- <td class="asset-data"><?php echo $asset_created_by ?></td> -->
                             <td class="asset-data"><?php echo $asset_review_date ?></td>
-                            <td class="text-center">
-                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                    <input type="text" name="asset_id" value="<?php echo $asset_id ?>" hidden>
-                                    <button type="submit" name="delete-asset" class="btn btn-sm btn-outline-dark">
-                                        <ion-icon name="close-circle-outline"></ion-icon>
-                                    </button>
-                                </form>
-                            </td>
+                            <?php if ($user_role == "2") { ?>
+                                <td class="d-none text-center">
+                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                        <input type="text" name="asset_id" value="<?php echo $asset_id ?>" hidden>
+                                        <button type="submit" name="delete-asset" class="btn btn-sm btn-outline-dark">
+                                            <ion-icon name="close-circle-outline"></ion-icon>
+                                        </button>
+                                    </form>
+                                </td>
+                            <?php } else { ?>
+                                <td class="text-center">
+                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                        <input type="text" name="asset_id" value="<?php echo $asset_id ?>" hidden>
+                                        <button type="submit" name="delete-asset" class="btn btn-sm btn-outline-dark">
+                                            <ion-icon name="close-circle-outline"></ion-icon>
+                                        </button>
+                                    </form>
+                                </td>
+                            <?php } ?>
                         </tr>
                     <?php } ?>
                 </tbody>
