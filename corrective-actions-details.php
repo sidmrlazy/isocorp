@@ -140,29 +140,53 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
         <div class="col-md-6">
             <form class="card p-3" action="" method="POST">
                 <input type="text" name="new_ca_id" value="<?php echo $tbl_ca_id ?>" hidden>
-                <div class="mb-3">
-                    <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Status</label>
-                    <select name="ca_status" class="form-select" style="font-size: 12px !important">
-                        <option disabled>Select Status</option>
-                        <?php
-                        $status_options = ["To-do", "Assessment", "Awaiting Board Approval", "Implementation", "Monitoring", "Resolved"];
-                        foreach ($status_options as $status) {
-                            $selected = ($ca_status_fetched == $status) ? "selected" : "";
-                            echo "<option value='$status' $selected>$status</option>";
-                        }
-                        ?>
-                    </select>
+                <?php if ($user_role == "2") { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Status</label>
+                        <select disabled name="ca_status" class="form-select" style="font-size: 12px !important">
+                            <option disabled>Select Status</option>
+                            <?php
+                            $status_options = ["To-do", "Assessment", "Awaiting Board Approval", "Implementation", "Monitoring", "Resolved"];
+                            foreach ($status_options as $status) {
+                                $selected = ($ca_status_fetched == $status) ? "selected" : "";
+                                echo "<option value='$status' $selected>$status</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                <?php } else { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Status</label>
+                        <select name="ca_status" class="form-select" style="font-size: 12px !important">
+                            <option disabled>Select Status</option>
+                            <?php
+                            $status_options = ["To-do", "Assessment", "Awaiting Board Approval", "Implementation", "Monitoring", "Resolved"];
+                            foreach ($status_options as $status) {
+                                $selected = ($ca_status_fetched == $status) ? "selected" : "";
+                                echo "<option value='$status' $selected>$status</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                <?php } ?>
 
-                </div>
+                <?php if ($user_role == "2") { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Financial Value</label>
+                        <input disabled type="text" style="font-size: 12px !important;" class="form-control" name="ca_financial_value" value="<?php echo $ca_financial_value_fetched ?>" />
+                    </div>
+                <?php } else { ?>
+                    <div class="mb-3">
+                        <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Financial Value</label>
+                        <input type="text" style="font-size: 12px !important;" class="form-control" name="ca_financial_value" value="<?php echo $ca_financial_value_fetched ?>" />
+                    </div>
+                <?php } ?>
+
+                <?php $disableSelect = ($user_role == "2") ? "disabled" : ""; ?>
 
                 <div class="mb-3">
-                    <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Financial Value</label>
-                    <input type="text" style="font-size: 12px !important;" class="form-control" name="ca_financial_value" value="<?php echo $ca_financial_value_fetched ?>" />
-                </div>
-
-                <div class="mb-3">
-                    <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Source</label>
-                    <select name="ca_source[]" class="form-select" multiple style="font-size: 12px !important">
+                    <label style="font-size: 12px !important" class="form-label">Source</label>
+                    <select name="ca_source[]" class="form-select" multiple style="font-size: 12px !important" <?= $disableSelect ?>>
                         <?php
                         $source_options = [
                             "Pre-stage 1",
@@ -182,12 +206,11 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                         }
                         ?>
                     </select>
-
                 </div>
 
                 <div class="mb-3">
-                    <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Severity</label>
-                    <select name="ca_severity[]" class="form-select" multiple style="font-size: 12px !important">
+                    <label style="font-size: 12px !important" class="form-label">Severity</label>
+                    <select name="ca_severity[]" class="form-select" multiple style="font-size: 12px !important" <?= $disableSelect ?>>
                         <?php
                         $severity_options = [
                             "Major Non-Conformity",
@@ -201,12 +224,11 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                         }
                         ?>
                     </select>
-
                 </div>
 
                 <div class="mb-3">
-                    <label style="font-size: 12px !important" for="exampleInputEmail1" class="form-label">Assigned to</label>
-                    <select name="ca_assigned_to" class="form-select" style="font-size: 12px !important">
+                    <label style="font-size: 12px !important" class="form-label">Assigned to</label>
+                    <select name="ca_assigned_to" class="form-select" style="font-size: 12px !important" <?= $disableSelect ?>>
                         <?php
                         $fetch_user = "SELECT * FROM user";
                         $fetch_user_r = mysqli_query($connection, $fetch_user);
@@ -217,12 +239,17 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                         }
                         ?>
                     </select>
+                </div>
 
-                </div>
-                <div class="btn-row">
-                    <button style="font-size: 12px !important" type="submit" name="save-form-draft" class="btn btn-dark btn-sm">Save Draft</button>
-                    <button style="font-size: 12px !important" type="submit" name="submit-form-draft" class="btn btn-success btn-sm">Submit Notes</button>
-                </div>
+                <?php if ($user_role == "2") { ?>
+                    <div class="d-none btn-row">
+                        <button style="font-size: 12px !important" type="submit" name="save-form-draft" class="btn btn-success btn-sm">Save Draft</button>
+                    </div>
+                <?php } else { ?>
+                    <div class="btn-row">
+                        <button style="font-size: 12px !important" type="submit" name="save-form-draft" class="btn btn-success btn-sm">Save Draft</button>
+                    </div>
+                <?php } ?>
             </form>
         </div>
 
@@ -262,23 +289,19 @@ $user_role = isset($_COOKIE['user_role']) ? $_COOKIE['user_role'] : (isset($_SES
                     <label style="font-size: 12px !important" for="editorNew" class="form-label">Description</label>
                     <textarea id="editorNew" name="ca_description"><?php echo $tbl_ca_description ?></textarea>
                 </div>
-                <?php if ($tbl_ca_description_status_fetched == '1') { ?>
 
-                    <div class="btn-row">
-                        <button style="font-size: 12px !important" type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
-                        <button style="font-size: 12px !important" type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
-                    </div>
-                <?php } else if ($tbl_ca_description_status_fetched == '2') { ?>
-                    <div class="btn-row d-none">
-                        <button style="font-size: 12px !important" type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
-                        <button style="font-size: 12px !important" type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
+                <?php if ($user_role == "2") { ?>
+                    <div class="d-none btn-row">
+                        <button style="font-size: 12px !important" type="submit" name="save-draft-description" class="btn btn-outline-success btn-sm">Save Draft</button>
+                        <!-- <button style="font-size: 12px !important" type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button> -->
                     </div>
                 <?php } else { ?>
                     <div class="btn-row">
-                        <button style="font-size: 12px !important" type="submit" name="save-draft-description" class="btn btn-dark btn-sm">Save Draft</button>
-                        <button style="font-size: 12px !important" type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button>
+                        <button style="font-size: 12px !important" type="submit" name="save-draft-description" class="btn btn-outline-success btn-sm">Save Draft</button>
+                        <!-- <button style="font-size: 12px !important" type="submit" name="submit-notes-description" class="btn btn-success btn-sm">Submit Notes</button> -->
                     </div>
                 <?php } ?>
+
             </form>
 
             <!-- ============ COMMENT SECTION ============ -->
