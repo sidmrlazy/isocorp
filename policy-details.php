@@ -329,41 +329,80 @@ include 'includes/connection.php';
                     <input type="hidden" name="vc_data_id" value="<?php echo htmlspecialchars($vc_data_id); ?>">
                     <input type="hidden" name="vc_data_type" value="<?php echo htmlspecialchars($vc_data_type); ?>">
                     <input type="hidden" name="vc_updated_by" value="<?php echo htmlspecialchars($user_name ?? 'System'); ?>">
+                    <?php
+                    if ($user_role == "2") {
+                    ?>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 12px;">Assigned to</label>
+                            <select class="form-select" name="vc_assigned_to" required style="font-size: 12px;" disabled>
+                                <option disabled <?php if (empty($vc_assigned_to_value)) echo 'selected'; ?>>Select a user</option>
+                                <?php
+                                $users = mysqli_query($connection, "SELECT isms_user_name FROM user");
+                                while ($row = mysqli_fetch_assoc($users)) {
+                                    $name = $row['isms_user_name'];
+                                    $selected = ($name == $vc_assigned_to_value) ? 'selected' : '';
+                                    echo "<option value=\"$name\" $selected>$name</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label" style="font-size: 12px;">Assigned to</label>
-                        <select class="form-select" name="vc_assigned_to" required style="font-size: 12px;">
-                            <option disabled <?php if (empty($vc_assigned_to_value)) echo 'selected'; ?>>Select a user</option>
-                            <?php
-                            $users = mysqli_query($connection, "SELECT isms_user_name FROM user");
-                            while ($row = mysqli_fetch_assoc($users)) {
-                                $name = $row['isms_user_name'];
-                                $selected = ($name == $vc_assigned_to_value) ? 'selected' : '';
-                                echo "<option value=\"$name\" $selected>$name</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 12px;">Status</label>
+                            <select class="form-select" name="vc_status" required style="font-size: 12px;" disabled>
+                                <option disabled <?php if (empty($vc_status_value)) echo 'selected'; ?>>Select status</option>
+                                <?php
+                                $statuses = ['Open', 'In Progress', 'Completed'];
+                                foreach ($statuses as $status) {
+                                    $selected = ($status == $vc_status_value) ? 'selected' : '';
+                                    echo "<option value=\"$status\" $selected>$status</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label" style="font-size: 12px;">Status</label>
-                        <select class="form-select" name="vc_status" required style="font-size: 12px;">
-                            <option disabled <?php if (empty($vc_status_value)) echo 'selected'; ?>>Select status</option>
-                            <?php
-                            $statuses = ['Open', 'In Progress', 'Completed'];
-                            foreach ($statuses as $status) {
-                                $selected = ($status == $vc_status_value) ? 'selected' : '';
-                                echo "<option value=\"$status\" $selected>$status</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 12px;">Due Date</label>
+                            <input class="form-control" style="font-size: 12px;" name="vc_due_date" type="date"
+                                value="<?php echo htmlspecialchars($vc_due_date_value); ?>" disabled>
+                        </div>
+                    <?php } else { ?>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 12px;">Assigned to</label>
+                            <select class="form-select" name="vc_assigned_to" required style="font-size: 12px;">
+                                <option disabled <?php if (empty($vc_assigned_to_value)) echo 'selected'; ?>>Select a user</option>
+                                <?php
+                                $users = mysqli_query($connection, "SELECT isms_user_name FROM user");
+                                while ($row = mysqli_fetch_assoc($users)) {
+                                    $name = $row['isms_user_name'];
+                                    $selected = ($name == $vc_assigned_to_value) ? 'selected' : '';
+                                    echo "<option value=\"$name\" $selected>$name</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label" style="font-size: 12px;">Due Date</label>
-                        <input class="form-control" style="font-size: 12px;" name="vc_due_date" type="date"
-                            value="<?php echo htmlspecialchars($vc_due_date_value); ?>">
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 12px;">Status</label>
+                            <select class="form-select" name="vc_status" required style="font-size: 12px;">
+                                <option disabled <?php if (empty($vc_status_value)) echo 'selected'; ?>>Select status</option>
+                                <?php
+                                $statuses = ['Open', 'In Progress', 'Completed'];
+                                foreach ($statuses as $status) {
+                                    $selected = ($status == $vc_status_value) ? 'selected' : '';
+                                    echo "<option value=\"$status\" $selected>$status</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 12px;">Due Date</label>
+                            <input class="form-control" style="font-size: 12px;" name="vc_due_date" type="date"
+                                value="<?php echo htmlspecialchars($vc_due_date_value); ?>">
+                        </div>
+
+                    <?php } ?>
                     <?php
                     if ($user_role == "2") {
                     ?>
