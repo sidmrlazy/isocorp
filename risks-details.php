@@ -518,9 +518,15 @@ $risk = $result->fetch_assoc();
                     <!-- ============= SIMs TAB ============= -->
                     <div class="tab-pane fade" id="sims" role="tabpanel">
                         <!-- =============== ADD SIM BUTTON =============== -->
-                        <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#assignSimModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Security Incident</button>
-                        </div>
+                        <?php if ($user_role == "2") { ?>
+                            <div class="d-none" style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#assignSimModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Security Incident</button>
+                            </div>
+                        <?php } else { ?>
+                            <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#assignSimModal" style="font-size: 12px !important;" class="btn btn-sm btn-outline-success">Assign Security Incident</button>
+                            </div>
+                        <?php } ?>
 
                         <?php
                         mysqli_data_seek($fetch_mappings_result, 0);
@@ -543,11 +549,19 @@ $risk = $result->fetch_assoc();
                                                     <span><?php echo htmlspecialchars($r['sim_id']) . ". " . htmlspecialchars($r['sim_topic']) ?></span>
                                                     <div class="d-flex justify-content-end align-items-center">
                                                         <a style="font-size: 10px" class="btn btn-sm btn-outline-success" href="sim-details.php?id=<?php echo $r['sim_id'] ?>">View</a>
-                                                        <form method="POST" action="" style="display:inline-block; margin-left: 5px;" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                                            <input type="hidden" name="remove_sim_id" value="<?= $r['sim_id'] ?>">
-                                                            <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
-                                                            <button type="submit" name="remove_sim" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">Remove</button>
-                                                        </form>
+                                                        <?php if ($user_role == "2") { ?>
+                                                            <form method="POST" action="" class="d-none" style="display:inline-block; margin-left: 5px;" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                                <input type="hidden" name="remove_sim_id" value="<?= $r['sim_id'] ?>">
+                                                                <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
+                                                                <button type="submit" name="remove_sim" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">Remove</button>
+                                                            </form>
+                                                        <?php } else { ?>
+                                                            <form method="POST" action="" style="display:inline-block; margin-left: 5px;" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                                <input type="hidden" name="remove_sim_id" value="<?= $r['sim_id'] ?>">
+                                                                <input type="hidden" name="risk_id" value="<?= $risks_id ?>">
+                                                                <button type="submit" name="remove_sim" class="btn btn-sm btn-outline-danger" style="font-size: 10px;">Remove</button>
+                                                            </form>
+                                                        <?php } ?>
                                                     </div>
                                                 </div>
                                             </li>
