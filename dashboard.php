@@ -38,7 +38,7 @@ include('includes/navbar.php'); ?>
                         27001:2022.</p>
                 </div>
                 <div>
-                    <a href="soa/in3corp_ISOCORP_SOA_V3.1_2025.xlsx" class="btn btn-sm btn-outline-success" download style="font-size: 12px !important">Download Statement of Applicability</a>
+                    <a href="soa/in3corp_ISOCORP_SOA_V4_2025.xlsx" class="btn btn-sm btn-outline-success" download style="font-size: 12px !important">Download Statement of Applicability</a>
                 </div>
             </div>
             <?php include('screens/policies/policies.php') ?>
