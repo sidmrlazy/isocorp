@@ -107,6 +107,128 @@ $policy_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
         <!-- ========== MAIN RIGHT SECTION ========== -->
         <div class="col-md-6">
+            <!-- ========== SIM DOCUMENTS SECTION ========== -->
+            <div class="card p-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label style="font-size: 12px !important;" for="">Documents</label>
+                    <?php if ($user_role == "2") { ?>
+                        <button type="button" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="d-none btn btn-sm btn-outline-success">Add</button>
+                    <?php } else { ?>
+                        <button type="button" style="font-size: 12px !important;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-outline-success">Add</button>
+                    <?php } ?>
+                </div>
+
+                <?php
+                $main_id = $_GET['id'] ?? ''; // SIM ID
+
+                // Handle document upload
+                if (isset($_POST['upload_document'])) {
+                    $main_id_post = $_POST['sim_doc_main_id'] ?? '';
+                    $uploadDate = date('Y-m-d');
+
+                    if (!empty($main_id_post) && isset($_FILES['document_file']) && $_FILES['document_file']['error'] == 0) {
+                        $filename = basename($_FILES['document_file']['name']);
+                        $targetPath = 'uploads/sim_documents/' . $filename;
+
+                        move_uploaded_file($_FILES['document_file']['tmp_name'], $targetPath);
+
+                        $stmt = $connection->prepare("INSERT INTO sim_doc (sim_doc_path, sim_doc_date, sim_doc_main_id) VALUES (?, ?, ?)");
+                        $stmt->bind_param("sss", $targetPath, $uploadDate, $main_id_post);
+                        $stmt->execute();
+                    }
+                }
+
+                // Handle document deletion
+                if (isset($_POST['delete_document'])) {
+                    $doc_id = $_POST['doc_id'];
+                    $query = $connection->query("SELECT sim_doc_path FROM sim_doc WHERE sim_doc_id = $doc_id");
+                    $row = $query->fetch_assoc();
+
+                    if (file_exists($row['sim_doc_path'])) {
+                        unlink($row['sim_doc_path']);
+                    }
+
+                    $connection->query("DELETE FROM sim_doc WHERE sim_doc_id = $doc_id");
+                }
+                ?>
+
+                <!-- =========== SHOW DOCUMENT TABLE =========== -->
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th style="font-size: 12px !important;" scope="col">Document</th>
+                                <th style="font-size: 12px !important;" scope="col">Download</th>
+                                <?php if ($user_role == "2") { ?>
+                                    <th style="font-size: 12px !important;" class="d-none" scope="col">Delete</th>
+                                <?php } else { ?>
+                                    <th style="font-size: 12px !important;" scope="col">Delete</th>
+                                <?php } ?>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $result = $connection->query("SELECT * FROM sim_doc WHERE sim_doc_main_id = '$main_id'");
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                            ?>
+                                    <tr>
+                                        <td style="font-size: 12px !important;"><?php echo basename($row['sim_doc_path']); ?></td>
+                                        <td style="font-size: 12px !important;">
+                                            <a href="<?php echo $row['sim_doc_path']; ?>" style="font-size: 12px !important;" target="_blank" class="btn btn-sm btn-outline-primary">Download</a>
+                                        </td>
+                                        <?php if ($user_role == "2") { ?>
+                                            <td class="d-none" style="font-size: 12px !important;">
+                                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                    <input type="hidden" name="doc_id" value="<?php echo $row['sim_doc_id']; ?>">
+                                                    <button type="submit" style="font-size: 12px !important;" name="delete_document" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </td>
+                                        <?php } else { ?>
+                                            <td style="font-size: 12px !important;">
+                                                <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                    <input type="hidden" name="doc_id" value="<?php echo $row['sim_doc_id']; ?>">
+                                                    <button type="submit" style="font-size: 12px !important;" name="delete_document" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </td>
+                                        <?php } ?>
+                                    </tr>
+                            <?php
+                                }
+                            } else {
+                                echo '<tr><td colspan="3" class="text-muted" style="font-size: 12px !important;">No Document Uploaded</td></tr>';
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- =========== UPLOAD DOCUMENT MODAL =========== -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <form action="" method="POST" enctype="multipart/form-data" class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Upload Document</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Hidden field to carry SIM ID -->
+                                <input type="hidden" name="sim_doc_main_id" value="<?php echo $main_id; ?>">
+
+                                <div class="mb-3">
+                                    <label style="font-size: 12px !important;" for="document_file" class="form-label">Select Document</label>
+                                    <input style="font-size: 12px !important;" class="form-control" type="file" id="document_file" name="document_file" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button style="font-size: 12px !important;" type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                <button style="font-size: 12px !important;" type="submit" name="upload_document" class="btn btn-sm btn-outline-success">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <!-- ========== SIM RISKS SECTION ========== -->
             <div class="card p-3 mb-3">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
