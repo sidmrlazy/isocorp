@@ -33,7 +33,7 @@ include 'includes/connection.php';
     }
     ?>
 
-    <div class="table-responsive card p-3">
+    <div class="table-responsive card p-3 mb-5">
         <?php if ($user_role == "2") { ?>
             <div style="display: none; justify-content: flex-end; align-items: center; margin-bottom: 20px">
                 <button type="button" data-bs-toggle="modal" data-bs-target="#insertComm" class="btn btn-sm btn-outline-success"><ion-icon name="add-outline"></ion-icon> Add </button>
