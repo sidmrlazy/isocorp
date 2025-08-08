@@ -213,7 +213,7 @@ $result = $stmt->get_result()->fetch_assoc();
                             <tr>
                                 <td style="font-size: 12px !important;"><?= $filename ?></td>
                                 <td>
-                                    <a style="font-size: 12px !important" href="<?= $result['training_document_path'] ?>" target="_blank" class="btn btn-sm btn-outline-success">Download</a>
+                                    <a style="font-size: 12px !important" download href="<?= $result['training_document_path'] ?>" target="_blank" class="btn btn-sm btn-outline-success">Download</a>
                                 </td>
                                 <?php if ($user_role == "2") { ?>
                                     <td class="d-none">
