@@ -226,7 +226,59 @@ include 'includes/connection.php';
                 }
                 ?>
 
-                <form action="" method="POST">
+                
+                <?php
+                // === Minimal UPSERT handler for version_control (vc_approved_by via dropdown) ===
+                if (isset($_POST['update-details'])) {
+                    $vc_data_id   = trim($_POST['vc_data_id'] ?? '');
+                    $vc_data_type = trim($_POST['vc_data_type'] ?? '');
+                    $vc_assigned_to = trim($_POST['vc_assigned_to'] ?? '');
+                    $vc_status    = trim($_POST['vc_status'] ?? '');
+                    $vc_due_date  = trim($_POST['vc_due_date'] ?? '');
+                    $vc_updated_by = isset($_POST['vc_updated_by']) && $_POST['vc_updated_by'] !== '' ? $_POST['vc_updated_by'] : ($user_name ?? 'System');
+                    date_default_timezone_set('Asia/Kolkata');
+                    $vc_updated_on = date('Y-m-d H:i:s');
+                    $vc_approved_by = isset($_POST['vc_approved_by']) && trim($_POST['vc_approved_by']) !== '' ? trim($_POST['vc_approved_by']) : ($user_name ?? 'System');
+
+                    if ($vc_data_id !== '' && $vc_data_type !== '') {
+                        $check_stmt = mysqli_prepare($connection, "SELECT vc_id FROM version_control WHERE vc_data_id = ? AND vc_screen_name = ? LIMIT 1");
+                        if ($check_stmt) {
+                            mysqli_stmt_bind_param($check_stmt, "ss", $vc_data_id, $vc_data_type);
+                            mysqli_stmt_execute($check_stmt);
+                            $res = mysqli_stmt_get_result($check_stmt);
+                            if ($row = mysqli_fetch_assoc($res)) {
+                                $vc_id = (int)$row['vc_id'];
+                                $update_stmt = mysqli_prepare($connection, "UPDATE version_control SET vc_assigned_to = ?, vc_status = ?, vc_updated_on = ?, vc_updated_by = ?, vc_due_date = ?, vc_approved_by = ? WHERE vc_id = ?");
+                                if ($update_stmt) {
+                                    mysqli_stmt_bind_param($update_stmt, "ssssssi", $vc_assigned_to, $vc_status, $vc_updated_on, $vc_updated_by, $vc_due_date, $vc_approved_by, $vc_id);
+                                    mysqli_stmt_execute($update_stmt);
+                                    mysqli_stmt_close($update_stmt);
+                                    echo "<div class='alert alert-success'>Details updated.</div>";
+                                } else {
+                                    echo "<div class='alert alert-danger'>Prepare failed (update): " . mysqli_error($connection) . "</div>";
+                                }
+                            } else {
+                                $insert_stmt = mysqli_prepare($connection, "INSERT INTO version_control (vc_data_id, vc_screen_name, vc_assigned_to, vc_approved_by, vc_status, vc_updated_on, vc_due_date, vc_updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                                if ($insert_stmt) {
+                                    mysqli_stmt_bind_param($insert_stmt, "ssssssss", $vc_data_id, $vc_data_type, $vc_assigned_to, $vc_approved_by, $vc_status, $vc_updated_on, $vc_due_date, $vc_updated_by);
+                                    mysqli_stmt_execute($insert_stmt);
+                                    mysqli_stmt_close($insert_stmt);
+                                    echo "<div class='alert alert-success'>Details saved.</div>";
+                                } else {
+                                    echo "<div class='alert alert-danger'>Prepare failed (insert): " . mysqli_error($connection) . "</div>";
+                                }
+                            }
+                            mysqli_stmt_close($check_stmt);
+                        } else {
+                            echo "<div class='alert alert-danger'>Prepare failed (check): " . mysqli_error($connection) . "</div>";
+                        }
+                    } else {
+                        echo "<div class='alert alert-danger'>Missing required context (vc_data_id or vc_data_type).</div>";
+                    }
+                }
+                ?>
+    <form action="" method="POST">
+                    <input type="hidden" name="vc_approved_by" value="<?php echo htmlspecialchars($user_name ?? 'System'); ?>">
                     <input type="hidden" name="policy_id"
                         value="<?php echo isset($_GET['policy_id']) ? $_GET['policy_id'] : ''; ?>">
                     <input type="hidden" name="linked_policy_id"
@@ -253,95 +305,243 @@ include 'includes/connection.php';
             <!-- ========== ASSIGNMENT SECTION ========== -->
             <div class="card p-3 mt-3 mb-3">
                 <?php
-                // Identify the ID and its type
+                // ---- Setup & helpers ----
+                if (!isset($connection)) {
+                    die("<div class='alert alert-danger'>DB connection \$connection not found.</div>");
+                }
+
+                date_default_timezone_set('Asia/Kolkata');
+
+                // Graceful defaults
+                $user_role = isset($user_role) ? (string)$user_role : "0";
+                $user_name = isset($user_name) ? $user_name : 'System';
+
+                // Small helper: check if a column exists (cached per request)
+                static $vc_has_approved_by = true;
+                function vc_column_exists($mysqli, $table, $column)
+                {
+                    $sql = "SHOW COLUMNS FROM `$table` LIKE ?";
+                    if ($stmt = mysqli_prepare($mysqli, $sql)) {
+                        mysqli_stmt_bind_param($stmt, "s", $column);
+                        mysqli_stmt_execute($stmt);
+                        $res = mysqli_stmt_get_result($stmt);
+                        $exists = ($res && mysqli_num_rows($res) > 0);
+                        mysqli_stmt_close($stmt);
+                        return $exists;
+                    }
+                    return false;
+                }
+                if ($vc_has_approved_by === null) { $vc_has_approved_by = true; }// ---- Identify the ID + type from GET or POST fallbacks ----
                 $vc_data_id = null;
                 $vc_data_type = '';
 
-                if (isset($_GET['inner_policy_id'])) {
-                    $vc_data_id = $_GET['inner_policy_id'];
-                    $vc_data_type = 'Inner Policy';
-                } elseif (isset($_GET['linked_policy_id'])) {
-                    $vc_data_id = $_GET['linked_policy_id'];
-                    $vc_data_type = 'Linked Policy';
-                } elseif (isset($_GET['policy_id'])) {
-                    $vc_data_id = $_GET['policy_id'];
-                    $vc_data_type = 'Policy';
+                $allowed_map = [
+                    'inner_policy_id'  => 'Inner Policy',
+                    'linked_policy_id' => 'Linked Policy',
+                    'policy_id'        => 'Policy',
+                ];
+
+                foreach ($allowed_map as $param => $type) {
+                    if (isset($_GET[$param]) && $_GET[$param] !== '') {
+                        $vc_data_id = $_GET[$param];
+                        $vc_data_type = $type;
+                        break;
+                    }
                 }
 
-                // Initialize prefilled values
-                $vc_assigned_to_value = '';
-                $vc_status_value = '';
-                $vc_due_date_value = '';
-
-                // Handle form submission
+                // If the form posted back, trust the hidden inputs (preferred for consistency)
                 if (isset($_POST['update-details'])) {
-                    $vc_data_id = $_POST['vc_data_id'];
-                    $vc_data_type = $_POST['vc_data_type'];
-                    date_default_timezone_set('Asia/Kolkata');
-                    $vc_updated_on = date('Y-m-d H:i:s');
-                    $vc_assigned_to = $_POST['vc_assigned_to'];
-                    $vc_status = $_POST['vc_status'];
-                    $vc_due_date = $_POST['vc_due_date'];
-                    $vc_updated_by = isset($_POST['vc_updated_by']) ? $_POST['vc_updated_by'] : 'System';
+                    if (!empty($_POST['vc_data_id']))  $vc_data_id  = $_POST['vc_data_id'];
+                    if (!empty($_POST['vc_data_type'])) $vc_data_type = $_POST['vc_data_type'];
+                }
 
-                    // Use prepared statements to prevent SQL injection
-                    $check_stmt = mysqli_prepare($connection, "SELECT 1 FROM version_control WHERE vc_data_id = ? AND vc_screen_name = ?");
-                    mysqli_stmt_bind_param($check_stmt, "ss", $vc_data_id, $vc_data_type);
-                    mysqli_stmt_execute($check_stmt);
-                    $check_result = mysqli_stmt_get_result($check_stmt);
+                // ---- Initialize prefilled values ----
+                $vc_assigned_to_value = '';
+                $vc_status_value      = '';
+                $vc_due_date_value    = '';
+                $vc_approved_by_value = '';
 
-                    if (mysqli_num_rows($check_result) > 0) {
-                        $update_stmt = mysqli_prepare($connection, "UPDATE version_control 
-                SET vc_assigned_to = ?, vc_status = ?, vc_updated_on = ?, vc_updated_by = ?, vc_due_date = ?
-                WHERE vc_data_id = ? AND vc_screen_name = ?");
-                        mysqli_stmt_bind_param($update_stmt, "sssssss", $vc_assigned_to, $vc_status, $vc_updated_on, $vc_updated_by, $vc_due_date, $vc_data_id, $vc_data_type);
-                        $query_result = mysqli_stmt_execute($update_stmt);
+                // ---- Handle form submission ----
+                if (isset($_POST['update-details'])) {
+                    // Guard: Must have id & type
+                    if (empty($vc_data_id) || empty($vc_data_type)) {
+                        echo "<div id='alertBox' class='alert alert-danger'>Missing record context (id/type). Cannot save.</div>";
                     } else {
-                        $insert_stmt = mysqli_prepare($connection, "INSERT INTO version_control 
-                (vc_data_id, vc_screen_name, vc_assigned_to, vc_status, vc_updated_on, vc_due_date, vc_updated_by)
-                VALUES (?, ?, ?, ?, ?, ?, ?)");
-                        mysqli_stmt_bind_param($insert_stmt, "sssssss", $vc_data_id, $vc_data_type, $vc_assigned_to, $vc_status, $vc_updated_on, $vc_due_date, $vc_updated_by);
-                        $query_result = mysqli_stmt_execute($insert_stmt);
-                    }
+                        $vc_updated_on  = date('Y-m-d H:i:s');
+                        $vc_assigned_to = isset($_POST['vc_assigned_to']) ? trim($_POST['vc_assigned_to']) : '';
+                        $vc_status      = isset($_POST['vc_status']) ? trim($_POST['vc_status']) : '';
+                        $vc_due_date    = isset($_POST['vc_due_date']) && $_POST['vc_due_date'] !== '' ? $_POST['vc_due_date'] : null;
+                        $vc_updated_by  = isset($_POST['vc_updated_by']) ? trim($_POST['vc_updated_by']) : 'System';
+                        $vc_approved_by = isset($_POST['vc_approved_by']) && trim($_POST['vc_approved_by']) !== '' ? trim($_POST['vc_approved_by']) : ($user_name ?? 'System');
 
-                    echo $query_result
-                        ? "<div id='alertBox' class='alert alert-success'>Details saved successfully.</div>"
-                        : "<div id='alertBox' class='alert alert-danger'>Error: " . mysqli_error($connection) . "</div>";
+                        // Basic required checks
+                        if ($vc_assigned_to === '' || $vc_status === '') {
+                            echo "<div id='alertBox' class='alert alert-danger'>Please fill all required fields.</div>";
+                        } else {
+                            // Upsert logic
+                            $check_sql = "SELECT 1 FROM version_control WHERE vc_data_id = ? AND vc_screen_name = ? LIMIT 1";
+                            if ($check_stmt = mysqli_prepare($connection, $check_sql)) {
+                                mysqli_stmt_bind_param($check_stmt, "ss", $vc_data_id, $vc_data_type);
+                                mysqli_stmt_execute($check_stmt);
+                                $check_result = mysqli_stmt_get_result($check_stmt);
+                                $exists = ($check_result && mysqli_num_rows($check_result) > 0);
+                                mysqli_stmt_close($check_stmt);
+
+                                if ($exists) {
+                                    if ($vc_has_approved_by) {
+                                        $update_sql = "UPDATE version_control 
+                            SET vc_assigned_to = ?, vc_status = ?, vc_updated_on = ?, vc_updated_by = ?, vc_due_date = ?, vc_approved_by = ?
+                            WHERE vc_data_id = ? AND vc_screen_name = ?";
+                                        $update_stmt = mysqli_prepare($connection, $update_sql);
+                                        mysqli_stmt_bind_param(
+                                            $update_stmt,
+                                            "ssssssss",
+                                            $vc_assigned_to,
+                                            $vc_status,
+                                            $vc_updated_on,
+                                            $vc_updated_by,
+                                            $vc_due_date,
+                                            $vc_approved_by,
+                                            $vc_data_id,
+                                            $vc_data_type
+                                        );
+                                    } else {
+                                        $update_sql = "UPDATE version_control 
+                SET vc_assigned_to = ?, vc_status = ?, vc_updated_on = ?, vc_updated_by = ?, vc_due_date = ?, vc_approved_by = ?
+                WHERE vc_data_id = ? AND vc_screen_name = ?";
+                                        $update_stmt = mysqli_prepare($connection, $update_sql);
+                                        mysqli_stmt_bind_param($update_stmt, "ssssssss", $vc_assigned_to, $vc_status, $vc_updated_on, $vc_updated_by, $vc_due_date, $vc_approved_by, $vc_data_id, $vc_data_type);
+                                    }
+                                    $query_result = mysqli_stmt_execute($update_stmt);
+                                    $err = mysqli_error($connection);
+                                    mysqli_stmt_close($update_stmt);
+                                } else {
+                                    if ($vc_has_approved_by) {
+                                        $insert_sql = "INSERT INTO version_control 
+                            (vc_data_id, vc_screen_name, vc_assigned_to, vc_status, vc_updated_on, vc_due_date, vc_updated_by, vc_approved_by)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                                        $insert_stmt = mysqli_prepare($connection, $insert_sql);
+                                        mysqli_stmt_bind_param(
+                                            $insert_stmt,
+                                            "ssssssss",
+                                            $vc_data_id,
+                                            $vc_data_type,
+                                            $vc_assigned_to,
+                                            $vc_status,
+                                            $vc_updated_on,
+                                            $vc_due_date,
+                                            $vc_updated_by,
+                                            $vc_approved_by
+                                        );
+                                    } else {
+                                        $insert_sql = "INSERT INTO version_control 
+                (vc_data_id, vc_screen_name, vc_assigned_to, vc_status, vc_updated_on, vc_due_date, vc_updated_by, vc_approved_by) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                                        $insert_stmt = mysqli_prepare($connection, $insert_sql);
+                                        mysqli_stmt_bind_param($insert_stmt, "ssssssss", $vc_data_id,
+                                            $vc_data_type,
+                                            $vc_assigned_to,
+                                            $vc_status,
+                                            $vc_updated_on,
+                                            $vc_due_date,
+                                            $vc_updated_by, $vc_approved_by);
+                                    }
+                                    $query_result = mysqli_stmt_execute($insert_stmt);
+                                    $err = mysqli_error($connection);
+                                    mysqli_stmt_close($insert_stmt);
+                                }
+
+                                if (!empty($query_result)) {
+                                    echo "<div id='alertBox' class='alert alert-success'>Details saved successfully.</div>";
+                                } else {
+                                    echo "<div id='alertBox' class='alert alert-danger'>Error: " . htmlspecialchars($err) . "</div>";
+                                }
+                            } else {
+                                echo "<div id='alertBox' class='alert alert-danger'>Error preparing statement.</div>";
+                            }
+                        }
+                    }
                 }
 
-                // Pre-fill values if available
-                if ($vc_data_id && $vc_data_type) {
-                    $get_stmt = mysqli_prepare($connection, "SELECT vc_assigned_to, vc_status, vc_due_date FROM version_control WHERE vc_data_id = ? AND vc_screen_name = ? LIMIT 1");
-                    mysqli_stmt_bind_param($get_stmt, "ss", $vc_data_id, $vc_data_type);
-                    mysqli_stmt_execute($get_stmt);
-                    $get_result = mysqli_stmt_get_result($get_stmt);
+                // ---- Pre-fill values if available ----
+                if (!empty($vc_data_id) && !empty($vc_data_type)) {
+                    // Build select including approved_by only if column exists
+                    $select_cols = "vc_assigned_to, vc_status, vc_due_date, vc_approved_by";
 
-                    if (mysqli_num_rows($get_result) > 0) {
-                        $vc_data = mysqli_fetch_assoc($get_result);
-                        $vc_assigned_to_value = $vc_data['vc_assigned_to'];
-                        $vc_status_value = $vc_data['vc_status'];
-                        $vc_due_date_value = $vc_data['vc_due_date'];
+                    $get_sql = "SELECT $select_cols FROM version_control WHERE vc_data_id = ? AND vc_screen_name = ? LIMIT 1";
+                    if ($get_stmt = mysqli_prepare($connection, $get_sql)) {
+                        mysqli_stmt_bind_param($get_stmt, "ss", $vc_data_id, $vc_data_type);
+                        mysqli_stmt_execute($get_stmt);
+                        $get_result = mysqli_stmt_get_result($get_stmt);
+
+                        if ($get_result && mysqli_num_rows($get_result) > 0) {
+                            $vc_data = mysqli_fetch_assoc($get_result);
+                            $vc_assigned_to_value = $vc_data['vc_assigned_to'] ?? '';
+                            $vc_status_value      = $vc_data['vc_status'] ?? '';
+                            $vc_due_date_value    = $vc_data['vc_due_date'] ?? '';
+                            $vc_approved_by_value = $vc_data['vc_approved_by'] ?? '';
+                        }
+                        mysqli_stmt_close($get_stmt);
                     }
                 }
+
+                // Disable editing if no context id
+                $vc_disable_form = (empty($vc_data_id) || empty($vc_data_type));
+
                 ?>
+                <?php if ($vc_disable_form) : ?>
+                    <div class="alert alert-warning mb-3">
+                        Missing record context (no policy identifier found). Open this screen via a valid “View Details” button so the ID is passed.
+                    </div>
+                <?php endif; ?>
 
                 <form action="" method="POST">
-                    <input type="hidden" name="vc_data_id" value="<?php echo htmlspecialchars($vc_data_id); ?>">
-                    <input type="hidden" name="vc_data_type" value="<?php echo htmlspecialchars($vc_data_type); ?>">
-                    <input type="hidden" name="vc_updated_by" value="<?php echo htmlspecialchars($user_name ?? 'System'); ?>">
-                    <?php
-                    if ($user_role == "2") {
-                    ?>
+                    <input type="hidden" name="vc_approved_by" value="<?php echo htmlspecialchars($user_name ?? 'System'); ?>">
+                    <input type="hidden" name="vc_data_id" value="<?php echo htmlspecialchars((string)$vc_data_id); ?>">
+                    <input type="hidden" name="vc_data_type" value="<?php echo htmlspecialchars((string)$vc_data_type); ?>">
+                    <input type="hidden" name="vc_updated_by" value="<?php echo htmlspecialchars((string)$user_name); ?>">
+
+                    <?php if ($user_role === "2") { ?>
+                        <!-- Viewer/Restricted role: fields disabled -->
                         <div class="mb-3">
                             <label class="form-label" style="font-size: 12px;">Assigned to</label>
                             <select class="form-select" name="vc_assigned_to" required style="font-size: 12px;" disabled>
                                 <option disabled <?php if (empty($vc_assigned_to_value)) echo 'selected'; ?>>Select a user</option>
                                 <?php
-                                $users = mysqli_query($connection, "SELECT isms_user_name FROM user");
-                                while ($row = mysqli_fetch_assoc($users)) {
-                                    $name = $row['isms_user_name'];
-                                    $selected = ($name == $vc_assigned_to_value) ? 'selected' : '';
-                                    echo "<option value=\"$name\" $selected>$name</option>";
+                                $users = mysqli_query($connection, "SELECT isms_user_name FROM `user`");
+                                if ($users) {
+                                    while ($row = mysqli_fetch_assoc($users)) {
+                                        $name = $row['isms_user_name'];
+                                        $selected = ($name === $vc_assigned_to_value) ? 'selected' : '';
+                                        echo '<option value="' . htmlspecialchars($name) . "\" $selected>" . htmlspecialchars($name) . '</option>';
+                                    }
+                                    mysqli_free_result($users);
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 12px;">Approved By</label>
+                            <select class="form-select" name="vc_approved_by" required style="font-size: 12px;">
+                                <option disabled <?php if (empty($vc_approved_by_value)) echo 'selected'; ?>>Select a user</option>
+                                <?php
+                                // Build the list of user names for the dropdown
+                                $__names = [];
+                                $__res = mysqli_query($connection, "SELECT isms_user_name FROM `user`");
+                                if ($__res) {
+                                    while ($__row = mysqli_fetch_assoc($__res)) {
+                                        $__names[] = $__row['isms_user_name'];
+                                    }
+                                    mysqli_free_result($__res);
+                                }
+                                // If there's an existing value in DB that's not in the list, show it so the user sees what's stored
+                                if (!empty($vc_approved_by_value) && !in_array($vc_approved_by_value, $__names, true)) {
+                                    echo '<option value="' . htmlspecialchars($vc_approved_by_value) . '" selected>(Current) ' . htmlspecialchars($vc_approved_by_value) . '</option>';
+                                }
+                                // Print all names, selecting the current one when it matches
+                                foreach ($__names as $__name) {
+                                    $selected = ($__name === $vc_approved_by_value) ? 'selected' : '';
+                                    echo '<option value="' . htmlspecialchars($__name) . '" ' . $selected . '>' . htmlspecialchars($__name) . '</option>';
                                 }
                                 ?>
                             </select>
@@ -354,8 +554,8 @@ include 'includes/connection.php';
                                 <?php
                                 $statuses = ['Open', 'In Progress', 'Completed'];
                                 foreach ($statuses as $status) {
-                                    $selected = ($status == $vc_status_value) ? 'selected' : '';
-                                    echo "<option value=\"$status\" $selected>$status</option>";
+                                    $selected = ($status === $vc_status_value) ? 'selected' : '';
+                                    echo '<option value="' . htmlspecialchars($status) . "\" $selected>" . htmlspecialchars($status) . '</option>';
                                 }
                                 ?>
                             </select>
@@ -364,33 +564,57 @@ include 'includes/connection.php';
                         <div class="mb-3">
                             <label class="form-label" style="font-size: 12px;">Due Date</label>
                             <input class="form-control" style="font-size: 12px;" name="vc_due_date" type="date"
-                                value="<?php echo htmlspecialchars($vc_due_date_value); ?>" disabled>
+                                value="<?php echo htmlspecialchars((string)$vc_due_date_value); ?>" disabled>
                         </div>
+
                     <?php } else { ?>
+                        <!-- Editor role -->
                         <div class="mb-3">
                             <label class="form-label" style="font-size: 12px;">Assigned to</label>
-                            <select class="form-select" name="vc_assigned_to" required style="font-size: 12px;">
+                            <select class="form-select" name="vc_assigned_to" required style="font-size: 12px;" <?php echo $vc_disable_form ? 'disabled' : ''; ?>>
                                 <option disabled <?php if (empty($vc_assigned_to_value)) echo 'selected'; ?>>Select a user</option>
                                 <?php
-                                $users = mysqli_query($connection, "SELECT isms_user_name FROM user");
-                                while ($row = mysqli_fetch_assoc($users)) {
-                                    $name = $row['isms_user_name'];
-                                    $selected = ($name == $vc_assigned_to_value) ? 'selected' : '';
-                                    echo "<option value=\"$name\" $selected>$name</option>";
+                                $users = mysqli_query($connection, "SELECT isms_user_name FROM `user`");
+                                if ($users) {
+                                    while ($row = mysqli_fetch_assoc($users)) {
+                                        $name = $row['isms_user_name'];
+                                        $selected = ($name === $vc_assigned_to_value) ? 'selected' : '';
+                                        echo '<option value="' . htmlspecialchars($name) . "\" $selected>" . htmlspecialchars($name) . '</option>';
+                                    }
+                                    mysqli_free_result($users);
                                 }
                                 ?>
                             </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 12px;">Send for Approval to</label>
+                            <select class="form-select" name="vc_approved_by" <?php echo $vc_has_approved_by ? 'required' : ''; ?> style="font-size: 12px;" <?php echo $vc_disable_form ? 'disabled' : ''; ?>>
+                                <option disabled <?php if (empty($vc_approved_by_value)) echo 'selected'; ?>>Select a user</option>
+                                <?php
+                                $users2 = mysqli_query($connection, "SELECT isms_user_name FROM `user`");
+                                if ($users2) {
+                                    while ($row = mysqli_fetch_assoc($users2)) {
+                                        $name = $row['isms_user_name'];
+                                        $selected = ($name === $vc_approved_by_value) ? 'selected' : '';
+                                        echo '<option value="' . htmlspecialchars($name) . "\" $selected>" . htmlspecialchars($name) . '</option>';
+                                    }
+                                    mysqli_free_result($users2);
+                                }
+                                ?>
+                            </select>
+
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label" style="font-size: 12px;">Status</label>
-                            <select class="form-select" name="vc_status" required style="font-size: 12px;">
+                            <select class="form-select" name="vc_status" required style="font-size: 12px;" <?php echo $vc_disable_form ? 'disabled' : ''; ?>>
                                 <option disabled <?php if (empty($vc_status_value)) echo 'selected'; ?>>Select status</option>
                                 <?php
                                 $statuses = ['Open', 'In Progress', 'Completed'];
                                 foreach ($statuses as $status) {
-                                    $selected = ($status == $vc_status_value) ? 'selected' : '';
-                                    echo "<option value=\"$status\" $selected>$status</option>";
+                                    $selected = ($status === $vc_status_value) ? 'selected' : '';
+                                    echo '<option value="' . htmlspecialchars($status) . "\" $selected>" . htmlspecialchars($status) . '</option>';
                                 }
                                 ?>
                             </select>
@@ -399,19 +623,43 @@ include 'includes/connection.php';
                         <div class="mb-3">
                             <label class="form-label" style="font-size: 12px;">Due Date</label>
                             <input class="form-control" style="font-size: 12px;" name="vc_due_date" type="date"
-                                value="<?php echo htmlspecialchars($vc_due_date_value); ?>">
+                                value="<?php echo htmlspecialchars((string)$vc_due_date_value); ?>" <?php echo $vc_disable_form ? 'disabled' : ''; ?>>
                         </div>
 
                     <?php } ?>
-                    <?php
-                    if ($user_role == "2") {
-                    ?>
-                        <button type="button" class="d-none btn btn-sm btn-success">Submit</button>
+
+                    <?php if ($user_role === "2" || $vc_disable_form) { ?>
+                        <button type="button" class="btn btn-sm btn-secondary" disabled>Submit</button>
                     <?php } else { ?>
                         <button type="submit" name="update-details" class="btn btn-sm btn-success">Submit</button>
                     <?php } ?>
                 </form>
             </div>
+
+            <script>
+                // Auto-hide alerts after 3 seconds
+                setTimeout(function() {
+                    var el = document.getElementById('alertBox');
+                    if (el) {
+                        el.classList.add('fade');
+                        el.style.opacity = '0';
+                    }
+                }, 3000);
+            </script>
+
+
+            <script>
+                // Auto-hide alerts after 3 seconds
+                setTimeout(function() {
+                    var el = document.getElementById('alertBox');
+                    if (el) {
+                        el.classList.add('fade');
+                        el.style.opacity = '0';
+                    }
+                }, 3000);
+            </script>
+
+
         </div>
 
         <div class="col-md-6">
@@ -1059,6 +1307,7 @@ include 'includes/connection.php';
                 </div>
             </div>
 
+            <!-- ========== JAVASCRIPT ========== -->
             <script>
                 $(document).ready(function() {
                     $('#history-content').summernote({
