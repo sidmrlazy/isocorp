@@ -5,7 +5,9 @@ include 'includes/navbar.php';
 include 'includes/connection.php';
 
 // normalize DB handle if needed
-if (!isset($mysqli) && isset($connection)) { $mysqli = $connection; }
+if (!isset($mysqli) && isset($connection)) {
+    $mysqli = $connection;
+}
 
 // ---- validate id ----
 if (!isset($_GET['id']) || !ctype_digit($_GET['id'])) {
@@ -31,10 +33,16 @@ if ($stmt = $mysqli->prepare($sql)) {
 ?>
 <div class="dashboard-container my-4 mb-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
+        <!-- <div>
             <h2 class="mb-0" style="font-size:20px;">Opportunity Details</h2>
             <small><a href="index.php">Home</a> > <a href="opportunities.php">Opportunities & Treatments</a> > Details</small>
+        </div> -->
+
+        <div class="screen-name-container mb-3">
+            <h1>Opportunity Details </h1>
+            <h2><a href="index.php">Home</a> > Opportunity Details</h2>
         </div>
+
         <div>
             <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary" style="font-size:12px !important;">Back</a>
         </div>
