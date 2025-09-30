@@ -41,6 +41,11 @@ include 'includes/connection.php';
               </a>
             </li>
             <li>
+              <a class="dropdown-item" href="opportunities-treatments.php">
+                <ion-icon style="font-size: 20px !important;" name="ear-outline"></ion-icon> Opportunities & Treatments
+              </a>
+            </li>
+            <li>
               <a class="dropdown-item" href="corrective-actions.php">
                 <ion-icon style="font-size: 20px !important;" name="construct-outline"></ion-icon> Corrective Actions & Improvements
               </a>
